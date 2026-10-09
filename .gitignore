@@ -1,0 +1,30 @@
+# Python virtual environment
+.venv/
+venv/
+
+# Python temporary files
+__pycache__/
+*.py[cod]
+
+# Testing and coverage files
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Secrets and environment variables
+.env
+.env.*
+!.env.example
+
+# Editor and operating system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Generated logs
+*.log
+
+# Downloaded and processed Wikipedia data
+data/raw/
+data/processed/
