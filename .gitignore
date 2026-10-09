@@ -28,3 +28,8 @@ Thumbs.db
 # Downloaded and processed Wikipedia data
 data/raw/
 data/processed/
+
+# Python package build metadata
+*.egg-info/
+build/
+dist/

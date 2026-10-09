@@ -76,17 +76,43 @@ The directories shown above represent the planned structure and will be created 
 
 ## 7. Installation and Setup
 
-To be documented after the development environment, database schema, and dependencies are finalized.
 
-The final instructions will cover:
+### Python Development Setup
 
-- Python environment setup
-- MariaDB installation and configuration
-- Environment variables
-- Database schema initialization
-- Wikipedia data collection
-- Embedding generation
-- Running the application
+This project uses Python 3.11 or newer.
+
+#### 1. Create a virtual environment
+
+From the repository root:
+
+```bash
+python3 -m venv .venv
+```
+
+#### 2. Activate the environment
+
+On Linux or WSL:
+
+```bash
+source .venv/bin/activate
+```
+
+#### 3. Install dependencies
+
+```bash
+python -m pip install -e ".[dev]"
+```
+
+#### 4. Run the tests
+
+```bash
+python -m pytest
+```
+
+The virtual environment is excluded from Git. Each contributor must create their own.
+
+MariaDB configuration and Wikipedia ingestion instructions will be added as those components are implemented.
+
 
 ## 8. Hybrid Search
 
