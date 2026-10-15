@@ -1,32 +1,69 @@
+import os
+from sentence_transformers import SentenceTransformer
 from src.database.search import search_chunks
-from src.database.connection import get_connection
-# You will need to import your chosen embedding model here (e.g., sentence-transformers)
 
-def answer_question(user_question, filter_category=None):
-    # 1. Generate the query embedding (must be 384 dimensions)
-    # query_embedding = your_embedding_model.encode(user_question).tolist()
+# Initialize the embedding model (outputs 384 dimensions)
+model = SentenceTransformer('all-MiniLM-L6-v2')
+
+def get_context_for_question(user_question, category_filter=None, min_length_bytes=None, limit=5):
+    """
+    Takes a user question, converts it to a 384-dimension vector,
+    and searches the MariaDB vector index for relevant Wikipedia chunks.
+    """
+    print(f"Generating embedding for question: '{user_question}'")
     
-    # Placeholder for the actual embedding logic:
-    query_embedding = [0.0] * 384 
+    # 1. Embed the query using all-MiniLM-L6-v2
+    # model.encode() returns a numpy array, .tolist() converts it to a standard Python list
+    query_embedding = model.encode(user_question).tolist()
     
-    # 2. Search the database for relevant chunks
+    # Verify the dimension is exactly 384 as required by the database
+    if len(query_embedding) != 384:
+        raise ValueError(f"Expected embedding dimension of 384, but got {len(query_embedding)}")
+
+    print("Searching MariaDB vector index...")
+    
+    # 2. Search the database using the DAL function
     try:
         results = search_chunks(
             query_embedding=query_embedding,
-            limit=3, 
-            category=filter_category # Optional SQL filter
+            limit=limit,
+            category=category_filter,
+            min_length=min_length_bytes
         )
     except Exception as e:
-        print(f"Database search failed: {e}")
-        return
-        
+        print(f"Error querying database: {e}")
+        return []
+
     # 3. Format the retrieved context
-    context = ""
-    for result in results:
-         context += f"Source: {result['title']}\nContent: {result['chunk_text']}\n\n"
-         
-    # 4. Pass to generation model (LLM logic goes here)
-    # prompt = f"Answer the question based on the context:\n\nContext:\n{context}\n\nQuestion: {user_question}"
-    # final_answer = call_llm(prompt)
+    if not results:
+        print("No matching articles found.")
+        return ""
+
+    context_text = "Here is the retrieved context from Wikipedia:\n\n"
     
-    return context # Or return final_answer once the LLM is integrated
+    for rank, result in enumerate(results, start=1):
+        title = result.get('title', 'Unknown Title')
+        chunk_text = result.get('chunk_text', '')
+        distance = result.get('distance', 'N/A')
+        url = result.get('url', '')
+        
+        context_text += f"[{rank}] Source: {title}\n"
+        context_text += f"URL: {url}\n"
+        context_text += f"Similarity Distance: {distance}\n"
+        context_text += f"Content: {chunk_text}\n\n"
+        
+    return context_text
+
+# Basic test execution if the script is run directly
+if __name__ == "__main__":
+    test_question = "How does artificial intelligence impact healthcare?"
+    
+    # Example 1: Standard semantic search
+    print("--- Standard Vector Search ---")
+    context = get_context_for_question(test_question)
+    print(context)
+    
+    # Example 2: Hybrid search (Semantic Search + SQL Filter)
+    print("--- Hybrid Search (Filtered by Category) ---")
+    hybrid_context = get_context_for_question(test_question, category_filter="Computer science")
+    print(hybrid_context)
