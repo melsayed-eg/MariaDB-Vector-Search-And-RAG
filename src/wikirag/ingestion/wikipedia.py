@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import csv
 import json
-import logging
+import math
 import time
 from collections.abc import Iterator, Mapping, Sequence
 from dataclasses import dataclass
@@ -38,8 +38,6 @@ SNAPSHOT_FIELDS = (
     "linked_titles",
     "text",
 )
-
-logger = logging.getLogger(__name__)
 
 
 def _normalize_title(title: str) -> str:
@@ -534,12 +532,10 @@ def build_snapshot(
     *,
     delay_s: float = 0.2,
 ) -> int:
-    """Download every seed article from Wikipedia and save them as a snapshot.
+    """Download every seed article and atomically save a complete snapshot.
 
-    Articles that cannot be downloaded are skipped with a warning, and so is a second seed
-    title that leads to an article already saved (for example through a redirect). The file
-    is written to a temporary name first, so an existing snapshot is only replaced when at
-    least one article was downloaded.
+    A failed download or duplicate Wikipedia page id aborts the build. Articles are first
+    written to a temporary file, so an existing snapshot is never replaced by incomplete data.
 
     Args:
         seed_path: Seed CSV file with ``topic,title`` columns.
@@ -550,38 +546,62 @@ def build_snapshot(
         The number of articles written.
 
     Raises:
-        ValidationError: If ``delay_s`` is negative or the seed file is invalid.
-        WikiRagError: If no article at all could be downloaded.
+        ValidationError: If ``delay_s`` is invalid (negative, non-finite, or incorrect type)
+            or the seed path is not an existing file.
+        WikiRagError: If any article cannot be downloaded or two seeds resolve to the same
+            Wikipedia page.
     """
-    if delay_s < 0:
-        raise ValidationError("delay_s must not be negative")
-    seeds = load_seed_titles(seed_path)
+    if isinstance(delay_s, bool) or not isinstance(delay_s, (int, float)):
+        raise ValidationError("delay_s must be a numeric value")
+    if math.isnan(delay_s) or math.isinf(delay_s) or delay_s < 0:
+        raise ValidationError("delay_s must be a finite, non-negative number")
+    if not isinstance(seed_path, Path) or not seed_path.is_file():
+        raise ValidationError(f"Invalid seed file path: {seed_path}")
+    if not isinstance(out_path, Path):
+        raise ValidationError(f"Invalid out_path: {out_path}")
 
+    seeds = load_seed_titles(seed_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
+
     temp_path = out_path.with_name(out_path.name + ".tmp")
     seen_ids: set[int] = set()
     written = 0
+
     try:
         with requests.Session() as client, temp_path.open("w", encoding="utf-8") as handle:
             for index, (topic, title) in enumerate(seeds):
                 if index > 0 and delay_s > 0:
                     time.sleep(delay_s)
+
                 try:
                     article = fetch_article(title, topic=topic, session=client)
                 except WikiRagError as error:
-                    logger.warning("Skipping %r: %s", title, error)
-                    continue
+                    raise WikiRagError(
+                        f"Snapshot incomplete: failed to download {title!r}: {error}"
+                    ) from error
+
                 if article.article_id in seen_ids:
-                    logger.warning("Skipping %r: article already in the snapshot", title)
-                    continue
+                    raise WikiRagError(
+                        f"Snapshot incomplete: duplicate Wikipedia article id "
+                        f"{article.article_id} for seed {title!r}"
+                    )
+
                 seen_ids.add(article.article_id)
-                # sorted keys keep the file identical when the data is identical
-                line = json.dumps(_article_to_record(article), ensure_ascii=False, sort_keys=True)
+                line = json.dumps(
+                    _article_to_record(article),
+                    ensure_ascii=False,
+                    sort_keys=True,
+                )
                 handle.write(line + "\n")
                 written += 1
-        if written == 0:
-            raise WikiRagError("No articles could be downloaded; snapshot not written")
+
+        if written != len(seeds):
+            raise WikiRagError(
+                f"Snapshot incomplete: expected {len(seeds)} articles, wrote {written}"
+            )
+
         temp_path.replace(out_path)
     finally:
         temp_path.unlink(missing_ok=True)
+
     return written
