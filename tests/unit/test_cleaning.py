@@ -48,3 +48,11 @@ def test_cleaning_is_idempotent_and_deterministic() -> None:
 def test_non_string_raises(value: object) -> None:
     with pytest.raises(ValidationError, match="string"):
         clean_text(value)  # type: ignore[arg-type]
+
+
+def test_clean_text_is_idempotent_when_an_invisible_character_splits_a_letter() -> None:
+    from wikirag.ingestion.cleaning import clean_text
+
+    once = clean_text("e\u00ad\u0301")
+    assert once == "\u00e9"
+    assert clean_text(once) == once

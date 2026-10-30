@@ -16,10 +16,12 @@ _BLANK_LINES = re.compile(r"\n{3,}")
 def clean_text(text: str) -> str:
     """Clean article text so that the same input always gives the same output.
 
-    Applies these rules in order: Unicode NFC normalization, uniform ``\\n`` line endings,
-    removal of invisible characters, every run of spaces, tabs and non-breaking spaces becomes
-    one space, spaces at the start and end of each line are removed, three or more line breaks
-    become one blank line, and the whole text is stripped. Paragraph breaks are kept.
+    Applies these rules in order: uniform ``\\n`` line endings, removal of invisible
+    characters, Unicode NFC normalization, every run of spaces, tabs and non-breaking spaces
+    becomes one space, spaces at the start and end of each line are removed, three or more
+    line breaks become one blank line, and the whole text is stripped. Paragraph breaks are
+    kept. Normalization runs after the invisible characters are removed, so cleaning the
+    result a second time changes nothing.
 
     Args:
         text: Raw article text from Wikipedia.
@@ -33,9 +35,10 @@ def clean_text(text: str) -> str:
     if not isinstance(text, str):
         raise ValidationError("Text to clean must be a string")
 
-    cleaned = unicodedata.normalize("NFC", text)
-    cleaned = cleaned.replace("\r\n", "\n").replace("\r", "\n")
+    cleaned = text.replace("\r\n", "\n").replace("\r", "\n")
     cleaned = cleaned.translate(_INVISIBLE_CHARS)
+    # normalize after removing invisible characters so they cannot block composition
+    cleaned = unicodedata.normalize("NFC", cleaned)
     cleaned = _HORIZONTAL_SPACE.sub(" ", cleaned)
     cleaned = "\n".join(line.strip() for line in cleaned.split("\n"))
     return _BLANK_LINES.sub("\n\n", cleaned).strip()
