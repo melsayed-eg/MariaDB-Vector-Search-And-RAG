@@ -56,3 +56,14 @@ def test_clean_text_is_idempotent_when_an_invisible_character_splits_a_letter() 
     once = clean_text("e\u00ad\u0301")
     assert once == "\u00e9"
     assert clean_text(once) == once
+
+
+def test_clean_text_removes_html_and_citation_markers() -> None:
+    raw = "<p>Text with <b>bold</b> and a reference[1] or citation[citation needed] and [edit].</p>"
+    cleaned = clean_text(raw)
+    assert "<" not in cleaned
+    assert ">" not in cleaned
+    assert "[1]" not in cleaned
+    assert "[citation needed]" not in cleaned
+    assert "[edit]" not in cleaned
+    assert "Text with bold and a reference or citation and ." == cleaned
