@@ -89,7 +89,7 @@ idempotent re-embedding during ingestion.
 Rules are applied in this strict sequence:
 
 1. Normalize line endings (`\r\n` and `\r` become `\n`).
-2. Strip HTML tags (preserving mathematical comparison operators such as `<` and `>`) and reference markers (e.g., `[edit]`, `[1]`, `[citation needed]`).
+2. Strip HTML tags (preserving generic type tokens such as `<T>` and math inequalities like `x < y and z > 0`) and reference markers (e.g., `[edit]`, `[1]`, `[citation needed]`).
 3. Remove non-functional invisible characters (zero-width spaces, soft hyphens, byte-order marks; zero-width non-joiner `\u200c` is preserved).
 4. Unicode NFC normalization (performed after removing invisible characters so decomposed sequences compose correctly).
 5. Collapse consecutive horizontal whitespace runs (spaces, tabs, non-breaking spaces) to a single space.
