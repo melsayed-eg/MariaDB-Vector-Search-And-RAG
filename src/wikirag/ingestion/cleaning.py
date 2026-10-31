@@ -1,52 +1,15 @@
-"""Text cleaning and normalization for Wikipedia articles."""
-
-from __future__ import annotations
-
-import re
-import unicodedata
-
-from wikirag.errors import ValidationError
+def test_clean_text_preserves_mathematical_comparisons() -> None:
+    text = "For all inputs where x < y and z > 0, the condition holds."
+    cleaned = clean_text(text)
+    assert cleaned == "For all inputs where x < y and z > 0, the condition holds."
 
 
-def clean_text(text: str) -> str:
-    """Prepare and clean the plain text of a Wikipedia article.
-
-    Maintains deterministic output, normalizing Unicode, stripping reference markers,
-    and removing hidden formatting without stripping legitimate content.
-
-    Args:
-        text: Raw text string to clean.
-
-    Returns:
-        Fully cleaned and normalized string.
-
-    Raises:
-        ValidationError: If input is not a string.
-    """
-    if not isinstance(text, str):
-        raise ValidationError("Input must be a string")
-
-    # 1. Normalize line endings
-    text = text.replace("\r\n", "\n").replace("\r", "\n")
-
-    # 2. Strip raw HTML tags & reference markers (e.g., [edit], [1], [citation needed])
-    text = re.sub(r"<[^>]+>", "", text)
-    text = re.sub(r"\[(?:edit|citation needed|\d+(?:,\s*\d+)*)\]", "", text, flags=re.IGNORECASE)
-
-    # 3. Remove non-functional invisible characters (keep \u200c - ZWNJ)
-    text = re.sub(r"[\u200b\u00ad\u2060\ufeff]", "", text)
-
-    # 4. Unicode NFC normalization (must be done AFTER removing invisible characters)
-    text = unicodedata.normalize("NFC", text)
-
-    # 5. Collapse runs of horizontal spaces
-    text = re.sub(r"[ \t\u00a0]+", " ", text)
-
-    # 6. Clean start/end of lines
-    lines = [line.strip() for line in text.split("\n")]
-
-    # 7. Normalization of paragraph breaks & line runs
-    text = "\n".join(lines)
-    text = re.sub(r"\n{3,}", "\n\n", text)
-
-    return text.strip()
+def test_clean_text_removes_html_and_citation_markers() -> None:
+    raw = "<p>Text with <b>bold</b> and a reference[1] or citation[citation needed] and [edit].</p>"
+    cleaned = clean_text(raw)
+    assert "<" not in cleaned
+    assert ">" not in cleaned
+    assert "[1]" not in cleaned
+    assert "[citation needed]" not in cleaned
+    assert "[edit]" not in cleaned
+    assert "Text with bold and a reference or citation and ." == cleaned

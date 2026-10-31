@@ -88,15 +88,14 @@ idempotent re-embedding during ingestion.
 
 Rules are applied in this strict sequence:
 
-1. Strip any raw HTML tags, reference brackets, and wikitext markup remnants.
-2. Remove citation and editorial markers (e.g., `[edit]`, `[1]`, `[citation needed]`).
-3. Unicode NFC normalization (e.g., canonical representations of composite glyphs).
-4. Remove invisible Unicode characters (zero-width spaces, soft hyphens, byte-order marks; zero-width non-joiner preserved).
-5. Line endings normalized to `\n`.
-6. Collapse consecutive horizontal whitespace runs (spaces, tabs, non-breaking spaces) to a single space.
-7. Strip leading and trailing whitespace from each line.
-8. Collapse runs of three or more newlines into exactly two newlines (preserving single blank line paragraph boundaries).
-9. Strip all leading and trailing whitespace from the full text block.
+1. Normalize line endings (`\r\n` and `\r` become `\n`).
+2. Strip HTML tags (preserving mathematical comparison operators such as `<` and `>`) and reference markers (e.g., `[edit]`, `[1]`, `[citation needed]`).
+3. Remove non-functional invisible characters (zero-width spaces, soft hyphens, byte-order marks; zero-width non-joiner `\u200c` is preserved).
+4. Unicode NFC normalization (performed after removing invisible characters so decomposed sequences compose correctly).
+5. Collapse consecutive horizontal whitespace runs (spaces, tabs, non-breaking spaces) to a single space.
+6. Strip leading and trailing whitespace from each line.
+7. Collapse runs of three or more newlines into exactly two newlines (preserving single blank line paragraph boundaries).
+8. Strip all leading and trailing whitespace from the full text block.
 
 Non-string inputs immediately raise `ValidationError`.
 
@@ -119,12 +118,10 @@ Segmentation mechanics:
 - Returns a sequence of `ChunkDraft` objects containing `chunk_index`, `text`, and `section_title`.
 
 
-## Building the snapshot
+## Validating the Snapshot (Offline & Non-Destructive)
 
-The committed snapshot `data/snapshot/wikipedia_snapshot.jsonl` contains the 200 articles specified in
-`data/seed_titles.csv`, acquired on 2026-10-30.
-
-To regenerate or verify the snapshot:
+To verify that the committed 200-article snapshot contains all required fields, valid metadata,
+unique page IDs, and matches the seed list topic assignments exactly:
 
 ```bash
-uv run python -c "from pathlib import Path; from wikirag.ingestion.wikipedia import build_snapshot; print(build_snapshot(Path('data/seed_titles.csv'), Path('data/snapshot/wikipedia_snapshot.jsonl')))"
+uv run python scripts/validate_snapshot.py
