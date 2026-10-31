@@ -18,6 +18,7 @@ def test_validate_snapshot_aborts_on_malformed_json(
     snap.write_text('{"article_id": 1, "title": "Binary search"\n', encoding="utf-8")
 
     with patch("scripts.validate_snapshot.Path") as mock_path:
+
         def path_side_effect(arg: str | Path) -> Path:
             str_arg = str(arg)
             if "snapshot" in str_arg:
@@ -73,6 +74,7 @@ def test_validate_snapshot_detects_swapped_topic_assignments(
     snap.write_text("\n".join(json.dumps(r) for r in records) + "\n", encoding="utf-8")
 
     with patch("scripts.validate_snapshot.Path") as mock_path:
+
         def path_side_effect(arg: str | Path) -> Path:
             str_arg = str(arg)
             if "snapshot" in str_arg:

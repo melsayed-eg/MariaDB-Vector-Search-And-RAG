@@ -9,9 +9,7 @@ from wikirag.errors import ValidationError
 
 # Only match HTML tags (starts with a letter or /), preserving math inequalities like x < y and z > 0
 _HTML_TAG_PATTERN = re.compile(r"</?[a-zA-Z][^>]*>")
-_CITATION_PATTERN = re.compile(
-    r"\[(?:edit|citation needed|\d+(?:,\s*\d+)*)\]", flags=re.IGNORECASE
-)
+_CITATION_PATTERN = re.compile(r"\[(?:edit|citation needed|\d+(?:,\s*\d+)*)\]", flags=re.IGNORECASE)
 _INVISIBLE_CHARS_PATTERN = re.compile(r"[\u200b\u00ad\u2060\ufeff]")
 _HORIZONTAL_SPACE_PATTERN = re.compile(r"[ \t\u00a0]+")
 _BLANK_LINES_PATTERN = re.compile(r"\n{3,}")
