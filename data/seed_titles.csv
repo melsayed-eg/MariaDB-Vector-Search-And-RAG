@@ -1,0 +1,201 @@
+topic,title
+algorithms,Quicksort
+algorithms,Merge sort
+algorithms,Heapsort
+algorithms,Insertion sort
+algorithms,Bubble sort
+algorithms,Selection sort
+algorithms,Radix sort
+algorithms,Binary search
+algorithms,Linear search
+algorithms,Breadth-first search
+algorithms,Depth-first search
+algorithms,Dijkstra's algorithm
+algorithms,Bellman–Ford algorithm
+algorithms,Floyd–Warshall algorithm
+algorithms,A* search algorithm
+algorithms,Kruskal's algorithm
+algorithms,Prim's algorithm
+algorithms,Topological sorting
+algorithms,Dynamic programming
+algorithms,Greedy algorithm
+algorithms,Divide-and-conquer algorithm
+algorithms,Backtracking
+algorithms,Hash table
+algorithms,Binary search tree
+algorithms,AVL tree
+algorithms,Red–black tree
+algorithms,B-tree
+algorithms,Heap (data structure)
+algorithms,Linked list
+algorithms,Stack (abstract data type)
+algorithms,Queue (abstract data type)
+algorithms,Priority queue
+algorithms,Trie
+algorithms,Graph (abstract data type)
+algorithms,Array (data structure)
+languages_se,Python (programming language)
+languages_se,Java (programming language)
+languages_se,C (programming language)
+languages_se,C++
+languages_se,C Sharp (programming language)
+languages_se,JavaScript
+languages_se,TypeScript
+languages_se,Rust (programming language)
+languages_se,Go (programming language)
+languages_se,Haskell
+languages_se,Lisp (programming language)
+languages_se,Prolog
+languages_se,Scala (programming language)
+languages_se,Kotlin
+languages_se,Swift (programming language)
+languages_se,Ruby (programming language)
+languages_se,Perl
+languages_se,PHP
+languages_se,Compiler
+languages_se,Interpreter (computing)
+languages_se,Type system
+languages_se,Garbage collection (computer science)
+languages_se,Object-oriented programming
+languages_se,Functional programming
+languages_se,Software engineering
+languages_se,Agile software development
+languages_se,Unit testing
+languages_se,Version control
+languages_se,Git
+languages_se,Software design pattern
+databases,Database
+databases,Relational database
+databases,SQL
+databases,MariaDB
+databases,MySQL
+databases,PostgreSQL
+databases,SQLite
+databases,MongoDB
+databases,Redis
+databases,NoSQL
+databases,Database normalization
+databases,Entity–relationship model
+databases,Relational algebra
+databases,Database index
+databases,ACID
+databases,Isolation (database systems)
+databases,Concurrency control
+databases,Query optimization
+databases,Data warehouse
+databases,Vector database
+databases,Graph database
+databases,Key–value database
+databases,Data orientation
+databases,Distributed database
+databases,CAP theorem
+systems_networks,Operating system
+systems_networks,Linux
+systems_networks,Kernel (operating system)
+systems_networks,Process (computing)
+systems_networks,Thread (computing)
+systems_networks,Scheduling (computing)
+systems_networks,Virtual memory
+systems_networks,Memory management
+systems_networks,Memory paging
+systems_networks,File system
+systems_networks,Device driver
+systems_networks,Deadlock (computer science)
+systems_networks,Mutual exclusion
+systems_networks,Semaphore (programming)
+systems_networks,Interrupt
+systems_networks,CPU cache
+systems_networks,Central processing unit
+systems_networks,Instruction set architecture
+systems_networks,Instruction pipelining
+systems_networks,Computer architecture
+systems_networks,Computer network
+systems_networks,Internet protocol suite
+systems_networks,Transmission Control Protocol
+systems_networks,User Datagram Protocol
+systems_networks,Internet Protocol
+systems_networks,IPv6
+systems_networks,Domain Name System
+systems_networks,HTTP
+systems_networks,HTTPS
+systems_networks,Routing
+systems_networks,Ethernet
+systems_networks,Wi-Fi
+systems_networks,OSI model
+systems_networks,Network address translation
+systems_networks,Load balancing (computing)
+ai_ml,Artificial intelligence
+ai_ml,Machine learning
+ai_ml,Deep learning
+ai_ml,Neural network (machine learning)
+ai_ml,Backpropagation
+ai_ml,Convolutional neural network
+ai_ml,Recurrent neural network
+ai_ml,Transformer (deep learning)
+ai_ml,Large language model
+ai_ml,Natural language processing
+ai_ml,Computer vision
+ai_ml,Reinforcement learning
+ai_ml,Supervised learning
+ai_ml,Unsupervised learning
+ai_ml,Decision tree learning
+ai_ml,Random forest
+ai_ml,Support vector machine
+ai_ml,Linear regression
+ai_ml,Logistic regression
+ai_ml,K-means clustering
+ai_ml,Principal component analysis
+ai_ml,Gradient descent
+ai_ml,Overfitting
+ai_ml,Cross-validation (statistics)
+ai_ml,Naive Bayes classifier
+ai_ml,Bayesian network
+ai_ml,Genetic algorithm
+ai_ml,Word embedding
+ai_ml,Generative adversarial network
+ai_ml,Autoencoder
+theory_security,Computational complexity theory
+theory_security,P versus NP problem
+theory_security,NP-completeness
+theory_security,Turing machine
+theory_security,Halting problem
+theory_security,Church–Turing thesis
+theory_security,Finite-state machine
+theory_security,Formal language
+theory_security,Regular expression
+theory_security,Context-free grammar
+theory_security,Automata theory
+theory_security,Big O notation
+theory_security,Lambda calculus
+theory_security,Information theory
+theory_security,Cryptography
+theory_security,Public-key cryptography
+theory_security,RSA cryptosystem
+theory_security,Advanced Encryption Standard
+theory_security,Cryptographic hash function
+theory_security,SHA-2
+theory_security,Transport Layer Security
+theory_security,Digital signature
+theory_security,Computer security
+theory_security,Malware
+theory_security,SQL injection
+history_people,Alan Turing
+history_people,Ada Lovelace
+history_people,Charles Babbage
+history_people,John von Neumann
+history_people,Claude Shannon
+history_people,Grace Hopper
+history_people,Edsger W. Dijkstra
+history_people,Donald Knuth
+history_people,Dennis Ritchie
+history_people,Ken Thompson
+history_people,Linus Torvalds
+history_people,Tim Berners-Lee
+history_people,Vint Cerf
+history_people,Alonzo Church
+history_people,Tony Hoare
+history_people,Barbara Liskov
+history_people,Leslie Lamport
+history_people,Edgar F. Codd
+history_people,John McCarthy (computer scientist)
+history_people,Marvin Minsky
