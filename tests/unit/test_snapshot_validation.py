@@ -10,21 +10,19 @@ from scripts.validate_snapshot import validate_snapshot
 
 
 def test_validate_snapshot_aborts_on_malformed_json(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     snap = tmp_path / "wikipedia_snapshot.jsonl"
     seed = tmp_path / "seed_titles.csv"
     seed.write_text("topic,title\nalgorithms,Binary search\n", encoding="utf-8")
-    snap.write_text(
-        '{"article_id": 1, "title": "Binary search"\n', encoding="utf-8"
-    )  # Malformed JSON line
+    snap.write_text('{"article_id": 1, "title": "Binary search"\n', encoding="utf-8")
 
     with patch("scripts.validate_snapshot.Path") as mock_path:
-
-        def path_side_effect(arg: str) -> Path:
-            if "snapshot" in arg:
+        def path_side_effect(arg: str | Path) -> Path:
+            str_arg = str(arg)
+            if "snapshot" in str_arg:
                 return snap
-            if "seed" in arg:
+            if "seed" in str_arg:
                 return seed
             return Path(arg)
 
@@ -33,9 +31,12 @@ def test_validate_snapshot_aborts_on_malformed_json(
             validate_snapshot()
         assert exc.value.code != 0
 
+    captured = capsys.readouterr()
+    assert "Snapshot validation failed" in captured.err
+
 
 def test_validate_snapshot_detects_swapped_topic_assignments(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     seed = tmp_path / "seed_titles.csv"
     seed.write_text(
@@ -43,7 +44,6 @@ def test_validate_snapshot_detects_swapped_topic_assignments(
         encoding="utf-8",
     )
     snap = tmp_path / "wikipedia_snapshot.jsonl"
-    # Swapped: Binary search labeled as databases
     records = [
         {
             "article_id": 1,
@@ -52,7 +52,7 @@ def test_validate_snapshot_detects_swapped_topic_assignments(
             "revision_id": 100,
             "revised_at": "2026-10-30T00:00:00Z",
             "fetched_at": "2026-10-30T00:00:00Z",
-            "topic": "databases",  # Mismatch with seed!
+            "topic": "databases",  # Swapped topic assignment
             "categories": [],
             "linked_titles": [],
             "text": "Some text content.",
@@ -64,7 +64,7 @@ def test_validate_snapshot_detects_swapped_topic_assignments(
             "revision_id": 101,
             "revised_at": "2026-10-30T00:00:00Z",
             "fetched_at": "2026-10-30T00:00:00Z",
-            "topic": "algorithms",  # Mismatch with seed!
+            "topic": "algorithms",  # Swapped topic assignment
             "categories": [],
             "linked_titles": [],
             "text": "Some other text.",
@@ -73,11 +73,11 @@ def test_validate_snapshot_detects_swapped_topic_assignments(
     snap.write_text("\n".join(json.dumps(r) for r in records) + "\n", encoding="utf-8")
 
     with patch("scripts.validate_snapshot.Path") as mock_path:
-
-        def path_side_effect(arg: str) -> Path:
-            if "snapshot" in arg:
+        def path_side_effect(arg: str | Path) -> Path:
+            str_arg = str(arg)
+            if "snapshot" in str_arg:
                 return snap
-            if "seed" in arg:
+            if "seed" in str_arg:
                 return seed
             return Path(arg)
 
@@ -85,3 +85,8 @@ def test_validate_snapshot_detects_swapped_topic_assignments(
         with pytest.raises(SystemExit) as exc:
             validate_snapshot()
         assert exc.value.code != 0
+
+    captured = capsys.readouterr()
+    # Explicitly verifies the failure was caused by topic mismatch, not count mismatch
+    assert "Mapped topic mismatch" in captured.err
+    assert "Expected 'algorithms', found 'databases'" in captured.err
