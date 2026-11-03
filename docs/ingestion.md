@@ -83,8 +83,9 @@ The file contains one JSON object per line with sorted keys and UTF-8 encoding:
 ## Cleaning
 
 `clean_text` in `src/wikirag/ingestion/cleaning.py` prepares the extracted plain text. The cleaning
-pipeline is deterministic; any change in cleaning rules alters the SHA-256 fingerprint, triggering
-idempotent re-embedding during ingestion.
+pipeline is deterministic: the same input always produces the same output. In the planned M3
+ingestion pipeline (not implemented yet), the cleaned text will be part of each article's
+fingerprint, so a change in cleaning rules would cause affected articles to be re-embedded.
 
 Rules are applied in this strict sequence:
 
@@ -117,6 +118,28 @@ Segmentation mechanics:
 - Resulting chunks feature zero leading/trailing whitespace, and indices start strictly at 0 without gaps.
 - Returns a sequence of `ChunkDraft` objects containing `chunk_index`, `text`, and `section_title`.
 
+## Committed snapshot provenance
+
+| Property | Value |
+| --- | --- |
+| File | `data/snapshot/wikipedia_snapshot.jsonl` |
+| Records | 200 articles (one JSON object per line) |
+| SHA-256 | `d64afac28a918ad16639a1e534f4d3bf472ec48327927c4ed52ae8a180211b2c` |
+| Source | English Wikipedia, MediaWiki Action API |
+| Added in commit | `b6210c0` (2026-10-30) |
+| Fetched | 2026-10-30 (UTC) |
+
+To verify you have the same dataset as the rest of the team:
+
+```bash
+sha256sum data/snapshot/wikipedia_snapshot.jsonl
+wc -l data/snapshot/wikipedia_snapshot.jsonl
+```
+
+Rebuilding the snapshot contacts live Wikipedia. Pages and fetch timestamps change over
+time, so a regenerated file will **not** have the same checksum. Use the committed file
+for reproducible results.
+
 
 ## Validating the Snapshot (Offline & Non-Destructive)
 
@@ -125,3 +148,4 @@ unique page IDs, and matches the seed list topic assignments exactly:
 
 ```bash
 uv run python scripts/validate_snapshot.py
+```
