@@ -5,6 +5,8 @@ from __future__ import annotations
 import csv
 import json
 import math
+import os
+import tempfile
 import time
 from collections.abc import Iterator, Mapping, Sequence
 from dataclasses import dataclass
@@ -559,11 +561,21 @@ def build_snapshot(
         raise ValidationError(f"Invalid seed file path: {seed_path}")
     if not isinstance(out_path, Path):
         raise ValidationError(f"Invalid out_path: {out_path}")
+    # writing the snapshot over the seed CSV would destroy the seed list
+    if seed_path.resolve() == out_path.resolve():
+        raise ValidationError("out_path must be different from the seed file")
+    if out_path.is_dir():
+        raise ValidationError(f"out_path is a directory: {out_path}")
 
     seeds = load_seed_titles(seed_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
-    temp_path = out_path.with_name(out_path.name + ".tmp")
+    # a unique temporary file in the same folder, so two runs cannot share one
+    descriptor, temp_name = tempfile.mkstemp(
+        dir=out_path.parent, prefix=f".{out_path.name}.", suffix=".tmp"
+    )
+    os.close(descriptor)
+    temp_path = Path(temp_name)
     seen_ids: set[int] = set()
     written = 0
 
