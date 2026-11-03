@@ -6,7 +6,7 @@ import re
 from time import perf_counter
 
 from wikirag.errors import WikiRagError
-from wikirag.models import RAGAnswer, SearchFilters
+from wikirag.models import RAGAnswer, RetrievalMode, SearchFilters
 from wikirag.rag.context import build_context
 from wikirag.rag.generator import Generator
 from wikirag.retrieval.retriever import Retriever
@@ -22,7 +22,7 @@ def answer_question(
     generator: Generator,
     *,
     top_k: int = 5,
-    mode: str = "semantic",
+    mode: RetrievalMode = "semantic",
     filters: SearchFilters | None = None,
     max_context_chars: int = 6000,
 ) -> RAGAnswer:
