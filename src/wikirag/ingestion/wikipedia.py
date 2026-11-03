@@ -250,6 +250,8 @@ def parse_article_page(
     revisions = page.get("revisions")
     if not revisions:
         raise ValidationError(f"{title!r}: no revision information")
+    if not isinstance(revisions, list) or not isinstance(revisions[0], Mapping):
+        raise ValidationError(f"{title!r}: malformed revision information")
     revision_id = revisions[0].get("revid")
     if not _is_positive_int(revision_id):
         raise ValidationError(f"{title!r}: invalid revision id")
@@ -378,11 +380,20 @@ def fetch_article(
         WikiRagError: If Wikipedia cannot be reached, reports an error or keeps asking for
             more requests than ``max_requests``.
     """
+    if not isinstance(title, str):
+        raise ValidationError("Article title must be a string")
     clean_title = _normalize_title(title)
     if not clean_title:
         raise ValidationError("Article title must not be empty")
-    if max_requests < 1:
-        raise ValidationError("max_requests must be at least 1")
+    if not _is_positive_int(max_requests):
+        raise ValidationError("max_requests must be a positive integer")
+    if (
+        isinstance(timeout_s, bool)
+        or not isinstance(timeout_s, (int, float))
+        or not math.isfinite(timeout_s)
+        or timeout_s <= 0
+    ):
+        raise ValidationError("timeout_s must be a finite, positive number")
 
     client = session if session is not None else requests.Session()
     merged: dict[str, Any] = {}
