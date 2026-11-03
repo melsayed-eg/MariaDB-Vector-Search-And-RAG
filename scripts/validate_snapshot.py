@@ -67,6 +67,13 @@ def validate_snapshot() -> None:
                 file=sys.stderr,
             )
             sys.exit(1)
+        if art.topic not in actual_counts:
+            print(
+                f"Error: Unexpected topic {art.topic!r} for article {art.title!r} "
+                f"(ID {art.article_id}). Allowed topics: {sorted(actual_counts)}",
+                file=sys.stderr,
+            )
+            sys.exit(1)
 
         if art.article_id in seen_ids:
             print(
