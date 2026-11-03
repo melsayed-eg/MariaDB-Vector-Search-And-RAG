@@ -46,8 +46,30 @@ Unit tests use `FakeEmbedder` and `InMemoryRepository` to exercise retrieval
 without requiring a running database. They cover validation, timing fields,
 filter behavior, returned hits, and embedding metadata incompatibility.
 
-After the production database repository and vector-search implementation
-are integrated, add an integration test against MariaDB to verify real
-semantic search, hybrid filtering, result ranking, and embedding metadata
-compatibility. The in-memory tests do not replace that database integration
-test.
+MariaDB integration tests verify native semantic search, hybrid filtering,
+result ranking, and embedding metadata compatibility.
+
+The RAG integration test uses one database article and a controlled embedder.
+It verifies the connection between retrieval, MariaDB, context construction,
+and cited answer generation. It does not measure Wikipedia ingestion,
+production embedding quality, retrieval accuracy, or corpus-scale performance.
+
+## RAG context and generation
+
+`build_context()` preserves ranked hits, deduplicates chunk IDs, and assigns
+numbered citations such as `[1]` and `[2]`. It respects the character limit
+without splitting chunks and records when context is truncated.
+
+`ExtractiveGenerator` is a deterministic, non-LLM baseline that selects
+sentences from retrieved context and includes numbered source citations.
+
+`answer_question()` connects retrieval, context construction, and generation.
+It validates citations against available sources and returns a `RAGAnswer`.
+When no usable sources are retrieved, it returns an insufficient-information
+answer without calling the generator. Generator errors become `WikiRagError`.
+
+## Verification
+
+Run `uv run --no-sync pytest -v tests/integration/test_rag_pipeline.py`
+to test the RAG-to-MariaDB connection using the isolated test database.
+Run `uv run --no-sync pytest -q` for the complete test suite.
