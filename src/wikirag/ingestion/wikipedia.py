@@ -28,6 +28,10 @@ USER_AGENT = (
 CATEGORY_PREFIX = "Category:"
 REQUEST_TIMEOUT_S = 30.0
 MAX_API_REQUESTS = 20
+RETRY_STATUS_CODES = (429, 503)
+MAX_RETRIES = 3
+BACKOFF_BASE_S = 1.0
+MAX_RETRY_AFTER_S = 30.0
 SNAPSHOT_FIELDS = (
     "article_id",
     "title",
@@ -301,6 +305,27 @@ def _build_query_params(title: str) -> dict[str, str]:
     }
 
 
+def _retry_delay(response: object, attempt: int) -> float:
+    """Return how many seconds to wait before retrying a request.
+
+    Args:
+        response: The failed HTTP response; its Retry-After header is used if valid.
+        attempt: Zero-based number of the attempt that just failed.
+
+    Returns:
+        Seconds to wait, never more than ``MAX_RETRY_AFTER_S``.
+    """
+    headers = getattr(response, "headers", None) or {}
+    try:
+        requested = float(headers.get("Retry-After", ""))
+    except (TypeError, ValueError):
+        requested = float("nan")
+    if math.isfinite(requested) and requested >= 0:
+        return min(requested, MAX_RETRY_AFTER_S)
+    # exponential backoff: 1 s, 2 s, 4 s
+    return min(BACKOFF_BASE_S * 2**attempt, MAX_RETRY_AFTER_S)
+
+
 def _get_json(
     client: requests.Session, params: Mapping[str, str], timeout_s: float
 ) -> dict[str, Any]:
@@ -318,17 +343,24 @@ def _get_json(
         WikiRagError: If the request fails, the server reports an error or the answer is
             not a JSON object.
     """
-    try:
-        response = client.get(
-            WIKIPEDIA_API_URL,
-            params=params,
-            headers={"User-Agent": USER_AGENT},
-            timeout=timeout_s,
-        )
-        response.raise_for_status()
-        payload = response.json()
-    except (requests.RequestException, ValueError) as error:
-        raise WikiRagError(f"Wikipedia request failed: {error}") from error
+    for attempt in range(MAX_RETRIES + 1):
+        try:
+            response = client.get(
+                WIKIPEDIA_API_URL,
+                params=params,
+                headers={"User-Agent": USER_AGENT},
+                timeout=timeout_s,
+            )
+            status = getattr(response, "status_code", None)
+            # only temporary errors are retried, and only a few times
+            if status in RETRY_STATUS_CODES and attempt < MAX_RETRIES:
+                time.sleep(_retry_delay(response, attempt))
+                continue
+            response.raise_for_status()
+            payload = response.json()
+        except (requests.RequestException, ValueError) as error:
+            raise WikiRagError(f"Wikipedia request failed: {error}") from error
+        break
     if not isinstance(payload, dict):
         raise WikiRagError("Wikipedia returned an unexpected response")
     if "error" in payload:
