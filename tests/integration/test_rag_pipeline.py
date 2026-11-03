@@ -20,10 +20,7 @@ from wikirag.retrieval.retriever import Retriever
 @pytest.fixture
 def test_db_config():
     settings = load_settings()
-    if (
-        not settings.db_name_test.endswith("_test")
-        or settings.db_name_test == settings.db.database
-    ):
+    if not settings.db_name_test.endswith("_test") or settings.db_name_test == settings.db.database:
         raise ValidationError("A separate test database is required")
 
     config = replace(settings.db, database=settings.db_name_test)

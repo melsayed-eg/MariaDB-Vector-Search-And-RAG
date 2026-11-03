@@ -48,14 +48,10 @@ def _parse_filters(value: Any) -> SearchFilters | None:
         try:
             parsed["edited_since"] = datetime.fromisoformat(timestamp)
         except ValueError as exc:
-            raise ValidationError(
-                "filters.edited_since must be an ISO datetime"
-            ) from exc
+            raise ValidationError("filters.edited_since must be an ISO datetime") from exc
 
         if parsed["edited_since"].tzinfo is not None:
-            raise ValidationError(
-                "filters.edited_since must be a naive UTC datetime"
-            )
+            raise ValidationError("filters.edited_since must be a naive UTC datetime")
 
     try:
         return SearchFilters(**parsed)
@@ -81,15 +77,11 @@ def _parse_query(item: Any, index: int) -> EvalQuery:
         not isinstance(relevant, list)
         or not relevant
         or any(
-            not isinstance(article_id, int)
-            or isinstance(article_id, bool)
-            or article_id <= 0
+            not isinstance(article_id, int) or isinstance(article_id, bool) or article_id <= 0
             for article_id in relevant
         )
     ):
-        raise ValidationError(
-            f"Query {query_id!r} needs positive integer relevant_article_ids"
-        )
+        raise ValidationError(f"Query {query_id!r} needs positive integer relevant_article_ids")
     if not isinstance(notes, str):
         raise ValidationError(f"Query {query_id!r}: notes must be a string")
 

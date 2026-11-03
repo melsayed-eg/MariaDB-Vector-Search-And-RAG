@@ -29,11 +29,7 @@ def build_context(
     Raises:
         ValidationError: If ``max_chars`` is not a positive integer.
     """
-    if (
-        not isinstance(max_chars, int)
-        or isinstance(max_chars, bool)
-        or max_chars < 1
-    ):
+    if not isinstance(max_chars, int) or isinstance(max_chars, bool) or max_chars < 1:
         raise ValidationError("max_chars must be a positive integer")
 
     seen_chunk_ids: set[int] = set()

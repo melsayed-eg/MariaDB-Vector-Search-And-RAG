@@ -52,9 +52,14 @@ def test_write_report_creates_valid_json_and_markdown(tmp_path) -> None:
     assert data["modes"]["semantic"]["mrr"] == 0.75
 
     assert "# WikiRAG Retrieval Evaluation" in markdown
-    assert "| Mode | Queries | MRR | Recall@1 | Recall@3 | Precision@1 | Precision@3 | P50 latency (ms) | P95 latency (ms) |" in markdown
+    assert (
+        "| Mode | Queries | MRR | Recall@1 | Recall@3 | Precision@1 | Precision@3 | P50 latency (ms) | P95 latency (ms) |"
+        in markdown
+    )
     assert "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |" in markdown
-    assert "| semantic | 2 | 0.7500 | 0.5000 | 1.0000 | 0.5000 | 0.3333 | 12.50 | 18.00 |" in markdown
+    assert (
+        "| semantic | 2 | 0.7500 | 0.5000 | 1.0000 | 0.5000 | 0.3333 | 12.50 | 18.00 |" in markdown
+    )
     assert "| q1 | semantic | 1.0000 | 12.50 | 10, 20 |" in markdown
 
 

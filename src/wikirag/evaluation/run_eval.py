@@ -90,18 +90,14 @@ def run_evaluation(
 
     requested_modes = tuple(dict.fromkeys(modes))
     filtered_queries = [
-        query
-        for query in queries
-        if query.filters is not None and not query.filters.is_empty()
+        query for query in queries if query.filters is not None and not query.filters.is_empty()
     ]
 
     evaluations: dict[str, list[dict]] = {mode: [] for mode in requested_modes}
 
     # Compare semantic and hybrid on the same filtered-query subset.
     compare_modes = (
-        "semantic" in requested_modes
-        and "hybrid" in requested_modes
-        and bool(filtered_queries)
+        "semantic" in requested_modes and "hybrid" in requested_modes and bool(filtered_queries)
     )
 
     for mode in requested_modes:
@@ -210,10 +206,7 @@ def run_rag_smoke_check(
     if not isinstance(top_k, int) or isinstance(top_k, bool) or not 1 <= top_k <= 100:
         raise ValidationError("top_k must be an integer between 1 and 100")
 
-    return [
-        answer_question(question, retriever, generator, top_k=top_k)
-        for question in questions
-    ]
+    return [answer_question(question, retriever, generator, top_k=top_k) for question in questions]
 
 
 def write_report(
@@ -272,10 +265,12 @@ def write_report(
             "---:",
             "---:",
         ]
-        lines.extend([
-            "| " + " | ".join(headers) + " |",
-            "| " + " | ".join(separators) + " |",
-        ])
+        lines.extend(
+            [
+                "| " + " | ".join(headers) + " |",
+                "| " + " | ".join(separators) + " |",
+            ]
+        )
 
         for mode, metrics in report.modes.items():
             values = [
@@ -294,16 +289,17 @@ def write_report(
     lines.extend(["", "## Per-query results", ""])
 
     if report.per_query:
-        lines.extend([
-            "| Query ID | Mode | Reciprocal rank | Latency (ms) | Retrieved article IDs |",
-            "|---|---|---:|---:|---|",
-        ])
+        lines.extend(
+            [
+                "| Query ID | Mode | Reciprocal rank | Latency (ms) | Retrieved article IDs |",
+                "|---|---|---:|---:|---|",
+            ]
+        )
         for row in report.per_query:
             query_id = str(row.get("query_id", "")).replace("|", "\\|")
             mode = str(row.get("mode", "")).replace("|", "\\|")
             retrieved = ", ".join(
-                str(article_id)
-                for article_id in row.get("retrieved_article_ids", [])
+                str(article_id) for article_id in row.get("retrieved_article_ids", [])
             )
             lines.append(
                 f"| {query_id} | {mode} | "

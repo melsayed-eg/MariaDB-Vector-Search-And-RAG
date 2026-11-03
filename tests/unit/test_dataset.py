@@ -79,9 +79,7 @@ def test_loads_naive_iso_datetime_filter(tmp_path) -> None:
         ],
     )
 
-    assert load_queries(path)[0].filters.edited_since.isoformat() == (
-        "2025-01-01T12:30:00"
-    )
+    assert load_queries(path)[0].filters.edited_since.isoformat() == ("2025-01-01T12:30:00")
 
 
 @pytest.mark.parametrize(

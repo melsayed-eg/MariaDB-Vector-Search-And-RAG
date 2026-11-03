@@ -12,8 +12,7 @@ from wikirag.rag.generator import Generator
 from wikirag.retrieval.retriever import Retriever
 
 _NO_INFORMATION = (
-    "I don't have enough information in the retrieved sources "
-    "to answer this question."
+    "I don't have enough information in the retrieved sources to answer this question."
 )
 
 
@@ -67,17 +66,11 @@ def answer_question(
         if not isinstance(answer, str) or not answer.strip():
             raise WikiRagError("Generator returned an empty or invalid answer")
 
-        citations = [
-            int(number)
-            for number in re.findall(r"\[(\d+)\]", answer)
-        ]
+        citations = [int(number) for number in re.findall(r"\[(\d+)\]", answer)]
         if not citations or any(
-            number < 1 or number > len(context.sources)
-            for number in citations
+            number < 1 or number > len(context.sources) for number in citations
         ):
-            raise WikiRagError(
-                "Generated answer must cite at least one available source"
-            )
+            raise WikiRagError("Generated answer must cite at least one available source")
 
     return RAGAnswer(
         question=question,

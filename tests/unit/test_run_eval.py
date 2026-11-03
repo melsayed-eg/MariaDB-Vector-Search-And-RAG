@@ -1,6 +1,5 @@
 """Unit tests for the retrieval evaluation runner."""
 
-
 import pytest
 
 from wikirag.errors import ValidationError

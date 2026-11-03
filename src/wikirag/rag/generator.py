@@ -77,7 +77,4 @@ class ExtractiveGenerator:
         candidates.sort(key=lambda item: -item[0])
         selected = candidates[:3]
 
-        return " ".join(
-            f"{sentence} [{source_number}]"
-            for _, source_number, sentence in selected
-        )
+        return " ".join(f"{sentence} [{source_number}]" for _, source_number, sentence in selected)
