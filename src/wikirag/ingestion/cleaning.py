@@ -1,4 +1,4 @@
-"""Deterministic cleaning of Wikipedia plain text."""
+"""Text cleaning and normalization for Wikipedia articles."""
 
 from __future__ import annotations
 
@@ -7,38 +7,58 @@ import unicodedata
 
 from wikirag.errors import ValidationError
 
-# zero-width space, soft hyphen, word joiner and byte-order mark carry no meaning
-_INVISIBLE_CHARS = dict.fromkeys(map(ord, "\u200b\u00ad\u2060\ufeff"))
-_HORIZONTAL_SPACE = re.compile(r"[^\S\n]+")
-_BLANK_LINES = re.compile(r"\n{3,}")
+# Match standard HTML tags on a single line only, preserving C++/Java generics (e.g. <T>, <vector>, <cstdio>)
+# and mathematical comparison operators (e.g. x < y and z > 0).
+_HTML_TAG_PATTERN = re.compile(
+    r"</?(?:p|div|span|a|b|i|strong|em|ul|ol|li|h[1-6]|table|tr|th|td|br|hr|pre|code|blockquote|font|small|sub|sup|section)(?:\s+[^>\n]*)?>",
+    flags=re.IGNORECASE,
+)
+_CITATION_PATTERN = re.compile(r"\[(?:edit|citation needed|\d+(?:,\s*\d+)*)\]", flags=re.IGNORECASE)
+_INVISIBLE_CHARS_PATTERN = re.compile(r"[\u200b\u00ad\u2060\ufeff]")
+_HORIZONTAL_SPACE_PATTERN = re.compile(r"[ \t\u00a0]+")
+_BLANK_LINES_PATTERN = re.compile(r"\n{3,}")
 
 
 def clean_text(text: str) -> str:
-    """Clean article text so that the same input always gives the same output.
+    """Prepare and clean the plain text of a Wikipedia article.
 
-    Applies these rules in order: uniform ``\\n`` line endings, removal of invisible
-    characters, Unicode NFC normalization, every run of spaces, tabs and non-breaking spaces
-    becomes one space, spaces at the start and end of each line are removed, three or more
-    line breaks become one blank line, and the whole text is stripped. Paragraph breaks are
-    kept. Normalization runs after the invisible characters are removed, so cleaning the
-    result a second time changes nothing.
+    Maintains deterministic output, normalizing Unicode, stripping reference markers
+    and HTML formatting tags without stripping programming language tokens, generic
+    type parameters (<T>), or mathematical comparison expressions.
 
     Args:
-        text: Raw article text from Wikipedia.
+        text: Raw text string to clean.
 
     Returns:
-        The cleaned text. It is empty if the input holds only whitespace.
+        Fully cleaned and normalized string.
 
     Raises:
-        ValidationError: If ``text`` is not a string.
+        ValidationError: If input is not a string.
     """
     if not isinstance(text, str):
-        raise ValidationError("Text to clean must be a string")
+        raise ValidationError("Input must be a string")
 
-    cleaned = text.replace("\r\n", "\n").replace("\r", "\n")
-    cleaned = cleaned.translate(_INVISIBLE_CHARS)
-    # normalize after removing invisible characters so they cannot block composition
-    cleaned = unicodedata.normalize("NFC", cleaned)
-    cleaned = _HORIZONTAL_SPACE.sub(" ", cleaned)
-    cleaned = "\n".join(line.strip() for line in cleaned.split("\n"))
-    return _BLANK_LINES.sub("\n\n", cleaned).strip()
+    # 1. Normalize line endings
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+
+    # 2. Strip HTML markup and citation markers (preserving math inequalities and code generics)
+    text = _HTML_TAG_PATTERN.sub("", text)
+    text = _CITATION_PATTERN.sub("", text)
+
+    # 3. Remove non-functional invisible characters (keep \u200c - ZWNJ)
+    text = _INVISIBLE_CHARS_PATTERN.sub("", text)
+
+    # 4. Unicode NFC normalization (must run AFTER invisible characters are stripped)
+    text = unicodedata.normalize("NFC", text)
+
+    # 5. Collapse runs of horizontal spaces
+    text = _HORIZONTAL_SPACE_PATTERN.sub(" ", text)
+
+    # 6. Clean start/end of lines
+    lines = [line.strip() for line in text.split("\n")]
+
+    # 7. Normalization of paragraph breaks & line runs
+    text = "\n".join(lines)
+    text = _BLANK_LINES_PATTERN.sub("\n\n", text)
+
+    return text.strip()

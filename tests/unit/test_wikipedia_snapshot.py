@@ -122,22 +122,33 @@ def test_creates_missing_parent_folders(tmp_path: Path, monkeypatch: pytest.Monk
     assert out_path.is_file()
 
 
-def test_failed_article_is_skipped_and_the_rest_is_kept(
+def test_failed_article_aborts_build_and_preserves_existing_snapshot(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    install_fake_fetch(monkeypatch, failing=("DNA",))
+    seed_file = write_seed(tmp_path)
     out_path = tmp_path / "snapshot.jsonl"
-    assert build_snapshot(write_seed(tmp_path), out_path, delay_s=0) == 2
-    assert [article.title for article in load_snapshot(out_path)] == ["Black hole", "Zürich"]
+    out_path.write_text("existing content\n", encoding="utf-8")
+
+    install_fake_fetch(monkeypatch, failing=("DNA",))
+
+    with pytest.raises(WikiRagError, match="Snapshot incomplete.*DNA"):
+        build_snapshot(seed_file, out_path, delay_s=0)
+
+    # Old snapshot remains untouched
+    assert out_path.read_text(encoding="utf-8") == "existing content\n"
+    assert not (tmp_path / "snapshot.jsonl.tmp").exists()
 
 
-def test_duplicate_article_id_is_written_only_once(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_duplicate_article_id_aborts_build(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     install_fake_fetch(monkeypatch, ids={"Black hole": 1, "DNA": 1, "Zürich": 2})
     out_path = tmp_path / "snapshot.jsonl"
-    assert build_snapshot(write_seed(tmp_path), out_path, delay_s=0) == 2
-    assert [article.article_id for article in load_snapshot(out_path)] == [1, 2]
+    out_path.write_text("original snapshot\n", encoding="utf-8")
+
+    with pytest.raises(WikiRagError, match="duplicate Wikipedia article id"):
+        build_snapshot(write_seed(tmp_path), out_path, delay_s=0)
+
+    assert out_path.read_text(encoding="utf-8") == "original snapshot\n"
+    assert not (tmp_path / "snapshot.jsonl.tmp").exists()
 
 
 def test_nothing_downloaded_raises_and_leaves_no_files(
@@ -145,7 +156,7 @@ def test_nothing_downloaded_raises_and_leaves_no_files(
 ) -> None:
     install_fake_fetch(monkeypatch, failing=("Black hole", "DNA", "Zürich"))
     out_path = tmp_path / "snapshot.jsonl"
-    with pytest.raises(WikiRagError, match="No articles"):
+    with pytest.raises(WikiRagError, match="Snapshot incomplete"):
         build_snapshot(write_seed(tmp_path), out_path, delay_s=0)
     assert not out_path.exists()
     assert not (tmp_path / "snapshot.jsonl.tmp").exists()
@@ -250,3 +261,50 @@ def test_load_rejects_a_file_that_is_not_utf8(tmp_path: Path) -> None:
     path.write_bytes(b"\xff\xfe\n")
     with pytest.raises(ValidationError, match="UTF-8"):
         list(load_snapshot(path))
+
+
+def test_build_snapshot_rejects_invalid_inputs(tmp_path: Path) -> None:
+    seed_file = write_seed(tmp_path)
+    out_path = tmp_path / "snapshot.jsonl"
+
+    for invalid_delay in (-1, -0.1, float("nan"), float("inf"), True, False, "0.2"):
+        with pytest.raises(ValidationError):
+            build_snapshot(seed_file, out_path, delay_s=invalid_delay)  # type: ignore
+
+    with pytest.raises(ValidationError):
+        build_snapshot(tmp_path / "non_existent.csv", out_path)
+
+
+def test_committed_snapshot_integrity() -> None:
+    snapshot_path = Path("data/snapshot/wikipedia_snapshot.jsonl")
+    assert snapshot_path.is_file(), "Committed snapshot must exist"
+
+    articles = list(load_snapshot(snapshot_path))
+    assert len(articles) == 200, f"Expected 200 articles, found {len(articles)}"
+
+    seen_ids = set()
+    topic_counts: dict[str, int] = {}
+    expected_topics = {
+        "algorithms": 35,
+        "systems_networks": 35,
+        "ai_ml": 30,
+        "languages_se": 30,
+        "databases": 25,
+        "theory_security": 25,
+        "history_people": 20,
+    }
+
+    for a in articles:
+        assert a.article_id > 0
+        assert a.article_id not in seen_ids, f"Duplicate article ID: {a.article_id}"
+        seen_ids.add(a.article_id)
+
+        assert a.title and a.title.strip()
+        assert a.url.startswith("https://en.wikipedia.org/wiki/")
+        assert a.revision_id > 0
+        assert a.text and len(a.text.strip()) > 0
+        assert a.topic in expected_topics
+
+        topic_counts[a.topic] = topic_counts.get(a.topic, 0) + 1
+
+    assert topic_counts == expected_topics

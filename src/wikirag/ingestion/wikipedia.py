@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import csv
 import json
-import logging
+import math
+import os
+import tempfile
 import time
 from collections.abc import Iterator, Mapping, Sequence
 from dataclasses import dataclass
@@ -26,6 +28,10 @@ USER_AGENT = (
 CATEGORY_PREFIX = "Category:"
 REQUEST_TIMEOUT_S = 30.0
 MAX_API_REQUESTS = 20
+RETRY_STATUS_CODES = (429, 503)
+MAX_RETRIES = 3
+BACKOFF_BASE_S = 1.0
+MAX_RETRY_AFTER_S = 30.0
 SNAPSHOT_FIELDS = (
     "article_id",
     "title",
@@ -38,8 +44,6 @@ SNAPSHOT_FIELDS = (
     "linked_titles",
     "text",
 )
-
-logger = logging.getLogger(__name__)
 
 
 def _normalize_title(title: str) -> str:
@@ -250,6 +254,8 @@ def parse_article_page(
     revisions = page.get("revisions")
     if not revisions:
         raise ValidationError(f"{title!r}: no revision information")
+    if not isinstance(revisions, list) or not isinstance(revisions[0], Mapping):
+        raise ValidationError(f"{title!r}: malformed revision information")
     revision_id = revisions[0].get("revid")
     if not _is_positive_int(revision_id):
         raise ValidationError(f"{title!r}: invalid revision id")
@@ -299,6 +305,27 @@ def _build_query_params(title: str) -> dict[str, str]:
     }
 
 
+def _retry_delay(response: object, attempt: int) -> float:
+    """Return how many seconds to wait before retrying a request.
+
+    Args:
+        response: The failed HTTP response; its Retry-After header is used if valid.
+        attempt: Zero-based number of the attempt that just failed.
+
+    Returns:
+        Seconds to wait, never more than ``MAX_RETRY_AFTER_S``.
+    """
+    headers = getattr(response, "headers", None) or {}
+    try:
+        requested = float(headers.get("Retry-After", ""))
+    except (TypeError, ValueError):
+        requested = float("nan")
+    if math.isfinite(requested) and requested >= 0:
+        return min(requested, MAX_RETRY_AFTER_S)
+    # exponential backoff: 1 s, 2 s, 4 s
+    return min(BACKOFF_BASE_S * 2**attempt, MAX_RETRY_AFTER_S)
+
+
 def _get_json(
     client: requests.Session, params: Mapping[str, str], timeout_s: float
 ) -> dict[str, Any]:
@@ -316,17 +343,24 @@ def _get_json(
         WikiRagError: If the request fails, the server reports an error or the answer is
             not a JSON object.
     """
-    try:
-        response = client.get(
-            WIKIPEDIA_API_URL,
-            params=params,
-            headers={"User-Agent": USER_AGENT},
-            timeout=timeout_s,
-        )
-        response.raise_for_status()
-        payload = response.json()
-    except (requests.RequestException, ValueError) as error:
-        raise WikiRagError(f"Wikipedia request failed: {error}") from error
+    for attempt in range(MAX_RETRIES + 1):
+        try:
+            response = client.get(
+                WIKIPEDIA_API_URL,
+                params=params,
+                headers={"User-Agent": USER_AGENT},
+                timeout=timeout_s,
+            )
+            status = getattr(response, "status_code", None)
+            # only temporary errors are retried, and only a few times
+            if status in RETRY_STATUS_CODES and attempt < MAX_RETRIES:
+                time.sleep(_retry_delay(response, attempt))
+                continue
+            response.raise_for_status()
+            payload = response.json()
+        except (requests.RequestException, ValueError) as error:
+            raise WikiRagError(f"Wikipedia request failed: {error}") from error
+        break
     if not isinstance(payload, dict):
         raise WikiRagError("Wikipedia returned an unexpected response")
     if "error" in payload:
@@ -378,11 +412,20 @@ def fetch_article(
         WikiRagError: If Wikipedia cannot be reached, reports an error or keeps asking for
             more requests than ``max_requests``.
     """
+    if not isinstance(title, str):
+        raise ValidationError("Article title must be a string")
     clean_title = _normalize_title(title)
     if not clean_title:
         raise ValidationError("Article title must not be empty")
-    if max_requests < 1:
-        raise ValidationError("max_requests must be at least 1")
+    if not _is_positive_int(max_requests):
+        raise ValidationError("max_requests must be a positive integer")
+    if (
+        isinstance(timeout_s, bool)
+        or not isinstance(timeout_s, (int, float))
+        or not math.isfinite(timeout_s)
+        or timeout_s <= 0
+    ):
+        raise ValidationError("timeout_s must be a finite, positive number")
 
     client = session if session is not None else requests.Session()
     merged: dict[str, Any] = {}
@@ -534,12 +577,10 @@ def build_snapshot(
     *,
     delay_s: float = 0.2,
 ) -> int:
-    """Download every seed article from Wikipedia and save them as a snapshot.
+    """Download every seed article and atomically save a complete snapshot.
 
-    Articles that cannot be downloaded are skipped with a warning, and so is a second seed
-    title that leads to an article already saved (for example through a redirect). The file
-    is written to a temporary name first, so an existing snapshot is only replaced when at
-    least one article was downloaded.
+    A failed download or duplicate Wikipedia page id aborts the build. Articles are first
+    written to a temporary file, so an existing snapshot is never replaced by incomplete data.
 
     Args:
         seed_path: Seed CSV file with ``topic,title`` columns.
@@ -550,38 +591,72 @@ def build_snapshot(
         The number of articles written.
 
     Raises:
-        ValidationError: If ``delay_s`` is negative or the seed file is invalid.
-        WikiRagError: If no article at all could be downloaded.
+        ValidationError: If ``delay_s`` is invalid (negative, non-finite, or incorrect type)
+            or the seed path is not an existing file.
+        WikiRagError: If any article cannot be downloaded or two seeds resolve to the same
+            Wikipedia page.
     """
-    if delay_s < 0:
-        raise ValidationError("delay_s must not be negative")
-    seeds = load_seed_titles(seed_path)
+    if isinstance(delay_s, bool) or not isinstance(delay_s, (int, float)):
+        raise ValidationError("delay_s must be a numeric value")
+    if math.isnan(delay_s) or math.isinf(delay_s) or delay_s < 0:
+        raise ValidationError("delay_s must be a finite, non-negative number")
+    if not isinstance(seed_path, Path) or not seed_path.is_file():
+        raise ValidationError(f"Invalid seed file path: {seed_path}")
+    if not isinstance(out_path, Path):
+        raise ValidationError(f"Invalid out_path: {out_path}")
+    # writing the snapshot over the seed CSV would destroy the seed list
+    if seed_path.resolve() == out_path.resolve():
+        raise ValidationError("out_path must be different from the seed file")
+    if out_path.is_dir():
+        raise ValidationError(f"out_path is a directory: {out_path}")
 
+    seeds = load_seed_titles(seed_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    temp_path = out_path.with_name(out_path.name + ".tmp")
+
+    # a unique temporary file in the same folder, so two runs cannot share one
+    descriptor, temp_name = tempfile.mkstemp(
+        dir=out_path.parent, prefix=f".{out_path.name}.", suffix=".tmp"
+    )
+    os.close(descriptor)
+    temp_path = Path(temp_name)
     seen_ids: set[int] = set()
     written = 0
+
     try:
         with requests.Session() as client, temp_path.open("w", encoding="utf-8") as handle:
             for index, (topic, title) in enumerate(seeds):
                 if index > 0 and delay_s > 0:
                     time.sleep(delay_s)
+
                 try:
                     article = fetch_article(title, topic=topic, session=client)
                 except WikiRagError as error:
-                    logger.warning("Skipping %r: %s", title, error)
-                    continue
+                    raise WikiRagError(
+                        f"Snapshot incomplete: failed to download {title!r}: {error}"
+                    ) from error
+
                 if article.article_id in seen_ids:
-                    logger.warning("Skipping %r: article already in the snapshot", title)
-                    continue
+                    raise WikiRagError(
+                        f"Snapshot incomplete: duplicate Wikipedia article id "
+                        f"{article.article_id} for seed {title!r}"
+                    )
+
                 seen_ids.add(article.article_id)
-                # sorted keys keep the file identical when the data is identical
-                line = json.dumps(_article_to_record(article), ensure_ascii=False, sort_keys=True)
+                line = json.dumps(
+                    _article_to_record(article),
+                    ensure_ascii=False,
+                    sort_keys=True,
+                )
                 handle.write(line + "\n")
                 written += 1
-        if written == 0:
-            raise WikiRagError("No articles could be downloaded; snapshot not written")
+
+        if written != len(seeds):
+            raise WikiRagError(
+                f"Snapshot incomplete: expected {len(seeds)} articles, wrote {written}"
+            )
+
         temp_path.replace(out_path)
     finally:
         temp_path.unlink(missing_ok=True)
+
     return written
