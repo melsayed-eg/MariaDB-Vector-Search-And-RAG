@@ -1,6 +1,7 @@
 """Tests for embedding functionality."""
 
 import math
+
 import pytest
 
 from wikirag.config import EMBEDDING_DIM, EMBEDDING_MODEL_NAME
