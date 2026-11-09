@@ -83,9 +83,9 @@ The file contains one JSON object per line with sorted keys and UTF-8 encoding:
 ## Cleaning
 
 `clean_text` in `src/wikirag/ingestion/cleaning.py` prepares the extracted plain text. The cleaning
-pipeline is deterministic: the same input always produces the same output. In the planned M3
-ingestion pipeline (not implemented yet), the cleaned text will be part of each article's
-fingerprint, so a change in cleaning rules would cause affected articles to be re-embedded.
+pipeline is deterministic: the same input always produces the same output. In the ingestion
+pipeline (see "Embeddings and ingestion" below), the cleaned text is part of each article's
+fingerprint, so a change in cleaning rules causes affected articles to be re-embedded.
 
 Rules are applied in this strict sequence:
 
@@ -149,3 +149,20 @@ unique page IDs, and matches the seed list topic assignments exactly:
 ```bash
 uv run python scripts/validate_snapshot.py
 ```
+
+
+## Embeddings and ingestion
+
+- **Model:** `sentence-transformers/all-MiniLM-L6-v2`, 384 dimensions, L2-normalized, finite vectors.
+  `SentenceTransformerEmbedder` rejects blank texts and checks every vector's length, finiteness and unit norm.
+- **Fingerprint:** `compute_fingerprint` is a SHA-256 over the cleaned text, `max_chars`, `overlap_chars`
+  and the model name, with a NUL byte after each part so different inputs cannot merge into one.
+- **Flow:** `ingest_snapshot` checks the embedding metadata, cleans each article, computes the fingerprint and asks
+  the repository for the stored one **before** embedding. Unchanged articles are skipped. Changed or new
+  articles are chunked, embedded and passed to `repo.ingest_article`. A failure on one article is recorded in the
+  `IngestReport` and the run continues. `repo.resolve_links()` is called once at the end.
+- **Token limit:** the model truncates input at about 256 word pieces. A 1,000-character chunk is close to
+  that limit, so the end of a long chunk may not influence its vector. The chunk-size experiment (branch 3)
+  will measure whether smaller chunks retrieve better.
+- **Metadata limitation:** the fingerprint covers cleaned text, chunk settings and model name only. If categories, links or revision metadata change while the text stays identical, the article is skipped. Whether to change the fingerprint contract is a team decision.
+- **Status:** unit-tested with `FakeEmbedder` and `InMemoryRepository`. Verification against real MariaDB is in `tests/integration/test_ingestion_db.py`; it passes against the MariaDB test database with FakeEmbedder (5 real snapshot articles: first run inserts, second run skips). The real SentenceTransformer model has not yet been run end to end against MariaDB.
