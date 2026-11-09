@@ -1,6 +1,7 @@
 """Tests for embedding functionality."""
 
 import math
+from importlib.util import find_spec
 
 import pytest
 
@@ -45,3 +46,9 @@ def test_embed_determinism(embedder: SentenceTransformerEmbedder) -> None:
     v1 = embedder.embed_query(text)
     v2 = embedder.embed_query(text)
     assert v1 == v2
+
+
+pytestmark = pytest.mark.skipif(
+    find_spec("sentence_transformers") is None,
+    reason="sentence-transformers is not installed",
+)

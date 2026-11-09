@@ -7,8 +7,6 @@ from collections.abc import Sequence
 from functools import lru_cache
 from typing import Protocol
 
-from sentence_transformers import SentenceTransformer
-
 from wikirag.config import EMBEDDING_DIM, EMBEDDING_MODEL_NAME
 from wikirag.errors import EmbeddingDimensionError, ValidationError, WikiRagError
 
@@ -55,6 +53,8 @@ class SentenceTransformerEmbedder:
             raise ValidationError("model_name must be a non-empty string")
         self._model_name = model_name.strip()
         try:
+            from sentence_transformers import SentenceTransformer
+
             self._model = SentenceTransformer(self._model_name, device="cpu")
         except Exception as error:
             raise WikiRagError(f"Could not load embedding model {self._model_name!r}") from error
