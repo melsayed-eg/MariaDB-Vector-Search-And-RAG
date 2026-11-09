@@ -165,4 +165,4 @@ uv run python scripts/validate_snapshot.py
   that limit, so the end of a long chunk may not influence its vector. The chunk-size experiment (branch 3)
   will measure whether smaller chunks retrieve better.
 - **Metadata limitation:** the fingerprint covers cleaned text, chunk settings and model name only. If categories, links or revision metadata change while the text stays identical, the article is skipped. Whether to change the fingerprint contract is a team decision.
-- **Status:** unit-tested with `FakeEmbedder` and `InMemoryRepository`. Verification against real MariaDB is in `tests/integration/test_ingestion_pipeline_db.py`; it is not claimed as verified until that test has been run.
+- **Status:** unit-tested with `FakeEmbedder` and `InMemoryRepository`. Verification against real MariaDB is in `tests/integration/test_ingestion_db.py`; it passes against the MariaDB test database with FakeEmbedder (5 real snapshot articles: first run inserts, second run skips). The real SentenceTransformer model has not yet been run end to end against MariaDB.
