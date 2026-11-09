@@ -83,9 +83,9 @@ The file contains one JSON object per line with sorted keys and UTF-8 encoding:
 ## Cleaning
 
 `clean_text` in `src/wikirag/ingestion/cleaning.py` prepares the extracted plain text. The cleaning
-pipeline is deterministic: the same input always produces the same output. In the planned M3
-ingestion pipeline (not implemented yet), the cleaned text will be part of each article's
-fingerprint, so a change in cleaning rules would cause affected articles to be re-embedded.
+pipeline is deterministic: the same input always produces the same output. In the ingestion
+pipeline (see "Embeddings and ingestion" below), the cleaned text is part of each article's
+fingerprint, so a change in cleaning rules causes affected articles to be re-embedded.
 
 Rules are applied in this strict sequence:
 
@@ -150,7 +150,6 @@ unique page IDs, and matches the seed list topic assignments exactly:
 uv run python scripts/validate_snapshot.py
 ```
 
-cat >> docs/ingestion.md <<'MD'
 
 ## Embeddings and ingestion
 
@@ -165,7 +164,5 @@ cat >> docs/ingestion.md <<'MD'
 - **Token limit:** the model truncates input at about 256 word pieces. A 1,000-character chunk is close to
   that limit, so the end of a long chunk may not influence its vector. The chunk-size experiment (branch 3)
   will measure whether smaller chunks retrieve better.
-- **Status:** tested with `FakeEmbedder` and `InMemoryRepository`. A run against real MariaDB is not
-  documented yet.
-MD
-git diff --stat
+- **Metadata limitation:** the fingerprint covers cleaned text, chunk settings and model name only. If categories, links or revision metadata change while the text stays identical, the article is skipped. Whether to change the fingerprint contract is a team decision.
+- **Status:** unit-tested with `FakeEmbedder` and `InMemoryRepository`. Verification against real MariaDB is in `tests/integration/test_ingestion_pipeline_db.py`; it is not claimed as verified until that test has been run.
