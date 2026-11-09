@@ -18,15 +18,23 @@ from wikirag.models import ArticleRecord, ChunkRecord, IngestOutcome, IngestRepo
 class IngestRepository(Protocol):
     """The repository methods needed by ingestion."""
 
-    def ensure_embedding_meta(self, model_name: str, dim: int) -> None: ...
+    def ensure_embedding_meta(self, model_name: str, dim: int) -> None:
+        """Check or store the embedding model name and dimension."""
+        ...
 
-    def get_fingerprint(self, article_id: int) -> str | None: ...
+    def get_fingerprint(self, article_id: int) -> str | None:
+        """Return the stored fingerprint of an article, or None."""
+        ...
 
     def ingest_article(
         self, article: ArticleRecord, chunks: Sequence[ChunkRecord]
-    ) -> IngestOutcome: ...
+    ) -> IngestOutcome:
+        """Insert, update or skip one article with its chunks."""
+        ...
 
-    def resolve_links(self) -> int: ...
+    def resolve_links(self) -> int:
+        """Resolve article links after ingestion and return how many were stored."""
+        ...
 
 
 def _is_non_negative_int(value: object) -> bool:
