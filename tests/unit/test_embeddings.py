@@ -52,3 +52,20 @@ pytestmark = pytest.mark.skipif(
     find_spec("sentence_transformers") is None,
     reason="sentence-transformers is not installed",
 )
+
+
+def test_wrong_vector_count_is_rejected() -> None:
+    """A model that returns too few vectors raises EmbeddingDimensionError."""
+    from wikirag.embeddings import SentenceTransformerEmbedder
+    from wikirag.errors import EmbeddingDimensionError
+
+    embedder = SentenceTransformerEmbedder.__new__(SentenceTransformerEmbedder)
+    embedder._dim = 384
+
+    class OneVectorModel:
+        def encode(self, texts, **kwargs):  # type: ignore[no-untyped-def]
+            return [[1.0] + [0.0] * 383]
+
+    embedder._model = OneVectorModel()
+    with pytest.raises(EmbeddingDimensionError):
+        embedder.embed_texts(["a", "b"])

@@ -124,6 +124,10 @@ class SentenceTransformerEmbedder:
             raise WikiRagError("Embedding model failed while encoding") from error
 
         vectors = [[float(value) for value in row] for row in embeddings]
+        if len(vectors) != len(texts):
+            raise EmbeddingDimensionError(
+                f"Model returned {len(vectors)} vectors for {len(texts)} texts"
+            )
         for vector in vectors:
             self._check_vector(vector)
         return vectors
