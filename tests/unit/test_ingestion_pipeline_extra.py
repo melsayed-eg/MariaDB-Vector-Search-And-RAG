@@ -172,8 +172,8 @@ def test_fingerprint_is_stable_and_sensitive() -> None:
 
 
 def test_fingerprint_parts_do_not_run_together() -> None:
-    a = compute_fingerprint("x", max_chars=11, overlap_chars=5, model_name="m")
-    b = compute_fingerprint("x", max_chars=1, overlap_chars=15, model_name="m")
+    a = compute_fingerprint("x", max_chars=11, overlap_chars=2, model_name="m")
+    b = compute_fingerprint("x", max_chars=112, overlap_chars=0, model_name="m")
     assert a != b
 
 
@@ -181,3 +181,19 @@ def test_fingerprint_parts_do_not_run_together() -> None:
 def test_fingerprint_rejects_bad_text(text: object) -> None:
     with pytest.raises(ValidationError):
         compute_fingerprint(text, max_chars=1000, overlap_chars=150, model_name="m")  # type: ignore[arg-type]
+
+
+def test_fingerprint_rejects_overlap_not_below_max() -> None:
+    """overlap_chars must be smaller than max_chars."""
+    with pytest.raises(ValidationError):
+        compute_fingerprint("text", max_chars=100, overlap_chars=100, model_name="m")
+
+
+def test_metadata_only_change_is_skipped(tmp_path: Path) -> None:
+    """Documents the current behaviour: unchanged text with new categories is skipped."""
+    repo, embedder = InMemoryRepository(), FakeEmbedder()
+    first = _record(1, "A", LONG)
+    ingest_snapshot(_write(tmp_path / "a.jsonl", [first]), repo, embedder)
+    second = {**first, "categories": ["Category B"], "linked_titles": ["New link"]}
+    report = ingest_snapshot(_write(tmp_path / "b.jsonl", [second]), repo, embedder)
+    assert (report.inserted, report.updated, report.skipped) == (0, 0, 1)

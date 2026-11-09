@@ -64,8 +64,8 @@ def compute_fingerprint(
         raise ValidationError("model_name must be a non-empty string")
     if not _is_non_negative_int(max_chars) or max_chars < 1:
         raise ValidationError("max_chars must be a positive integer")
-    if not _is_non_negative_int(overlap_chars):
-        raise ValidationError("overlap_chars must be a non-negative integer")
+    if not _is_non_negative_int(overlap_chars) or overlap_chars >= max_chars:
+        raise ValidationError("overlap_chars must be a non-negative integer below max_chars")
 
     hasher = hashlib.sha256()
     # a NUL byte cannot appear in the parts, so different inputs never merge into one
