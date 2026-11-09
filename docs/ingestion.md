@@ -149,3 +149,23 @@ unique page IDs, and matches the seed list topic assignments exactly:
 ```bash
 uv run python scripts/validate_snapshot.py
 ```
+
+cat >> docs/ingestion.md <<'MD'
+
+## Embeddings and ingestion
+
+- **Model:** `sentence-transformers/all-MiniLM-L6-v2`, 384 dimensions, L2-normalized, finite vectors.
+  `SentenceTransformerEmbedder` rejects blank texts and checks every vector's length, finiteness and unit norm.
+- **Fingerprint:** `compute_fingerprint` is a SHA-256 over the cleaned text, `max_chars`, `overlap_chars`
+  and the model name, with a NUL byte after each part so different inputs cannot merge into one.
+- **Flow:** `ingest_snapshot` checks the embedding metadata, cleans each article, computes the fingerprint and asks
+  the repository for the stored one **before** embedding. Unchanged articles are skipped. Changed or new
+  articles are chunked, embedded and passed to `repo.ingest_article`. A failure on one article is recorded in the
+  `IngestReport` and the run continues. `repo.resolve_links()` is called once at the end.
+- **Token limit:** the model truncates input at about 256 word pieces. A 1,000-character chunk is close to
+  that limit, so the end of a long chunk may not influence its vector. The chunk-size experiment (branch 3)
+  will measure whether smaller chunks retrieve better.
+- **Status:** tested with `FakeEmbedder` and `InMemoryRepository`. A run against real MariaDB is not
+  documented yet.
+MD
+git diff --stat
