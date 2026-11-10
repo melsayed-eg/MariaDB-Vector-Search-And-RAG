@@ -1,4 +1,4 @@
-"""Load and validate retrieval evaluation questions from JSON."""
+"""Load and validate retrieval evaluation questions from JSON or JSONL."""
 
 from __future__ import annotations
 
@@ -54,7 +54,9 @@ def _parse_filters(value: Any) -> SearchFilters | None:
             raise ValidationError("filters.edited_since must be a naive UTC datetime")
 
     try:
-        return SearchFilters(**parsed)
+        filters = SearchFilters(**parsed)
+        filters.validate()
+        return filters
     except (TypeError, ValueError) as exc:
         raise ValidationError(f"Invalid search filters: {exc}") from exc
 
@@ -96,39 +98,68 @@ def _parse_query(item: Any, index: int) -> EvalQuery:
     )
 
 
-def load_queries(path: Path) -> list[EvalQuery]:
-    """Load evaluation queries from a JSON file.
-
-    The file must contain a JSON array of objects with ``query_id``,
-    ``text``, and ``relevant_article_ids`` fields. Optional ``filters`` and
-    ``notes`` fields are supported.
-
-    Args:
-        path: Path to the JSON dataset.
-
-    Returns:
-        Parsed evaluation queries in file order.
-
-    Raises:
-        ValidationError: If the file cannot be read or its contents are invalid.
-    """
+def load_queries(path: Path, *, snapshot_path: Path | None = None) -> list[EvalQuery]:
+    """Load JSON or JSONL evaluation queries and optionally validate snapshot IDs."""
     try:
         content = path.read_text(encoding="utf-8")
     except OSError as exc:
         raise ValidationError(f"Could not read evaluation dataset: {path}") from exc
 
-    try:
-        data = json.loads(content)
-    except json.JSONDecodeError as exc:
-        raise ValidationError("Evaluation dataset must contain valid JSON") from exc
+    if path.suffix.lower() == ".jsonl":
+        records = []
+        for line_number, line in enumerate(content.splitlines(), start=1):
+            if not line.strip():
+                continue
+            try:
+                records.append(json.loads(line))
+            except json.JSONDecodeError as exc:
+                raise ValidationError(f"Invalid JSONL at line {line_number}: {exc.msg}") from exc
+        if not records:
+            raise ValidationError("Evaluation dataset must not be empty")
+    else:
+        try:
+            records = json.loads(content)
+        except json.JSONDecodeError as exc:
+            raise ValidationError("Evaluation dataset must contain valid JSON") from exc
+        if not isinstance(records, list) or not records:
+            raise ValidationError("Evaluation dataset must be a non-empty JSON array")
 
-    if not isinstance(data, list) or not data:
-        raise ValidationError("Evaluation dataset must be a non-empty JSON array")
-
-    queries = [_parse_query(item, index) for index, item in enumerate(data)]
+    queries = [_parse_query(item, index) for index, item in enumerate(records)]
 
     query_ids = [query.query_id for query in queries]
     if len(query_ids) != len(set(query_ids)):
         raise ValidationError("Evaluation query_id values must be unique")
+
+    if snapshot_path is not None:
+        try:
+            snapshot_lines = snapshot_path.read_text(encoding="utf-8").splitlines()
+        except OSError as exc:
+            raise ValidationError(f"Could not read Wikipedia snapshot: {snapshot_path}") from exc
+
+        snapshot_ids = set()
+        for line_number, line in enumerate(snapshot_lines, start=1):
+            if not line.strip():
+                continue
+            try:
+                article = json.loads(line)
+                article_id = article["article_id"]
+            except (json.JSONDecodeError, KeyError, TypeError) as exc:
+                raise ValidationError(
+                    f"Invalid Wikipedia snapshot record at line {line_number}"
+                ) from exc
+            if type(article_id) is not int or article_id <= 0:
+                raise ValidationError(f"Invalid Wikipedia article ID at line {line_number}")
+            snapshot_ids.add(article_id)
+
+        if not snapshot_ids:
+            raise ValidationError("Wikipedia snapshot must not be empty")
+
+        for query in queries:
+            missing = query.relevant_article_ids - snapshot_ids
+            if missing:
+                raise ValidationError(
+                    f"Query {query.query_id!r} references articles "
+                    f"missing from snapshot: {sorted(missing)}"
+                )
 
     return queries

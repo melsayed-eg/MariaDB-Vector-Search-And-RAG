@@ -1,0 +1,977 @@
+{
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "corpus_articles": 200,
+  "corpus_chunks": 8743,
+  "ks": [
+    1,
+    3,
+    5,
+    10
+  ],
+  "modes": {
+    "semantic": {
+      "n_queries": 15,
+      "recall_at_k": {
+        "1": 0.6,
+        "3": 0.8,
+        "5": 0.8666666666666667,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.6,
+        "3": 0.26666666666666666,
+        "5": 0.17333333333333334,
+        "10": 0.1
+      },
+      "mrr": 0.7106349206349206,
+      "latency_ms_p50": 11.049583606654778,
+      "latency_ms_p95": 12.041201641550288
+    },
+    "hybrid": {
+      "n_queries": 15,
+      "recall_at_k": {
+        "1": 0.6,
+        "3": 0.8,
+        "5": 0.8666666666666667,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.6,
+        "3": 0.26666666666666666,
+        "5": 0.17333333333333334,
+        "10": 0.1
+      },
+      "mrr": 0.7138888888888889,
+      "latency_ms_p50": 148.80575820570812,
+      "latency_ms_p95": 247.04229912837036
+    }
+  },
+  "per_query": [
+    {
+      "query_id": "hyb_01",
+      "query": "Which database properties guarantee transaction reliability?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        60776
+      ],
+      "retrieved_article_ids": [
+        217356,
+        8377,
+        60776,
+        325521,
+        23968131,
+        26411268,
+        41054,
+        7990
+      ],
+      "reciprocal_rank": 0.3333333333333333,
+      "latency_ms": 12.117583403596655,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_02",
+      "query": "Which database concept describes consistency and availability tradeoffs?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        26411268
+      ],
+      "retrieved_article_ids": [
+        26411268,
+        8377,
+        217356,
+        23968131,
+        60776,
+        37704882,
+        325521,
+        41054,
+        24799509,
+        25873
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 10.999075206927955,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_03",
+      "query": "Which database model represents entities and relationships?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        752991
+      ],
+      "retrieved_article_ids": [
+        752991,
+        8377,
+        25873
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 12.008466600673273,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_04",
+      "query": "Which database system is an open-source fork of MySQL?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        24960699
+      ],
+      "retrieved_article_ids": [
+        19545,
+        24960699,
+        25873
+      ],
+      "reciprocal_rank": 0.5,
+      "latency_ms": 11.236241791630164,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_05",
+      "query": "Which database language is used for relational queries?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        29004
+      ],
+      "retrieved_article_ids": [
+        29004,
+        25873,
+        8377,
+        24799509,
+        19545,
+        175285,
+        244884
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 11.341941996943206,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_06",
+      "query": "Which algorithm uses a heuristic to find paths?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        100558
+      ],
+      "retrieved_article_ids": [
+        100558,
+        25750,
+        45809,
+        97026,
+        125297,
+        230401,
+        97034
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 11.220799799775705,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_07",
+      "query": "Which sorting algorithm repeatedly merges sorted sublists?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        20039
+      ],
+      "retrieved_article_ids": [
+        20039,
+        3268249,
+        201154,
+        25977485,
+        15205,
+        13995
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 10.846966598182917,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_08",
+      "query": "Which tree maintains balance using rotations?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        2118
+      ],
+      "retrieved_article_ids": [
+        2118,
+        4320,
+        26397,
+        4674,
+        18167
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 11.034149798797444,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_09",
+      "query": "Which machine learning technique reduces dimensionality?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        76340
+      ],
+      "retrieved_article_ids": [
+        233488,
+        20926,
+        6836612,
+        76340,
+        173332,
+        65309,
+        233497,
+        1164,
+        1363880
+      ],
+      "reciprocal_rank": 0.25,
+      "latency_ms": 11.033774999668822,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_10",
+      "query": "Which neural network architecture uses convolutional layers?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        40409788
+      ],
+      "retrieved_article_ids": [
+        40409788,
+        32472154,
+        1164,
+        21523,
+        233497
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 11.049583606654778,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_11",
+      "query": "Which programming language is known for ownership and borrowing?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        29414838
+      ],
+      "retrieved_article_ids": [
+        6021,
+        18016,
+        8218,
+        5739,
+        6734,
+        59868,
+        23939,
+        8095,
+        27404990,
+        29414838,
+        72038,
+        6759,
+        10939,
+        12590,
+        23862,
+        27471338,
+        10933,
+        2356196
+      ],
+      "reciprocal_rank": 0.1,
+      "latency_ms": 11.181191389914602,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_12",
+      "query": "Which programming paradigm treats functions as first-class values?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        10933
+      ],
+      "retrieved_article_ids": [
+        10933,
+        18203,
+        2356196,
+        23862,
+        199701,
+        27471338,
+        24131,
+        18016,
+        27404990,
+        29414838,
+        3254510
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 11.043616791721433,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_13",
+      "query": "Which network protocol provides reliable ordered delivery?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        30538
+      ],
+      "retrieved_article_ids": [
+        15323,
+        15476,
+        22747,
+        31929,
+        25750,
+        24485,
+        30538,
+        4122592
+      ],
+      "reciprocal_rank": 0.14285714285714285,
+      "latency_ms": 10.904824995668605,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_14",
+      "query": "Which security vulnerability involves injecting malicious SQL statements?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        526999
+      ],
+      "retrieved_article_ids": [
+        526999,
+        20901,
+        7398
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 11.07267540646717,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_15",
+      "query": "Which cryptographic algorithm is a widely used symmetric block cipher?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        1260
+      ],
+      "retrieved_article_ids": [
+        18934432,
+        439526,
+        1260,
+        24222
+      ],
+      "reciprocal_rank": 0.3333333333333333,
+      "latency_ms": 11.00619140197523,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_01",
+      "query": "Which database properties guarantee transaction reliability?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        60776
+      ],
+      "retrieved_article_ids": [
+        217356,
+        8377,
+        60776,
+        325521,
+        23968131,
+        26411268,
+        41054,
+        7990
+      ],
+      "reciprocal_rank": 0.3333333333333333,
+      "latency_ms": 99.82239159871824,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_02",
+      "query": "Which database concept describes consistency and availability tradeoffs?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        26411268
+      ],
+      "retrieved_article_ids": [
+        26411268,
+        8377,
+        217356,
+        23968131,
+        60776,
+        37704882,
+        325521,
+        41054,
+        24799509,
+        25873
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 102.07605820614845,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_03",
+      "query": "Which database model represents entities and relationships?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        752991
+      ],
+      "retrieved_article_ids": [
+        752991,
+        8377,
+        25873
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 101.13229179987684,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_04",
+      "query": "Which database system is an open-source fork of MySQL?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        24960699
+      ],
+      "retrieved_article_ids": [
+        19545,
+        24960699,
+        25873
+      ],
+      "reciprocal_rank": 0.5,
+      "latency_ms": 103.35953339235857,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_05",
+      "query": "Which database language is used for relational queries?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        29004
+      ],
+      "retrieved_article_ids": [
+        29004,
+        25873,
+        8377,
+        24799509,
+        19545,
+        175285,
+        244884
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 99.70577520434745,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_06",
+      "query": "Which algorithm uses a heuristic to find paths?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        100558
+      ],
+      "retrieved_article_ids": [
+        100558,
+        45809,
+        97026,
+        125297,
+        230401,
+        97034
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 148.54748319485225,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_07",
+      "query": "Which sorting algorithm repeatedly merges sorted sublists?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        20039
+      ],
+      "retrieved_article_ids": [
+        20039,
+        3268249,
+        201154,
+        25977485,
+        15205,
+        13995
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 145.30608340282924,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_08",
+      "query": "Which tree maintains balance using rotations?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        2118
+      ],
+      "retrieved_article_ids": [
+        2118,
+        4320,
+        26397,
+        4674,
+        18167
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 148.80575820570812,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_09",
+      "query": "Which machine learning technique reduces dimensionality?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        76340
+      ],
+      "retrieved_article_ids": [
+        233488,
+        20926,
+        6836612,
+        76340,
+        173332,
+        65309,
+        233497,
+        1164,
+        1363880
+      ],
+      "reciprocal_rank": 0.25,
+      "latency_ms": 246.37386660906486,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_10",
+      "query": "Which neural network architecture uses convolutional layers?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        40409788
+      ],
+      "retrieved_article_ids": [
+        40409788,
+        32472154,
+        1164,
+        21523,
+        233497
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 248.60197500674985,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_11",
+      "query": "Which programming language is known for ownership and borrowing?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        29414838
+      ],
+      "retrieved_article_ids": [
+        6021,
+        18016,
+        5739,
+        6734,
+        59868,
+        23939,
+        27404990,
+        29414838,
+        72038,
+        23862,
+        27471338,
+        10933,
+        2356196
+      ],
+      "reciprocal_rank": 0.125,
+      "latency_ms": 188.16774979350157,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_12",
+      "query": "Which programming paradigm treats functions as first-class values?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        10933
+      ],
+      "retrieved_article_ids": [
+        10933,
+        2356196,
+        23862,
+        199701,
+        27471338,
+        24131,
+        18016,
+        27404990,
+        29414838,
+        3254510
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 185.72530840756372,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_13",
+      "query": "Which network protocol provides reliable ordered delivery?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        30538
+      ],
+      "retrieved_article_ids": [
+        15323,
+        15476,
+        22747,
+        31929,
+        25750,
+        30538,
+        4122592
+      ],
+      "reciprocal_rank": 0.16666666666666666,
+      "latency_ms": 224.49279199936427,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_14",
+      "query": "Which security vulnerability involves injecting malicious SQL statements?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        526999
+      ],
+      "retrieved_article_ids": [
+        526999,
+        20901,
+        7398
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 185.10726639651693,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_15",
+      "query": "Which cryptographic algorithm is a widely used symmetric block cipher?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        1260
+      ],
+      "retrieved_article_ids": [
+        18934432,
+        439526,
+        1260,
+        24222
+      ],
+      "reciprocal_rank": 0.3333333333333333,
+      "latency_ms": 187.07287519355305,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    }
+  ]
+}

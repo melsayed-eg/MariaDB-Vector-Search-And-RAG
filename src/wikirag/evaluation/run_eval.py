@@ -79,6 +79,8 @@ def run_evaluation(
         raise ValidationError("chunk_pool must be an integer")
     if not 1 <= chunk_pool <= 100:
         raise ValidationError("chunk_pool must be between 1 and 100")
+    if chunk_pool < max(ks):
+        raise ValidationError("chunk_pool must be at least max(ks)")
     if not isinstance(repeats, int) or isinstance(repeats, bool) or repeats < 1:
         raise ValidationError("repeats must be a positive integer")
 

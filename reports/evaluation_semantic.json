@@ -1,0 +1,1252 @@
+{
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "corpus_articles": 200,
+  "corpus_chunks": 8743,
+  "ks": [
+    1,
+    3,
+    5,
+    10
+  ],
+  "modes": {
+    "semantic": {
+      "n_queries": 40,
+      "recall_at_k": {
+        "1": 0.7,
+        "3": 0.875,
+        "5": 0.95,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.775,
+        "3": 0.3416666666666667,
+        "5": 0.225,
+        "10": 0.11750000000000001
+      },
+      "mrr": 0.8477380952380953,
+      "latency_ms_p50": 11.028208310017362,
+      "latency_ms_p95": 11.885263444564771
+    }
+  },
+  "per_query": [
+    {
+      "query_id": "sem_01",
+      "query": "How does quicksort partition and sort an array?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        3268249
+      ],
+      "retrieved_article_ids": [
+        3268249,
+        13995
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 12.371891603106633,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "sem_02",
+      "query": "What is the difference between breadth-first and depth-first search?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        97026,
+        97034
+      ],
+      "retrieved_article_ids": [
+        97026,
+        97034,
+        557931,
+        100558,
+        45809
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 10.87946659536101,
+      "recall_at_k": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4,
+        "10": 0.2
+      }
+    },
+    {
+      "query_id": "sem_03",
+      "query": "How does Dijkstra's algorithm find shortest paths?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        45809
+      ],
+      "retrieved_article_ids": [
+        45809,
+        100558,
+        221244,
+        25750,
+        230401,
+        125297
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 11.350066604791209,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "sem_04",
+      "query": "What is dynamic programming and when is it useful?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        125297
+      ],
+      "retrieved_article_ids": [
+        125297,
+        27471338,
+        199701,
+        6021,
+        66294,
+        2052,
+        23862,
+        18016,
+        10933,
+        59868
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 12.114149599801749,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "sem_05",
+      "query": "How does a hash table store and retrieve values?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        13833
+      ],
+      "retrieved_article_ids": [
+        13833,
+        18167,
+        4266,
+        439526,
+        31274,
+        23968131,
+        37704882
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 11.730975203681737,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "sem_06",
+      "query": "What are the ACID properties of database transactions?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        60776
+      ],
+      "retrieved_article_ids": [
+        8377,
+        217356,
+        325521,
+        60776,
+        25873,
+        7990,
+        24799509
+      ],
+      "reciprocal_rank": 0.25,
+      "latency_ms": 11.341333395102993,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "sem_07",
+      "query": "What is database normalization and why is it used?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        8640
+      ],
+      "retrieved_article_ids": [
+        8640,
+        8377,
+        25873,
+        7990,
+        24799509,
+        93548
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 11.141908203717321,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "sem_08",
+      "query": "How does SQL query optimization improve database performance?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        3480761
+      ],
+      "retrieved_article_ids": [
+        3480761,
+        25873,
+        1711076,
+        175285,
+        8377,
+        23968131,
+        7990,
+        24799509
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 10.796716791810468,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "sem_09",
+      "query": "What is the difference between relational and NoSQL databases?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        25873,
+        23968131
+      ],
+      "retrieved_article_ids": [
+        23968131,
+        8377,
+        24799509,
+        25873,
+        37704882,
+        21855450,
+        29004
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 10.956658609211445,
+      "recall_at_k": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.4,
+        "10": 0.2
+      }
+    },
+    {
+      "query_id": "sem_10",
+      "query": "How does a vector database support similarity search?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        74020014
+      ],
+      "retrieved_article_ids": [
+        74020014,
+        6836612,
+        43561218,
+        23824,
+        24799509,
+        4266,
+        5218,
+        31274,
+        8377,
+        233488,
+        65309,
+        1711076,
+        25873,
+        8640
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 11.2565252056811,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "sem_11",
+      "query": "How does backpropagation train neural networks?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        21523,
+        1360091
+      ],
+      "retrieved_article_ids": [
+        1360091,
+        1164,
+        21523,
+        32472154,
+        50073184,
+        1706303,
+        40409788
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 11.181183200096712,
+      "recall_at_k": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4,
+        "10": 0.2
+      }
+    },
+    {
+      "query_id": "sem_12",
+      "query": "What causes overfitting in machine learning?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        173332
+      ],
+      "retrieved_article_ids": [
+        173332,
+        233488,
+        20926,
+        40409788,
+        21523,
+        32472154,
+        1363880
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 11.093158402945846,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "sem_13",
+      "query": "How do transformers process natural language?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        21652,
+        61603971
+      ],
+      "retrieved_article_ids": [
+        61603971,
+        6759,
+        21652,
+        1164,
+        73248112,
+        21523,
+        5739
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 11.117433395702392,
+      "recall_at_k": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4,
+        "10": 0.2
+      }
+    },
+    {
+      "query_id": "sem_14",
+      "query": "What is reinforcement learning?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        66294
+      ],
+      "retrieved_article_ids": [
+        233488,
+        66294,
+        1164,
+        21523
+      ],
+      "reciprocal_rank": 0.5,
+      "latency_ms": 11.41790840192698,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "sem_15",
+      "query": "How does k-means clustering work?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        1860407
+      ],
+      "retrieved_article_ids": [
+        1860407
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 11.873216804815456,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "sem_16",
+      "query": "What is garbage collection in programming languages?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        6734
+      ],
+      "retrieved_article_ids": [
+        6734,
+        66924,
+        10933,
+        2356196,
+        6021,
+        18016,
+        15881,
+        29414838
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 11.701458191964775,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "sem_17",
+      "query": "How does a compiler differ from an interpreter?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        5739,
+        59868
+      ],
+      "retrieved_article_ids": [
+        5739,
+        59868,
+        10939
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 11.484866205137223,
+      "recall_at_k": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4,
+        "10": 0.2
+      }
+    },
+    {
+      "query_id": "sem_18",
+      "query": "What are the principles of object-oriented programming?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        27471338
+      ],
+      "retrieved_article_ids": [
+        27471338,
+        27010,
+        164952,
+        42946389,
+        23485,
+        1507538
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 11.668241396546364,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "sem_19",
+      "query": "What is the purpose of version control in software development?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        55955,
+        1771747
+      ],
+      "retrieved_article_ids": [
+        55955,
+        222828,
+        1771747,
+        217356,
+        7398,
+        1010280
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 10.997908387798816,
+      "recall_at_k": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4,
+        "10": 0.2
+      }
+    },
+    {
+      "query_id": "sem_20",
+      "query": "What is unit testing?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        222828
+      ],
+      "retrieved_article_ids": [
+        222828,
+        27010,
+        639009
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 10.905774997081608,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "sem_21",
+      "query": "How does virtual memory work in an operating system?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        32354,
+        311193
+      ],
+      "retrieved_article_ids": [
+        22194,
+        32354,
+        66924,
+        21346982,
+        311193
+      ],
+      "reciprocal_rank": 0.5,
+      "latency_ms": 11.260450002737343,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.5,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.4,
+        "10": 0.2
+      }
+    },
+    {
+      "query_id": "sem_22",
+      "query": "What is a deadlock in concurrent computing?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        105181
+      ],
+      "retrieved_article_ids": [
+        105181,
+        217356,
+        36827,
+        24485,
+        164557,
+        45303,
+        45178,
+        22194
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 11.315791797824204,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "sem_23",
+      "query": "How does DNS translate domain names?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        8339
+      ],
+      "retrieved_article_ids": [
+        8339
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 11.044100014260039,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "sem_24",
+      "query": "How does public-key cryptography work?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        24222
+      ],
+      "retrieved_article_ids": [
+        24222,
+        18934432,
+        25385,
+        59644
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 10.944208415457979,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "sem_25",
+      "query": "What is the halting problem in computation?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        21391870
+      ],
+      "retrieved_article_ids": [
+        21391870,
+        6854,
+        1208
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 11.012316605774686,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_01",
+      "query": "Which database properties guarantee transaction reliability?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        60776
+      ],
+      "retrieved_article_ids": [
+        217356,
+        8377,
+        60776,
+        325521,
+        23968131,
+        26411268,
+        41054,
+        7990
+      ],
+      "reciprocal_rank": 0.3333333333333333,
+      "latency_ms": 11.116716597462073,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_02",
+      "query": "Which database concept describes consistency and availability tradeoffs?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        26411268
+      ],
+      "retrieved_article_ids": [
+        26411268,
+        8377,
+        217356,
+        23968131,
+        60776,
+        37704882,
+        325521,
+        41054,
+        24799509,
+        25873
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 10.933833400486037,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_03",
+      "query": "Which database model represents entities and relationships?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        752991
+      ],
+      "retrieved_article_ids": [
+        752991,
+        8377,
+        25873
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 10.818525188369676,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_04",
+      "query": "Which database system is an open-source fork of MySQL?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        24960699
+      ],
+      "retrieved_article_ids": [
+        19545,
+        24960699,
+        25873
+      ],
+      "reciprocal_rank": 0.5,
+      "latency_ms": 10.877816792344674,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_05",
+      "query": "Which database language is used for relational queries?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        29004
+      ],
+      "retrieved_article_ids": [
+        29004,
+        25873,
+        8377,
+        24799509,
+        19545,
+        175285,
+        244884
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 10.79485000227578,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_06",
+      "query": "Which algorithm uses a heuristic to find paths?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        100558
+      ],
+      "retrieved_article_ids": [
+        100558,
+        25750,
+        45809,
+        97026,
+        125297,
+        230401,
+        97034
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 10.92651659855619,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_07",
+      "query": "Which sorting algorithm repeatedly merges sorted sublists?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        20039
+      ],
+      "retrieved_article_ids": [
+        20039,
+        3268249,
+        201154,
+        25977485,
+        15205,
+        13995
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 10.740525193978101,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_08",
+      "query": "Which tree maintains balance using rotations?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        2118
+      ],
+      "retrieved_article_ids": [
+        2118,
+        4320,
+        26397,
+        4674,
+        18167
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 10.84328320575878,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_09",
+      "query": "Which machine learning technique reduces dimensionality?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        76340
+      ],
+      "retrieved_article_ids": [
+        233488,
+        20926,
+        6836612,
+        76340,
+        173332,
+        65309,
+        233497,
+        1164,
+        1363880
+      ],
+      "reciprocal_rank": 0.25,
+      "latency_ms": 10.77404179959558,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_10",
+      "query": "Which neural network architecture uses convolutional layers?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        40409788
+      ],
+      "retrieved_article_ids": [
+        40409788,
+        32472154,
+        1164,
+        21523,
+        233497
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 10.845633200369775,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_11",
+      "query": "Which programming language is known for ownership and borrowing?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        29414838
+      ],
+      "retrieved_article_ids": [
+        6021,
+        18016,
+        8218,
+        5739,
+        6734,
+        59868,
+        23939,
+        8095,
+        27404990,
+        29414838,
+        72038,
+        6759,
+        10939,
+        12590,
+        23862,
+        27471338,
+        10933,
+        2356196
+      ],
+      "reciprocal_rank": 0.1,
+      "latency_ms": 11.361291591310874,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_12",
+      "query": "Which programming paradigm treats functions as first-class values?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        10933
+      ],
+      "retrieved_article_ids": [
+        10933,
+        18203,
+        2356196,
+        23862,
+        199701,
+        27471338,
+        24131,
+        18016,
+        27404990,
+        29414838,
+        3254510
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 10.865124803967774,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_13",
+      "query": "Which network protocol provides reliable ordered delivery?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        30538
+      ],
+      "retrieved_article_ids": [
+        15323,
+        15476,
+        22747,
+        31929,
+        25750,
+        24485,
+        30538,
+        4122592
+      ],
+      "reciprocal_rank": 0.14285714285714285,
+      "latency_ms": 10.87838300736621,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_14",
+      "query": "Which security vulnerability involves injecting malicious SQL statements?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        526999
+      ],
+      "retrieved_article_ids": [
+        526999,
+        20901,
+        7398
+      ],
+      "reciprocal_rank": 1.0,
+      "latency_ms": 10.822466597892344,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    },
+    {
+      "query_id": "hyb_15",
+      "query": "Which cryptographic algorithm is a widely used symmetric block cipher?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        1260
+      ],
+      "retrieved_article_ids": [
+        18934432,
+        439526,
+        1260,
+        24222
+      ],
+      "reciprocal_rank": 0.3333333333333333,
+      "latency_ms": 10.828416614094749,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      }
+    }
+  ]
+}
