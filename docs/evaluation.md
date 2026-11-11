@@ -42,7 +42,7 @@ All 40 questions were evaluated without relational filters.
 
 | Mode | Queries | MRR | Recall@1 | Recall@3 | Recall@5 | Recall@10 | Precision@1 | Precision@3 | Precision@5 | Precision@10 | P50 latency (ms) | P95 latency (ms) |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| semantic | 40 | 0.8644 | 0.7250 | 0.8750 | 0.9500 | 1.0000 | 0.8000 | 0.3417 | 0.2250 | 0.1175 | 6.31 | 7.80 |
+| semantic | 40 | 0.8644 | 0.7250 | 0.8750 | 0.9500 | 1.0000 | 0.8000 | 0.3417 | 0.2250 | 0.1175 | 6.29 | 7.36 |
 
 Detailed results: `reports/evaluation_semantic.md` and
 `reports/evaluation_semantic.json`.
@@ -54,8 +54,8 @@ Semantic retrieval ignored filters; hybrid retrieval applied them.
 
 | Mode | Queries | MRR | Recall@1 | Recall@3 | Recall@5 | Recall@10 | Precision@1 | Precision@3 | Precision@5 | Precision@10 | P50 latency (ms) | P95 latency (ms) |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| semantic | 15 | 0.7551 | 0.6667 | 0.8000 | 0.8667 | 1.0000 | 0.6667 | 0.2667 | 0.1733 | 0.1000 | 6.11 | 6.64 |
-| hybrid | 15 | 0.7583 | 0.6667 | 0.8000 | 0.8667 | 1.0000 | 0.6667 | 0.2667 | 0.1733 | 0.1000 | 571.55 | 579.64 |
+| semantic | 15 | 0.7551 | 0.6667 | 0.8000 | 0.8667 | 1.0000 | 0.6667 | 0.2667 | 0.1733 | 0.1000 | 6.34 | 6.84 |
+| hybrid | 15 | 0.7583 | 0.6667 | 0.8000 | 0.8667 | 1.0000 | 0.6667 | 0.2667 | 0.1733 | 0.1000 | 566.28 | 613.61 |
 
 Detailed results: `reports/evaluation_comparison.md` and
 `reports/evaluation_comparison.json`.

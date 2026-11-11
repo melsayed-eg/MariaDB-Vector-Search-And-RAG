@@ -1,7 +1,7 @@
 {
-  "benchmark_utc": "2026-11-11T23:05:17.089090+00:00",
-  "git_commit": "aa93732113819599d4f891b743006dce5b1e461f",
-  "git_worktree_status": "M Makefile\n M data/eval/queries.jsonl\n M docs/evaluation.md\n M reports/evaluation_comparison.json\n M reports/evaluation_comparison.md\n M reports/evaluation_semantic.json\n M reports/evaluation_semantic.md\n M src/wikirag/evaluation/run_eval.py\n?? reports/evaluation_metadata.json\n?? scripts/run_retrieval_benchmark.py\n?? src/wikirag/evaluation/compliance.py\n?? src/wikirag/evaluation/metadata.py\n?? tests/unit/test_evaluation_compliance.py\n?? tests/unit/test_evaluation_latency_statistics.py\n?? tests/unit/test_evaluation_strict_compliance.py",
+  "benchmark_utc": "2026-11-11T23:23:10.634821+00:00",
+  "git_commit": "4e2c49cf44f4a0e475379282b64003fd566c31a5",
+  "git_worktree_status": "M reports/evaluation_comparison.json\n M reports/evaluation_comparison.md\n M reports/evaluation_semantic.json\n M reports/evaluation_semantic.md",
   "python_version": "3.14.9",
   "operating_system": "macOS-27.2.1-arm64-arm-64bit-Mach-O",
   "hardware": {
