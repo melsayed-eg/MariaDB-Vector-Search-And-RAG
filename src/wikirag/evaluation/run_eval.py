@@ -4,11 +4,12 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from pathlib import Path
-from statistics import mean
+from statistics import mean, stdev
 from typing import Protocol
 
 from wikirag.config import EMBEDDING_MODEL_NAME
 from wikirag.errors import ValidationError
+from wikirag.evaluation.compliance import check_filter_compliance
 from wikirag.evaluation.metrics import (
     precision_at_k,
     recall_at_k,
@@ -65,6 +66,7 @@ def run_evaluation(
     ks: Sequence[int] = (1, 3, 5, 10),
     chunk_pool: int = 30,
     repeats: int = 5,
+    require_compliance: bool = False,
 ) -> EvalReport:
     """Evaluate retrieval quality and latency for the requested modes."""
     if not queries:
@@ -140,6 +142,29 @@ def run_evaluation(
             relevant = query.relevant_article_ids
             reciprocal = reciprocal_rank(ranked_articles, relevant)
 
+            compliance = None
+            if mode == "hybrid":
+                repo = getattr(retriever, "_repo", None)
+                can_verify = repo is not None and all(
+                    callable(getattr(repo, method, None))
+                    for method in ("get_article", "get_linked_articles")
+                )
+                if not can_verify and require_compliance:
+                    raise ValidationError(
+                        "Hybrid compliance verification requires repository "
+                        "get_article() and get_linked_articles() methods"
+                    )
+                if can_verify:
+                    compliance = check_filter_compliance(result, filters, repo)
+                    if require_compliance and compliance["violating_hits"]:
+                        raise ValidationError(
+                            f"Hybrid filter violations for {query.query_id}: "
+                            f"{compliance['violating_hits']} of "
+                            f"{compliance['returned_hits']} returned hits"
+                        )
+
+            latency_samples = [sample.latency_ms for sample in samples]
+
             evaluations[mode].append(
                 {
                     "query_id": query.query_id,
@@ -147,8 +172,13 @@ def run_evaluation(
                     "mode": mode,
                     "relevant_article_ids": sorted(relevant),
                     "retrieved_article_ids": ranked_articles,
+                    "filter_compliance": compliance,
                     "reciprocal_rank": reciprocal,
-                    "latency_ms": mean(sample.latency_ms for sample in samples),
+                    "latency_ms": mean(latency_samples),
+                    "latency_samples_ms": latency_samples,
+                    "latency_stddev_ms": (
+                        stdev(latency_samples) if len(latency_samples) > 1 else 0.0
+                    ),
                     "recall_at_k": {k: recall_at_k(ranked_articles, relevant, k) for k in ks},
                     "precision_at_k": {k: precision_at_k(ranked_articles, relevant, k) for k in ks},
                 }
@@ -163,6 +193,14 @@ def run_evaluation(
             continue
 
         latencies = [row["latency_ms"] for row in rows]
+        raw_latencies = [value for row in rows for value in row["latency_samples_ms"]]
+        aggregate_latency = {
+            "latency_mean_ms": mean(raw_latencies),
+            "latency_stddev_ms": (stdev(raw_latencies) if len(raw_latencies) > 1 else 0.0),
+            "latency_raw_p50_ms": _percentile(raw_latencies, 0.50),
+            "latency_raw_p95_ms": _percentile(raw_latencies, 0.95),
+            "latency_sample_count": len(raw_latencies),
+        }
         mode_metrics[mode] = ModeMetrics(
             n_queries=len(rows),
             recall_at_k={k: mean(row["recall_at_k"][k] for row in rows) for k in ks},
@@ -171,6 +209,8 @@ def run_evaluation(
             latency_ms_p50=_percentile(latencies, 0.50),
             latency_ms_p95=_percentile(latencies, 0.95),
         )
+        for row in rows:
+            row["aggregate_latency"] = aggregate_latency
         per_query.extend(rows)
 
     repo = getattr(retriever, "_repo", None)
@@ -226,6 +266,10 @@ def write_report(
         raise ValidationError("report paths must be pathlib.Path instances")
     if json_path.resolve() == md_path.resolve():
         raise ValidationError("JSON and Markdown paths must be different")
+
+    hybrid_rows = [row for row in report.per_query if row.get("mode") == "hybrid"]
+    if hybrid_rows and any(row.get("filter_compliance") is None for row in hybrid_rows):
+        raise ValidationError("Hybrid evaluation report contains unverified filter results")
 
     json_path.parent.mkdir(parents=True, exist_ok=True)
     md_path.parent.mkdir(parents=True, exist_ok=True)
@@ -287,6 +331,89 @@ def write_report(
             lines.append("| " + " | ".join(values) + " |")
     else:
         lines.append("No aggregate results are available.")
+
+    lines.extend(
+        [
+            "",
+            "## Latency variability",
+            "",
+            (
+                "One warm-up request per query and mode is excluded. "
+                "Each query's measured requests are averaged before calculating "
+                "the P50/P95 values in the aggregate results table above."
+            ),
+            "",
+            (
+                "The table below instead summarizes all individual measured "
+                "requests, including their sample standard deviation."
+            ),
+            "",
+            ("| Mode | Requests | Mean (ms) | Std dev (ms) | Raw P50 (ms) | Raw P95 (ms) |"),
+            "| --- | ---: | ---: | ---: | ---: | ---: |",
+        ]
+    )
+
+    for mode in report.modes:
+        rows = [row for row in report.per_query if row["mode"] == mode]
+        if not rows or "aggregate_latency" not in rows[0]:
+            continue
+
+        stats = rows[0]["aggregate_latency"]
+        lines.append(
+            f"| {mode} | {stats['latency_sample_count']} | "
+            f"{stats['latency_mean_ms']:.2f} | "
+            f"{stats['latency_stddev_ms']:.2f} | "
+            f"{stats['latency_raw_p50_ms']:.2f} | "
+            f"{stats['latency_raw_p95_ms']:.2f} |"
+        )
+
+    hybrid_rows = [row for row in report.per_query if row.get("mode") == "hybrid"]
+
+    if hybrid_rows:
+        checks = [row.get("filter_compliance") for row in hybrid_rows]
+
+        if any(check is None for check in checks):
+            raise ValidationError("Hybrid evaluation report contains unverified filter results")
+
+        returned = sum(check["returned_hits"] for check in checks)
+        compliant = sum(check["compliant_hits"] for check in checks)
+        violations = sum(check["violating_hits"] for check in checks)
+        empty = sum(check["empty_result"] for check in checks)
+        rate = compliant / returned if returned else 1.0
+
+        lines.extend(
+            [
+                "",
+                "## Hybrid filter compliance",
+                "",
+                f"- **Queries checked:** {len(checks)}",
+                f"- **Returned chunk hits:** {returned}",
+                f"- **Compliant hits:** {compliant}",
+                f"- **Violating hits:** {violations}",
+                f"- **Empty result sets:** {empty}",
+                f"- **Overall compliance rate:** {rate:.4f}",
+                "",
+                (
+                    "Compliance is measured per returned chunk hit against "
+                    "independently retrieved article metadata and chunk distances. "
+                    "Empty result sets count as vacuously compliant but are "
+                    "reported separately."
+                ),
+                "",
+                "| Query ID | Returned | Compliant | Violations | Rate |",
+                "|---|---:|---:|---:|---:|",
+            ]
+        )
+
+        for row in hybrid_rows:
+            check = row["filter_compliance"]
+            lines.append(
+                f"| {row['query_id']} | {check['returned_hits']} | "
+                f"{check['compliant_hits']} | {check['violating_hits']} | "
+                f"{check['compliance_rate']:.4f} |"
+            )
+
+        lines.append("")
 
     lines.extend(["", "## Per-query results", ""])
 

@@ -33,3 +33,9 @@ test-db:
 lint:
 	uv run --extra dev ruff check .
 	uv run --extra dev ruff format --check .
+
+# Run retrieval benchmarks against the main MariaDB corpus.
+.PHONY: eval
+
+eval:
+	uv run --extra dev python scripts/run_retrieval_benchmark.py

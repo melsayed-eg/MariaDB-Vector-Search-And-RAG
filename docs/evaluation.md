@@ -40,19 +40,9 @@ SQL constraints.
 
 All 40 questions were evaluated without relational filters.
 
-| Metric | Result |
-|---|---:|
-| MRR | 0.8477 |
-| Recall@1 | 0.7000 |
-| Recall@3 | 0.8750 |
-| Recall@5 | 0.9500 |
-| Recall@10 | 1.0000 |
-| Precision@1 | 0.7750 |
-| Precision@3 | 0.3417 |
-| Precision@5 | 0.2250 |
-| Precision@10 | 0.1175 |
-| P50 latency | 11.03 ms |
-| P95 latency | 11.89 ms |
+| Mode | Queries | MRR | Recall@1 | Recall@3 | Recall@5 | Recall@10 | Precision@1 | Precision@3 | Precision@5 | Precision@10 | P50 latency (ms) | P95 latency (ms) |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| semantic | 40 | 0.8644 | 0.7250 | 0.8750 | 0.9500 | 1.0000 | 0.8000 | 0.3417 | 0.2250 | 0.1175 | 6.31 | 7.80 |
 
 Detailed results: `reports/evaluation_semantic.md` and
 `reports/evaluation_semantic.json`.
@@ -62,17 +52,81 @@ Detailed results: `reports/evaluation_semantic.md` and
 Both modes were evaluated on the same 15 constrained questions.
 Semantic retrieval ignored filters; hybrid retrieval applied them.
 
-| Metric | Semantic | Hybrid |
-|---|---:|---:|
-| Questions | 15 | 15 |
-| MRR | 0.7106 | 0.7139 |
-| Recall@10 | 1.0000 | 1.0000 |
-| Precision@10 | 0.1000 | 0.1000 |
-| P50 latency | 11.05 ms | 148.81 ms |
-| P95 latency | 12.04 ms | 247.04 ms |
+| Mode | Queries | MRR | Recall@1 | Recall@3 | Recall@5 | Recall@10 | Precision@1 | Precision@3 | Precision@5 | Precision@10 | P50 latency (ms) | P95 latency (ms) |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| semantic | 15 | 0.7551 | 0.6667 | 0.8000 | 0.8667 | 1.0000 | 0.6667 | 0.2667 | 0.1733 | 0.1000 | 6.11 | 6.64 |
+| hybrid | 15 | 0.7583 | 0.6667 | 0.8000 | 0.8667 | 1.0000 | 0.6667 | 0.2667 | 0.1733 | 0.1000 | 571.55 | 579.64 |
 
 Detailed results: `reports/evaluation_comparison.md` and
 `reports/evaluation_comparison.json`.
+
+## Reproducible benchmark
+
+Run `make eval` against the populated local MariaDB database.
+
+The benchmark requires 200 Wikipedia articles and 8,743 embedded chunks.
+It validates the evaluation dataset, runs the 40-query semantic evaluation
+and matched 15-query semantic/hybrid comparison, checks hybrid filter
+compliance, and regenerates the JSON and Markdown reports.
+
+Benchmark failures produce a nonzero exit status.
+
+## Reproducibility metadata
+
+`reports/evaluation_metadata.json` records the UTC execution timestamp,
+Git commit and working-tree status, MariaDB and Python versions,
+operating system, CPU, RAM, embedding model and dimension, SHA-256
+checksums, corpus counts, K values, chunk pool, repetitions, warm-up
+count, index settings, SQL search strategies, and timing methodology.
+
+Uncommitted changes are not fully identified by the Git SHA alone.
+
+## SQL filter compliance
+
+Hybrid retrieval results are independently checked against stored
+article metadata and returned chunk distances.
+
+The checks cover topics, categories, included and excluded article IDs,
+minimum article length, revision date, outgoing link relationships,
+and maximum vector distance.
+
+Compliance is measured per returned chunk hit. The reports include
+per-query and aggregate counts, violations, and compliance rates.
+
+Empty result sets are counted separately. They have a compliance rate
+of 1.0 by convention, but do not demonstrate successful retrieval.
+
+Any filter violation causes the benchmark to fail.
+
+## Latency methodology and variability
+
+Each query and mode receives one excluded warm-up request followed
+by five measured retrieval requests.
+
+Aggregate P50 and P95 latency values are calculated from per-query
+mean latencies, not directly from all measured requests.
+
+The JSON reports retain individual latency samples and sample
+standard deviations. Markdown reports also summarize raw-request
+mean, standard deviation, P50, and P95.
+
+These measurements reflect one local environment and should not
+be generalized to production workloads.
+
+## Hybrid Filter Bias
+
+The 15 constrained evaluation queries use topic filters that match the
+topics of their labeled relevant articles.
+
+This creates a favorable evaluation setting for hybrid retrieval because
+the filters narrow the search space toward the expected answers.
+
+Consequently, the comparison measures retrieval under correctly aligned
+topic constraints, rather than performance under arbitrary or potentially
+incorrect filters.
+
+The results should not be interpreted as evidence that hybrid retrieval
+generally outperforms semantic retrieval.
 
 ## Limitations
 
@@ -91,7 +145,7 @@ Detailed results: `reports/evaluation_comparison.md` and
 
 The committed evaluation dataset and snapshot are checked by automated tests.
 
-The full local test suite passed: 574 tests.
+The full test suite passed with 584 tests. Ruff linting, formatting, and Git whitespace checks also passed.
 
 The evaluation reports are preliminary until relevance judgments have
 been independently reviewed.

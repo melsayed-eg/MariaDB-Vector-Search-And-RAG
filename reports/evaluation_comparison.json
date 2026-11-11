@@ -12,71 +12,93 @@
     "semantic": {
       "n_queries": 15,
       "recall_at_k": {
-        "1": 0.6,
+        "1": 0.6666666666666666,
         "3": 0.8,
         "5": 0.8666666666666667,
         "10": 1.0
       },
       "precision_at_k": {
-        "1": 0.6,
+        "1": 0.6666666666666666,
         "3": 0.26666666666666666,
         "5": 0.17333333333333334,
         "10": 0.1
       },
-      "mrr": 0.7106349206349206,
-      "latency_ms_p50": 11.049583606654778,
-      "latency_ms_p95": 12.041201641550288
+      "mrr": 0.7550793650793651,
+      "latency_ms_p50": 6.111241799953859,
+      "latency_ms_p95": 6.636740720095985
     },
     "hybrid": {
       "n_queries": 15,
       "recall_at_k": {
-        "1": 0.6,
+        "1": 0.6666666666666666,
         "3": 0.8,
         "5": 0.8666666666666667,
         "10": 1.0
       },
       "precision_at_k": {
-        "1": 0.6,
+        "1": 0.6666666666666666,
         "3": 0.26666666666666666,
         "5": 0.17333333333333334,
         "10": 0.1
       },
-      "mrr": 0.7138888888888889,
-      "latency_ms_p50": 148.80575820570812,
-      "latency_ms_p95": 247.04229912837036
+      "mrr": 0.7583333333333333,
+      "latency_ms_p50": 571.5462331998424,
+      "latency_ms_p95": 579.6422882000479
     }
   },
   "per_query": [
     {
       "query_id": "hyb_01",
-      "query": "Which database properties guarantee transaction reliability?",
+      "query": "What database structure speeds up record lookup without scanning every row?",
       "mode": "semantic",
       "relevant_article_ids": [
-        60776
+        1711076
       ],
       "retrieved_article_ids": [
-        217356,
-        8377,
-        60776,
-        325521,
+        1711076,
+        25873,
+        4674,
+        13833,
+        4266,
+        24799509,
         23968131,
-        26411268,
-        41054,
-        7990
+        3480761,
+        31274,
+        8640,
+        8377,
+        1010280,
+        7990,
+        37704882
       ],
-      "reciprocal_rank": 0.3333333333333333,
-      "latency_ms": 12.117583403596655,
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 6.938341599379783,
+      "latency_samples_ms": [
+        7.1972910009208135,
+        7.46979199902853,
+        6.816166998760309,
+        6.604374999369611,
+        6.604082998819649
+      ],
+      "latency_stddev_ms": 0.38330257462368156,
       "recall_at_k": {
-        "1": 0.0,
+        "1": 1.0,
         "3": 1.0,
         "5": 1.0,
         "10": 1.0
       },
       "precision_at_k": {
-        "1": 0.0,
+        "1": 1.0,
         "3": 0.3333333333333333,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 6.206295520047813,
+        "latency_stddev_ms": 0.2905666622144386,
+        "latency_raw_p50_ms": 6.138665999969817,
+        "latency_raw_p95_ms": 6.784900099955848,
+        "latency_sample_count": 75
       }
     },
     {
@@ -98,8 +120,17 @@
         24799509,
         25873
       ],
+      "filter_compliance": null,
       "reciprocal_rank": 1.0,
-      "latency_ms": 10.999075206927955,
+      "latency_ms": 6.341649999740184,
+      "latency_samples_ms": [
+        6.4855420005187625,
+        6.325250000372762,
+        6.303749998551211,
+        6.294124999840278,
+        6.299582999417908
+      ],
+      "latency_stddev_ms": 0.08129965573272507,
       "recall_at_k": {
         "1": 1.0,
         "3": 1.0,
@@ -111,6 +142,13 @@
         "3": 0.3333333333333333,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 6.206295520047813,
+        "latency_stddev_ms": 0.2905666622144386,
+        "latency_raw_p50_ms": 6.138665999969817,
+        "latency_raw_p95_ms": 6.784900099955848,
+        "latency_sample_count": 75
       }
     },
     {
@@ -125,8 +163,17 @@
         8377,
         25873
       ],
+      "filter_compliance": null,
       "reciprocal_rank": 1.0,
-      "latency_ms": 12.008466600673273,
+      "latency_ms": 6.416083400108619,
+      "latency_samples_ms": [
+        6.206709000252886,
+        6.477124999946682,
+        6.34212499971909,
+        6.530374999783817,
+        6.524083000840619
+      ],
+      "latency_stddev_ms": 0.13942744056363482,
       "recall_at_k": {
         "1": 1.0,
         "3": 1.0,
@@ -138,6 +185,13 @@
         "3": 0.3333333333333333,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 6.206295520047813,
+        "latency_stddev_ms": 0.2905666622144386,
+        "latency_raw_p50_ms": 6.138665999969817,
+        "latency_raw_p95_ms": 6.784900099955848,
+        "latency_sample_count": 75
       }
     },
     {
@@ -152,8 +206,17 @@
         24960699,
         25873
       ],
+      "filter_compliance": null,
       "reciprocal_rank": 0.5,
-      "latency_ms": 11.236241791630164,
+      "latency_ms": 6.221133199869655,
+      "latency_samples_ms": [
+        6.386999999449472,
+        6.095999999160995,
+        6.108125000537257,
+        6.356040999889956,
+        6.158500000310596
+      ],
+      "latency_stddev_ms": 0.13969967647789888,
       "recall_at_k": {
         "1": 0.0,
         "3": 1.0,
@@ -165,6 +228,13 @@
         "3": 0.3333333333333333,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 6.206295520047813,
+        "latency_stddev_ms": 0.2905666622144386,
+        "latency_raw_p50_ms": 6.138665999969817,
+        "latency_raw_p95_ms": 6.784900099955848,
+        "latency_sample_count": 75
       }
     },
     {
@@ -183,8 +253,17 @@
         175285,
         244884
       ],
+      "filter_compliance": null,
       "reciprocal_rank": 1.0,
-      "latency_ms": 11.341941996943206,
+      "latency_ms": 5.979966400263947,
+      "latency_samples_ms": [
+        5.982958000458893,
+        5.978832999971928,
+        5.96587499967427,
+        6.015708000632003,
+        5.956458000582643
+      ],
+      "latency_stddev_ms": 0.022577138276212407,
       "recall_at_k": {
         "1": 1.0,
         "3": 1.0,
@@ -196,6 +275,13 @@
         "3": 0.3333333333333333,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 6.206295520047813,
+        "latency_stddev_ms": 0.2905666622144386,
+        "latency_raw_p50_ms": 6.138665999969817,
+        "latency_raw_p95_ms": 6.784900099955848,
+        "latency_sample_count": 75
       }
     },
     {
@@ -214,8 +300,17 @@
         230401,
         97034
       ],
+      "filter_compliance": null,
       "reciprocal_rank": 1.0,
-      "latency_ms": 11.220799799775705,
+      "latency_ms": 6.10427499996149,
+      "latency_samples_ms": [
+        6.172666999191279,
+        6.12741700024344,
+        6.137917000160087,
+        5.980833000649,
+        6.102540999563644
+      ],
+      "latency_stddev_ms": 0.07346042448948992,
       "recall_at_k": {
         "1": 1.0,
         "3": 1.0,
@@ -227,6 +322,13 @@
         "3": 0.3333333333333333,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 6.206295520047813,
+        "latency_stddev_ms": 0.2905666622144386,
+        "latency_raw_p50_ms": 6.138665999969817,
+        "latency_raw_p95_ms": 6.784900099955848,
+        "latency_sample_count": 75
       }
     },
     {
@@ -244,8 +346,17 @@
         15205,
         13995
       ],
+      "filter_compliance": null,
       "reciprocal_rank": 1.0,
-      "latency_ms": 10.846966598182917,
+      "latency_ms": 6.50748320040293,
+      "latency_samples_ms": [
+        6.831374999819673,
+        6.301625000560307,
+        6.213665999894147,
+        6.419250001272303,
+        6.771500000468222
+      ],
+      "latency_stddev_ms": 0.2788825969974735,
       "recall_at_k": {
         "1": 1.0,
         "3": 1.0,
@@ -257,35 +368,59 @@
         "3": 0.3333333333333333,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 6.206295520047813,
+        "latency_stddev_ms": 0.2905666622144386,
+        "latency_raw_p50_ms": 6.138665999969817,
+        "latency_raw_p95_ms": 6.784900099955848,
+        "latency_sample_count": 75
       }
     },
     {
       "query_id": "hyb_08",
-      "query": "Which tree maintains balance using rotations?",
+      "query": "Which self-balancing binary search tree uses rotations to maintain a height difference of at most one between subtrees?",
       "mode": "semantic",
       "relevant_article_ids": [
         2118
       ],
       "retrieved_article_ids": [
-        2118,
         4320,
-        26397,
         4674,
+        2118,
+        4266,
+        26397,
         18167
       ],
-      "reciprocal_rank": 1.0,
-      "latency_ms": 11.034149798797444,
+      "filter_compliance": null,
+      "reciprocal_rank": 0.3333333333333333,
+      "latency_ms": 6.2144917999830795,
+      "latency_samples_ms": [
+        6.217583000761806,
+        6.207959000676055,
+        6.276791998971021,
+        6.194792000314919,
+        6.175332999191596
+      ],
+      "latency_stddev_ms": 0.03825912168806955,
       "recall_at_k": {
-        "1": 1.0,
+        "1": 0.0,
         "3": 1.0,
         "5": 1.0,
         "10": 1.0
       },
       "precision_at_k": {
-        "1": 1.0,
+        "1": 0.0,
         "3": 0.3333333333333333,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 6.206295520047813,
+        "latency_stddev_ms": 0.2905666622144386,
+        "latency_raw_p50_ms": 6.138665999969817,
+        "latency_raw_p95_ms": 6.784900099955848,
+        "latency_sample_count": 75
       }
     },
     {
@@ -306,8 +441,17 @@
         1164,
         1363880
       ],
+      "filter_compliance": null,
       "reciprocal_rank": 0.25,
-      "latency_ms": 11.033774999668822,
+      "latency_ms": 5.837666600200464,
+      "latency_samples_ms": [
+        5.876125000213506,
+        5.892041999686626,
+        5.7946670003730105,
+        5.877540999790654,
+        5.7479580009385245
+      ],
+      "latency_stddev_ms": 0.06309179564408773,
       "recall_at_k": {
         "1": 0.0,
         "3": 0.0,
@@ -319,6 +463,13 @@
         "3": 0.0,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 6.206295520047813,
+        "latency_stddev_ms": 0.2905666622144386,
+        "latency_raw_p50_ms": 6.138665999969817,
+        "latency_raw_p95_ms": 6.784900099955848,
+        "latency_sample_count": 75
       }
     },
     {
@@ -335,8 +486,17 @@
         21523,
         233497
       ],
+      "filter_compliance": null,
       "reciprocal_rank": 1.0,
-      "latency_ms": 11.049583606654778,
+      "latency_ms": 6.056300199998077,
+      "latency_samples_ms": [
+        6.169166999825393,
+        5.954917000053683,
+        6.079875000068569,
+        6.021167000653804,
+        6.056374999388936
+      ],
+      "latency_stddev_ms": 0.07875212096144019,
       "recall_at_k": {
         "1": 1.0,
         "3": 1.0,
@@ -348,6 +508,13 @@
         "3": 0.3333333333333333,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 6.206295520047813,
+        "latency_stddev_ms": 0.2905666622144386,
+        "latency_raw_p50_ms": 6.138665999969817,
+        "latency_raw_p95_ms": 6.784900099955848,
+        "latency_sample_count": 75
       }
     },
     {
@@ -377,8 +544,17 @@
         10933,
         2356196
       ],
+      "filter_compliance": null,
       "reciprocal_rank": 0.1,
-      "latency_ms": 11.181191389914602,
+      "latency_ms": 6.105624799965881,
+      "latency_samples_ms": [
+        6.125624999185675,
+        6.138665999969817,
+        6.02683299985074,
+        6.139749999420019,
+        6.097250001403154
+      ],
+      "latency_stddev_ms": 0.0472613560974155,
       "recall_at_k": {
         "1": 0.0,
         "3": 0.0,
@@ -390,6 +566,13 @@
         "3": 0.0,
         "5": 0.0,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 6.206295520047813,
+        "latency_stddev_ms": 0.2905666622144386,
+        "latency_raw_p50_ms": 6.138665999969817,
+        "latency_raw_p95_ms": 6.784900099955848,
+        "latency_sample_count": 75
       }
     },
     {
@@ -412,8 +595,17 @@
         29414838,
         3254510
       ],
+      "filter_compliance": null,
       "reciprocal_rank": 1.0,
-      "latency_ms": 11.043616791721433,
+      "latency_ms": 6.040891400334658,
+      "latency_samples_ms": [
+        5.997457999910694,
+        6.12741700024344,
+        6.006625000736676,
+        5.986791000395897,
+        6.086166000386584
+      ],
+      "latency_stddev_ms": 0.06229760937782323,
       "recall_at_k": {
         "1": 1.0,
         "3": 1.0,
@@ -425,6 +617,13 @@
         "3": 0.3333333333333333,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 6.206295520047813,
+        "latency_stddev_ms": 0.2905666622144386,
+        "latency_raw_p50_ms": 6.138665999969817,
+        "latency_raw_p95_ms": 6.784900099955848,
+        "latency_sample_count": 75
       }
     },
     {
@@ -444,8 +643,17 @@
         30538,
         4122592
       ],
+      "filter_compliance": null,
       "reciprocal_rank": 0.14285714285714285,
-      "latency_ms": 10.904824995668605,
+      "latency_ms": 6.085141600124189,
+      "latency_samples_ms": [
+        5.904375000682194,
+        6.08466599987878,
+        6.154874999992899,
+        6.073000000469619,
+        6.208791999597452
+      ],
+      "latency_stddev_ms": 0.11508298794645411,
       "recall_at_k": {
         "1": 0.0,
         "3": 0.0,
@@ -457,6 +665,13 @@
         "3": 0.0,
         "5": 0.0,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 6.206295520047813,
+        "latency_stddev_ms": 0.2905666622144386,
+        "latency_raw_p50_ms": 6.138665999969817,
+        "latency_raw_p95_ms": 6.784900099955848,
+        "latency_sample_count": 75
       }
     },
     {
@@ -471,8 +686,17 @@
         20901,
         7398
       ],
+      "filter_compliance": null,
       "reciprocal_rank": 1.0,
-      "latency_ms": 11.07267540646717,
+      "latency_ms": 6.1341418004303705,
+      "latency_samples_ms": [
+        6.309833999694092,
+        6.057124999642838,
+        6.080667000787798,
+        5.9366250006860355,
+        6.286458001341089
+      ],
+      "latency_stddev_ms": 0.15958696839309988,
       "recall_at_k": {
         "1": 1.0,
         "3": 1.0,
@@ -484,66 +708,119 @@
         "3": 0.3333333333333333,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 6.206295520047813,
+        "latency_stddev_ms": 0.2905666622144386,
+        "latency_raw_p50_ms": 6.138665999969817,
+        "latency_raw_p95_ms": 6.784900099955848,
+        "latency_sample_count": 75
       }
     },
     {
       "query_id": "hyb_15",
-      "query": "Which cryptographic algorithm is a widely used symmetric block cipher?",
+      "query": "Which symmetric block cipher was standardized by NIST in 2001 as the Advanced Encryption Standard?",
       "mode": "semantic",
       "relevant_article_ids": [
         1260
       ],
       "retrieved_article_ids": [
-        18934432,
-        439526,
         1260,
-        24222
+        18934432,
+        187813,
+        29004,
+        1638777,
+        72038,
+        22747,
+        8339
       ],
-      "reciprocal_rank": 0.3333333333333333,
-      "latency_ms": 11.00619140197523,
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 6.111241799953859,
+      "latency_samples_ms": [
+        6.234874999790918,
+        6.075999999666237,
+        6.11837499855028,
+        6.157709000035538,
+        5.969250001726323
+      ],
+      "latency_stddev_ms": 0.0986140286153534,
       "recall_at_k": {
-        "1": 0.0,
+        "1": 1.0,
         "3": 1.0,
         "5": 1.0,
         "10": 1.0
       },
       "precision_at_k": {
-        "1": 0.0,
+        "1": 1.0,
         "3": 0.3333333333333333,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 6.206295520047813,
+        "latency_stddev_ms": 0.2905666622144386,
+        "latency_raw_p50_ms": 6.138665999969817,
+        "latency_raw_p95_ms": 6.784900099955848,
+        "latency_sample_count": 75
       }
     },
     {
       "query_id": "hyb_01",
-      "query": "Which database properties guarantee transaction reliability?",
+      "query": "What database structure speeds up record lookup without scanning every row?",
       "mode": "hybrid",
       "relevant_article_ids": [
-        60776
+        1711076
       ],
       "retrieved_article_ids": [
-        217356,
-        8377,
-        60776,
-        325521,
+        1711076,
+        25873,
+        24799509,
         23968131,
-        26411268,
-        41054,
-        7990
+        3480761,
+        8640,
+        8377,
+        7990,
+        37704882,
+        23824,
+        6870132
       ],
-      "reciprocal_rank": 0.3333333333333333,
-      "latency_ms": 99.82239159871824,
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 562.4226167994493,
+      "latency_samples_ms": [
+        563.747374999366,
+        563.9218340002117,
+        563.606791998609,
+        563.1484579989774,
+        557.6886250000825
+      ],
+      "latency_stddev_ms": 2.6618805011221522,
       "recall_at_k": {
-        "1": 0.0,
+        "1": 1.0,
         "3": 1.0,
         "5": 1.0,
         "10": 1.0
       },
       "precision_at_k": {
-        "1": 0.0,
+        "1": 1.0,
         "3": 0.3333333333333333,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 570.7854722132955,
+        "latency_stddev_ms": 11.654517691070435,
+        "latency_raw_p50_ms": 568.0682080001134,
+        "latency_raw_p95_ms": 597.8924703989833,
+        "latency_sample_count": 75
       }
     },
     {
@@ -565,8 +842,24 @@
         24799509,
         25873
       ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
       "reciprocal_rank": 1.0,
-      "latency_ms": 102.07605820614845,
+      "latency_ms": 585.9467332000349,
+      "latency_samples_ms": [
+        584.3770419996872,
+        574.5928329997696,
+        604.5930000000226,
+        589.3821660010872,
+        576.7886249996081
+      ],
+      "latency_stddev_ms": 11.98677802976707,
       "recall_at_k": {
         "1": 1.0,
         "3": 1.0,
@@ -578,6 +871,13 @@
         "3": 0.3333333333333333,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 570.7854722132955,
+        "latency_stddev_ms": 11.654517691070435,
+        "latency_raw_p50_ms": 568.0682080001134,
+        "latency_raw_p95_ms": 597.8924703989833,
+        "latency_sample_count": 75
       }
     },
     {
@@ -592,8 +892,24 @@
         8377,
         25873
       ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
       "reciprocal_rank": 1.0,
-      "latency_ms": 101.13229179987684,
+      "latency_ms": 569.0374000001611,
+      "latency_samples_ms": [
+        570.250541999485,
+        570.4789999999775,
+        566.3226670003496,
+        565.8032499995898,
+        572.3315410014038
+      ],
+      "latency_stddev_ms": 2.8386083955225243,
       "recall_at_k": {
         "1": 1.0,
         "3": 1.0,
@@ -605,6 +921,13 @@
         "3": 0.3333333333333333,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 570.7854722132955,
+        "latency_stddev_ms": 11.654517691070435,
+        "latency_raw_p50_ms": 568.0682080001134,
+        "latency_raw_p95_ms": 597.8924703989833,
+        "latency_sample_count": 75
       }
     },
     {
@@ -619,8 +942,24 @@
         24960699,
         25873
       ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
       "reciprocal_rank": 0.5,
-      "latency_ms": 103.35953339235857,
+      "latency_ms": 571.722642000168,
+      "latency_samples_ms": [
+        572.7209169999696,
+        577.2769169998355,
+        568.0682080001134,
+        571.877709000546,
+        568.6694590003754
+      ],
+      "latency_stddev_ms": 3.6928100348090243,
       "recall_at_k": {
         "1": 0.0,
         "3": 1.0,
@@ -632,6 +971,13 @@
         "3": 0.3333333333333333,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 570.7854722132955,
+        "latency_stddev_ms": 11.654517691070435,
+        "latency_raw_p50_ms": 568.0682080001134,
+        "latency_raw_p95_ms": 597.8924703989833,
+        "latency_sample_count": 75
       }
     },
     {
@@ -650,8 +996,24 @@
         175285,
         244884
       ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
       "reciprocal_rank": 1.0,
-      "latency_ms": 99.70577520434745,
+      "latency_ms": 557.3055000004388,
+      "latency_samples_ms": [
+        554.2166249997535,
+        559.8891250010638,
+        556.6152080009488,
+        560.2671249998821,
+        555.5394170005457
+      ],
+      "latency_stddev_ms": 2.6731555210140567,
       "recall_at_k": {
         "1": 1.0,
         "3": 1.0,
@@ -663,6 +1025,13 @@
         "3": 0.3333333333333333,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 570.7854722132955,
+        "latency_stddev_ms": 11.654517691070435,
+        "latency_raw_p50_ms": 568.0682080001134,
+        "latency_raw_p95_ms": 597.8924703989833,
+        "latency_sample_count": 75
       }
     },
     {
@@ -680,8 +1049,24 @@
         230401,
         97034
       ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
       "reciprocal_rank": 1.0,
-      "latency_ms": 148.54748319485225,
+      "latency_ms": 563.5979333997966,
+      "latency_samples_ms": [
+        560.6050419992243,
+        567.2025829990162,
+        563.615083001423,
+        562.2342919996299,
+        564.3326669996895
+      ],
+      "latency_stddev_ms": 2.4673134736322617,
       "recall_at_k": {
         "1": 1.0,
         "3": 1.0,
@@ -693,6 +1078,13 @@
         "3": 0.3333333333333333,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 570.7854722132955,
+        "latency_stddev_ms": 11.654517691070435,
+        "latency_raw_p50_ms": 568.0682080001134,
+        "latency_raw_p95_ms": 597.8924703989833,
+        "latency_sample_count": 75
       }
     },
     {
@@ -710,8 +1102,24 @@
         15205,
         13995
       ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
       "reciprocal_rank": 1.0,
-      "latency_ms": 145.30608340282924,
+      "latency_ms": 573.6818581994157,
+      "latency_samples_ms": [
+        555.6227500001114,
+        604.2636659985874,
+        595.161957999153,
+        557.7385420001519,
+        555.622374999075
+      ],
+      "latency_stddev_ms": 23.995350119968165,
       "recall_at_k": {
         "1": 1.0,
         "3": 1.0,
@@ -723,35 +1131,66 @@
         "3": 0.3333333333333333,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 570.7854722132955,
+        "latency_stddev_ms": 11.654517691070435,
+        "latency_raw_p50_ms": 568.0682080001134,
+        "latency_raw_p95_ms": 597.8924703989833,
+        "latency_sample_count": 75
       }
     },
     {
       "query_id": "hyb_08",
-      "query": "Which tree maintains balance using rotations?",
+      "query": "Which self-balancing binary search tree uses rotations to maintain a height difference of at most one between subtrees?",
       "mode": "hybrid",
       "relevant_article_ids": [
         2118
       ],
       "retrieved_article_ids": [
-        2118,
         4320,
-        26397,
         4674,
+        2118,
+        4266,
+        26397,
         18167
       ],
-      "reciprocal_rank": 1.0,
-      "latency_ms": 148.80575820570812,
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 0.3333333333333333,
+      "latency_ms": 570.1592000001256,
+      "latency_samples_ms": [
+        567.7215840005374,
+        568.6356660007732,
+        574.4070000000647,
+        570.5694169992057,
+        569.4623330000468
+      ],
+      "latency_stddev_ms": 2.5961911548577787,
       "recall_at_k": {
-        "1": 1.0,
+        "1": 0.0,
         "3": 1.0,
         "5": 1.0,
         "10": 1.0
       },
       "precision_at_k": {
-        "1": 1.0,
+        "1": 0.0,
         "3": 0.3333333333333333,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 570.7854722132955,
+        "latency_stddev_ms": 11.654517691070435,
+        "latency_raw_p50_ms": 568.0682080001134,
+        "latency_raw_p95_ms": 597.8924703989833,
+        "latency_sample_count": 75
       }
     },
     {
@@ -772,8 +1211,24 @@
         1164,
         1363880
       ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
       "reciprocal_rank": 0.25,
-      "latency_ms": 246.37386660906486,
+      "latency_ms": 565.5767831995036,
+      "latency_samples_ms": [
+        561.8312079986936,
+        563.0753329987783,
+        566.3674579991493,
+        572.8450840015284,
+        563.7648329993681
+      ],
+      "latency_stddev_ms": 4.388140648580918,
       "recall_at_k": {
         "1": 0.0,
         "3": 0.0,
@@ -785,6 +1240,13 @@
         "3": 0.0,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 570.7854722132955,
+        "latency_stddev_ms": 11.654517691070435,
+        "latency_raw_p50_ms": 568.0682080001134,
+        "latency_raw_p95_ms": 597.8924703989833,
+        "latency_sample_count": 75
       }
     },
     {
@@ -801,8 +1263,24 @@
         21523,
         233497
       ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
       "reciprocal_rank": 1.0,
-      "latency_ms": 248.60197500674985,
+      "latency_ms": 574.546941400331,
+      "latency_samples_ms": [
+        565.9282910000911,
+        564.9896250015445,
+        567.749375000858,
+        608.1062079992989,
+        565.9612079998624
+      ],
+      "latency_stddev_ms": 18.786760851114277,
       "recall_at_k": {
         "1": 1.0,
         "3": 1.0,
@@ -814,6 +1292,13 @@
         "3": 0.3333333333333333,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 570.7854722132955,
+        "latency_stddev_ms": 11.654517691070435,
+        "latency_raw_p50_ms": 568.0682080001134,
+        "latency_raw_p95_ms": 597.8924703989833,
+        "latency_sample_count": 75
       }
     },
     {
@@ -838,8 +1323,24 @@
         10933,
         2356196
       ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
       "reciprocal_rank": 0.125,
-      "latency_ms": 188.16774979350157,
+      "latency_ms": 574.6598000001541,
+      "latency_samples_ms": [
+        567.658833000678,
+        583.9548330004618,
+        575.3764170003706,
+        573.4452079996117,
+        572.8637089996482
+      ],
+      "latency_stddev_ms": 5.929289458683935,
       "recall_at_k": {
         "1": 0.0,
         "3": 0.0,
@@ -851,6 +1352,13 @@
         "3": 0.0,
         "5": 0.0,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 570.7854722132955,
+        "latency_stddev_ms": 11.654517691070435,
+        "latency_raw_p50_ms": 568.0682080001134,
+        "latency_raw_p95_ms": 597.8924703989833,
+        "latency_sample_count": 75
       }
     },
     {
@@ -872,8 +1380,24 @@
         29414838,
         3254510
       ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
       "reciprocal_rank": 1.0,
-      "latency_ms": 185.72530840756372,
+      "latency_ms": 576.3068834003207,
+      "latency_samples_ms": [
+        565.1677920013753,
+        565.7751250000729,
+        573.2154580000497,
+        611.9789999993372,
+        565.3970420007681
+      ],
+      "latency_stddev_ms": 20.224235122853923,
       "recall_at_k": {
         "1": 1.0,
         "3": 1.0,
@@ -885,6 +1409,13 @@
         "3": 0.3333333333333333,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 570.7854722132955,
+        "latency_stddev_ms": 11.654517691070435,
+        "latency_raw_p50_ms": 568.0682080001134,
+        "latency_raw_p95_ms": 597.8924703989833,
+        "latency_sample_count": 75
       }
     },
     {
@@ -903,8 +1434,24 @@
         30538,
         4122592
       ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
       "reciprocal_rank": 0.16666666666666666,
-      "latency_ms": 224.49279199936427,
+      "latency_ms": 576.9403832000535,
+      "latency_samples_ms": [
+        584.5227079989854,
+        574.8657500007539,
+        577.389709000272,
+        573.9242910003668,
+        573.9994579998893
+      ],
+      "latency_stddev_ms": 4.464960781822391,
       "recall_at_k": {
         "1": 0.0,
         "3": 0.0,
@@ -916,6 +1463,13 @@
         "3": 0.0,
         "5": 0.0,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 570.7854722132955,
+        "latency_stddev_ms": 11.654517691070435,
+        "latency_raw_p50_ms": 568.0682080001134,
+        "latency_raw_p95_ms": 597.8924703989833,
+        "latency_sample_count": 75
       }
     },
     {
@@ -930,8 +1484,24 @@
         20901,
         7398
       ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
       "reciprocal_rank": 1.0,
-      "latency_ms": 185.10726639651693,
+      "latency_ms": 571.5462331998424,
+      "latency_samples_ms": [
+        571.5691660006996,
+        580.2909169997292,
+        570.0673749997804,
+        566.9923749992449,
+        568.8113329997577
+      ],
+      "latency_stddev_ms": 5.169002463358402,
       "recall_at_k": {
         "1": 1.0,
         "3": 1.0,
@@ -943,34 +1513,64 @@
         "3": 0.3333333333333333,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 570.7854722132955,
+        "latency_stddev_ms": 11.654517691070435,
+        "latency_raw_p50_ms": 568.0682080001134,
+        "latency_raw_p95_ms": 597.8924703989833,
+        "latency_sample_count": 75
       }
     },
     {
       "query_id": "hyb_15",
-      "query": "Which cryptographic algorithm is a widely used symmetric block cipher?",
+      "query": "Which symmetric block cipher was standardized by NIST in 2001 as the Advanced Encryption Standard?",
       "mode": "hybrid",
       "relevant_article_ids": [
         1260
       ],
       "retrieved_article_ids": [
-        18934432,
-        439526,
         1260,
-        24222
+        18934432,
+        187813,
+        1638777
       ],
-      "reciprocal_rank": 0.3333333333333333,
-      "latency_ms": 187.07287519355305,
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 568.3311751996371,
+      "latency_samples_ms": [
+        578.3687499988446,
+        568.1295419999515,
+        565.9914999996545,
+        566.3414999999077,
+        562.8245839998272
+      ],
+      "latency_stddev_ms": 5.927668130904362,
       "recall_at_k": {
-        "1": 0.0,
+        "1": 1.0,
         "3": 1.0,
         "5": 1.0,
         "10": 1.0
       },
       "precision_at_k": {
-        "1": 0.0,
+        "1": 1.0,
         "3": 0.3333333333333333,
         "5": 0.2,
         "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 570.7854722132955,
+        "latency_stddev_ms": 11.654517691070435,
+        "latency_raw_p50_ms": 568.0682080001134,
+        "latency_raw_p95_ms": 597.8924703989833,
+        "latency_sample_count": 75
       }
     }
   ]
