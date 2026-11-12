@@ -15,6 +15,10 @@ All referenced article IDs are validated against the committed
 `data/snapshot/wikipedia_snapshot.jsonl`.
 
 Relevance judgments are provisional pending independent review.
+For `hyb_05`, the proposed relevant articles are SQL (`29004`) and
+Relational database (`25873`): both explicitly identify SQL as the
+language used for relational database queries. This proposed judgment
+still requires Zineb's independent confirmation.
 
 ## Methodology
 
@@ -42,7 +46,7 @@ All 40 questions were evaluated without relational filters.
 
 | Mode | Queries | MRR | Recall@1 | Recall@3 | Recall@5 | Recall@10 | Precision@1 | Precision@3 | Precision@5 | Precision@10 | P50 latency (ms) | P95 latency (ms) |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| semantic | 40 | 0.8644 | 0.7250 | 0.8750 | 0.9500 | 1.0000 | 0.8000 | 0.3417 | 0.2250 | 0.1175 | 6.29 | 7.36 |
+| semantic | 40 | 0.8644 | 0.7125 | 0.8750 | 0.9500 | 1.0000 | 0.8000 | 0.3500 | 0.2300 | 0.1200 | 6.39 | 7.13 |
 
 Detailed results: `reports/evaluation_semantic.md` and
 `reports/evaluation_semantic.json`.
@@ -54,8 +58,8 @@ Semantic retrieval ignored filters; hybrid retrieval applied them.
 
 | Mode | Queries | MRR | Recall@1 | Recall@3 | Recall@5 | Recall@10 | Precision@1 | Precision@3 | Precision@5 | Precision@10 | P50 latency (ms) | P95 latency (ms) |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| semantic | 15 | 0.7551 | 0.6667 | 0.8000 | 0.8667 | 1.0000 | 0.6667 | 0.2667 | 0.1733 | 0.1000 | 6.34 | 6.84 |
-| hybrid | 15 | 0.7583 | 0.6667 | 0.8000 | 0.8667 | 1.0000 | 0.6667 | 0.2667 | 0.1733 | 0.1000 | 566.28 | 613.61 |
+| semantic | 15 | 0.7551 | 0.6333 | 0.8000 | 0.8667 | 1.0000 | 0.6667 | 0.2889 | 0.1867 | 0.1067 | 6.28 | 7.07 |
+| hybrid | 15 | 0.7583 | 0.6333 | 0.8000 | 0.8667 | 1.0000 | 0.6667 | 0.2889 | 0.1867 | 0.1067 | 571.30 | 609.52 |
 
 Detailed results: `reports/evaluation_comparison.md` and
 `reports/evaluation_comparison.json`.
@@ -66,8 +70,9 @@ Run `make eval` against the populated local MariaDB database.
 
 The benchmark requires 200 Wikipedia articles and 8,743 embedded chunks.
 It validates the evaluation dataset, runs the 40-query semantic evaluation
-and matched 15-query semantic/hybrid comparison, checks hybrid filter
-compliance, and regenerates the JSON and Markdown reports.
+and matched 15-query semantic/hybrid comparison, checks semantic
+and hybrid constraint satisfaction, strictly enforces hybrid constraints,
+and regenerates the JSON and Markdown reports.
 
 Benchmark failures produce a nonzero exit status.
 
@@ -79,24 +84,40 @@ operating system, CPU, RAM, embedding model and dimension, SHA-256
 checksums, corpus counts, K values, chunk pool, repetitions, warm-up
 count, index settings, SQL search strategies, and timing methodology.
 
-Uncommitted changes are not fully identified by the Git SHA alone.
+The recorded Git commit identifies the checked-out source revision at
+benchmark execution, not necessarily the later commit that publishes
+the regenerated reports. The working-tree status records modified
+paths but does not fully identify their contents. Reproducing an
+uncommitted benchmark therefore requires the corresponding source,
+dataset, and report files, not the Git SHA alone.
 
-## SQL filter compliance
+## Constraint satisfaction
 
-Hybrid retrieval results are independently checked against stored
-article metadata and returned chunk distances.
+Both retrieval modes are independently checked against the original
+question constraints using stored article metadata and chunk distances.
+
+Semantic retrieval does not apply the constraints during retrieval;
+its compliance is measured afterward. Hybrid retrieval enforces the
+constraints in SQL and is independently checked afterward.
 
 The checks cover topics, categories, included and excluded article IDs,
 minimum article length, revision date, outgoing link relationships,
 and maximum vector distance.
 
-Compliance is measured per returned chunk hit. The reports include
-per-query and aggregate counts, violations, and compliance rates.
+| Mode | Queries | Returned hits | Compliant hits | Violations | Compliance rate |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| semantic | 15 | 450 | 420 | 30 | 0.9333 |
+| hybrid | 15 | 450 | 450 | 0 | 1.0000 |
 
-Empty result sets are counted separately. They have a compliance rate
-of 1.0 by convention, but do not demonstrate successful retrieval.
+Compliance is measured per returned chunk hit. Empty result sets are
+tracked separately and considered compliant by convention, but do not
+demonstrate successful retrieval.
 
-Any filter violation causes the benchmark to fail.
+Any hybrid constraint violation causes the benchmark to fail.
+Semantic violations are recorded for comparison rather than rejected.
+
+Detailed per-query results are available in
+`reports/evaluation_comparison.md`.
 
 ## Latency methodology and variability
 
@@ -145,7 +166,8 @@ generally outperforms semantic retrieval.
 
 The committed evaluation dataset and snapshot are checked by automated tests.
 
-The full test suite passed with 584 tests. Ruff linting, formatting, and Git whitespace checks also passed.
+The full test suite passed with 586 tests. Ruff linting, formatting
+(95 files), and Git whitespace checks also passed.
 
 The evaluation reports are preliminary until relevance judgments have
 been independently reviewed.

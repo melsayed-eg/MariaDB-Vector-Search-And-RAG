@@ -143,7 +143,7 @@ def run_evaluation(
             reciprocal = reciprocal_rank(ranked_articles, relevant)
 
             compliance = None
-            if mode == "hybrid":
+            if query.filters is not None and not query.filters.is_empty():
                 repo = getattr(retriever, "_repo", None)
                 can_verify = repo is not None and all(
                     callable(getattr(repo, method, None))
@@ -151,12 +151,12 @@ def run_evaluation(
                 )
                 if not can_verify and require_compliance:
                     raise ValidationError(
-                        "Hybrid compliance verification requires repository "
+                        "Constraint compliance verification requires repository "
                         "get_article() and get_linked_articles() methods"
                     )
                 if can_verify:
-                    compliance = check_filter_compliance(result, filters, repo)
-                    if require_compliance and compliance["violating_hits"]:
+                    compliance = check_filter_compliance(result, query.filters, repo)
+                    if require_compliance and mode == "hybrid" and compliance["violating_hits"]:
                         raise ValidationError(
                             f"Hybrid filter violations for {query.query_id}: "
                             f"{compliance['violating_hits']} of "
@@ -367,52 +367,53 @@ def write_report(
             f"{stats['latency_raw_p95_ms']:.2f} |"
         )
 
-    hybrid_rows = [row for row in report.per_query if row.get("mode") == "hybrid"]
-
-    if hybrid_rows:
-        checks = [row.get("filter_compliance") for row in hybrid_rows]
-
-        if any(check is None for check in checks):
-            raise ValidationError("Hybrid evaluation report contains unverified filter results")
-
-        returned = sum(check["returned_hits"] for check in checks)
-        compliant = sum(check["compliant_hits"] for check in checks)
-        violations = sum(check["violating_hits"] for check in checks)
-        empty = sum(check["empty_result"] for check in checks)
-        rate = compliant / returned if returned else 1.0
-
+    checked_rows = [row for row in report.per_query if row.get("filter_compliance") is not None]
+    if checked_rows:
         lines.extend(
             [
                 "",
-                "## Hybrid filter compliance",
+                "## Constraint satisfaction comparison",
                 "",
-                f"- **Queries checked:** {len(checks)}",
-                f"- **Returned chunk hits:** {returned}",
-                f"- **Compliant hits:** {compliant}",
-                f"- **Violating hits:** {violations}",
-                f"- **Empty result sets:** {empty}",
-                f"- **Overall compliance rate:** {rate:.4f}",
+                "Constraint satisfaction is measured per returned chunk hit against the",
+                "original question filters, using independently retrieved metadata.",
+                "Semantic retrieval does not apply these filters during retrieval;",
+                "hybrid retrieval enforces them in SQL.",
                 "",
-                (
-                    "Compliance is measured per returned chunk hit against "
-                    "independently retrieved article metadata and chunk distances. "
-                    "Empty result sets count as vacuously compliant but are "
-                    "reported separately."
-                ),
-                "",
-                "| Query ID | Returned | Compliant | Violations | Rate |",
-                "|---|---:|---:|---:|---:|",
+                "| Mode | Queries checked | Returned hits | Compliant hits | Violations | Empty results | Compliance rate |",
+                "| --- | ---: | ---: | ---: | ---: | ---: | ---: |",
             ]
         )
-
-        for row in hybrid_rows:
+        for mode in report.modes:
+            rows = [row for row in checked_rows if row["mode"] == mode]
+            if not rows:
+                continue
+            checks = [row["filter_compliance"] for row in rows]
+            returned = sum(check["returned_hits"] for check in checks)
+            compliant = sum(check["compliant_hits"] for check in checks)
+            violations = sum(check["violating_hits"] for check in checks)
+            empty = sum(check["empty_result"] for check in checks)
+            rate = compliant / returned if returned else 1.0
+            lines.append(
+                f"| {mode} | {len(checks)} | {returned} | {compliant} | "
+                f"{violations} | {empty} | {rate:.4f} |"
+            )
+        lines.extend(
+            [
+                "",
+                "Empty result sets are counted separately and treated as compliant",
+                "by convention; they do not demonstrate successful retrieval.",
+                "",
+                "| Query ID | Mode | Returned | Compliant | Violations | Rate |",
+                "| --- | --- | ---: | ---: | ---: | ---: |",
+            ]
+        )
+        for row in checked_rows:
             check = row["filter_compliance"]
             lines.append(
-                f"| {row['query_id']} | {check['returned_hits']} | "
-                f"{check['compliant_hits']} | {check['violating_hits']} | "
-                f"{check['compliance_rate']:.4f} |"
+                f"| {row['query_id']} | {row['mode']} | "
+                f"{check['returned_hits']} | {check['compliant_hits']} | "
+                f"{check['violating_hits']} | {check['compliance_rate']:.4f} |"
             )
-
         lines.append("")
 
     lines.extend(["", "## Per-query results", ""])
