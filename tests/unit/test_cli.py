@@ -8,7 +8,7 @@ import pytest
 
 from wikirag import cli
 from wikirag.errors import DatabaseConnectionError
-from wikirag.models import IngestReport
+from wikirag.models import IngestReport, RetrievalResult, SearchFilters, SearchHit
 
 
 def test_cli_help(capsys: pytest.CaptureFixture[str]) -> None:
@@ -158,3 +158,218 @@ def test_build_snapshot_requires_output() -> None:
         cli.main(["build-snapshot"])
 
     assert result.value.code == 2
+
+
+def test_search_semantic_filters() -> None:
+    """Verify semantic search does not require SQL filters."""
+    args = cli.build_parser().parse_args(["search", "What is an algorithm?"])
+
+    assert args.mode == "semantic"
+    assert args.top_k == 5
+    assert cli.build_search_filters(args) is None
+
+
+def test_search_hybrid_filters() -> None:
+    """Verify CLI options produce the shared SearchFilters object."""
+    args = cli.build_parser().parse_args(
+        [
+            "search",
+            "What is an algorithm?",
+            "--mode",
+            "hybrid",
+            "--topic",
+            "algorithms",
+            "--article-id",
+            "13995",
+            "--min-length-chars",
+            "500",
+        ]
+    )
+
+    filters = cli.build_search_filters(args)
+
+    assert filters is not None
+    assert filters.topics == ("algorithms",)
+    assert filters.article_ids == (13995,)
+    assert filters.min_length_chars == 500
+
+
+@pytest.mark.parametrize(
+    "arguments",
+    [
+        ["search", "test", "--mode", "hybrid"],
+        ["search", "test", "--topic", "algorithms"],
+        ["search", "test", "--top-k", "0"],
+        [
+            "search",
+            "test",
+            "--mode",
+            "hybrid",
+            "--article-id",
+            "-1",
+        ],
+        [
+            "search",
+            "test",
+            "--mode",
+            "hybrid",
+            "--edited-since",
+            "not-a-date",
+        ],
+        [
+            "search",
+            "test",
+            "--mode",
+            "hybrid",
+            "--edited-since",
+            "2026-11-12T12:00:00+01:00",
+        ],
+    ],
+)
+def test_search_invalid_options(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    arguments: list[str],
+) -> None:
+    """Verify invalid search options fail before accessing MariaDB."""
+
+    def fake_run_search(*args: object, **kwargs: object) -> None:
+        """Fail if an invalid request reaches retrieval."""
+        raise AssertionError("Retrieval must not execute")
+
+    monkeypatch.setattr(cli, "run_search", fake_run_search)
+
+    assert cli.main(arguments) == 1
+    assert "Error:" in capsys.readouterr().err
+
+
+def test_search_command_dispatch(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Verify search CLI arguments reach the retrieval handler."""
+    calls: list[tuple[object, ...]] = []
+
+    def fake_run_search(
+        query: str,
+        *,
+        top_k: int,
+        mode: str,
+        filters: SearchFilters | None,
+    ) -> None:
+        """Record arguments sent to the search handler."""
+        calls.append((query, top_k, mode, filters))
+
+    monkeypatch.setattr(cli, "run_search", fake_run_search)
+
+    result = cli.main(
+        [
+            "search",
+            "How does heapsort work?",
+            "--mode",
+            "hybrid",
+            "--top-k",
+            "3",
+            "--article-id",
+            "13995",
+        ]
+    )
+
+    assert result == 0
+    assert calls == [
+        (
+            "How does heapsort work?",
+            3,
+            "hybrid",
+            SearchFilters(article_ids=(13995,)),
+        )
+    ]
+
+
+def test_run_search_displays_retrieval_results(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """Verify search connects the repository, embedder, and retriever."""
+    database_config = object()
+    fake_repository = object()
+    fake_embedder = object()
+
+    hit = SearchHit(
+        chunk_id=1,
+        article_id=13995,
+        article_title="Heapsort",
+        article_url="https://en.wikipedia.org/wiki/Heapsort",
+        chunk_index=0,
+        section_title=None,
+        text="Heapsort is a comparison-based sorting algorithm.",
+        distance=0.2,
+        score=0.8,
+    )
+
+    def fake_load_settings() -> SimpleNamespace:
+        """Return isolated test database configuration."""
+        return SimpleNamespace(db=database_config)
+
+    def fake_repository_factory(
+        config: object,
+    ) -> AbstractContextManager[object]:
+        """Provide a fake repository without opening MariaDB."""
+        assert config is database_config
+        return nullcontext(fake_repository)
+
+    def fake_get_embedder() -> object:
+        """Return a fake embedding component."""
+        return fake_embedder
+
+    def fake_retrieve(
+        query: str,
+        *,
+        top_k: int,
+        mode: str,
+        filters: SearchFilters | None,
+    ) -> RetrievalResult:
+        """Return a known retrieval result for the CLI test."""
+        assert query == "How does heapsort work?"
+        assert top_k == 1
+        assert mode == "hybrid"
+        assert filters == SearchFilters(article_ids=(13995,))
+
+        return RetrievalResult(
+            query=query,
+            mode="hybrid",
+            top_k=top_k,
+            filters=filters,
+            hits=(hit,),
+            embed_ms=10.0,
+            search_ms=5.0,
+            latency_ms=15.0,
+        )
+
+    def fake_retriever_factory(
+        repo: object,
+        embedder: object,
+    ) -> SimpleNamespace:
+        """Verify the retriever receives the correct dependencies."""
+        assert repo is fake_repository
+        assert embedder is fake_embedder
+        return SimpleNamespace(retrieve=fake_retrieve)
+
+    monkeypatch.setattr(cli, "load_settings", fake_load_settings)
+    monkeypatch.setattr(cli, "WikiRepository", fake_repository_factory)
+    monkeypatch.setattr(cli, "get_embedder", fake_get_embedder)
+    monkeypatch.setattr(cli, "Retriever", fake_retriever_factory)
+
+    cli.run_search(
+        "How does heapsort work?",
+        top_k=1,
+        mode="hybrid",
+        filters=SearchFilters(article_ids=(13995,)),
+    )
+
+    output = capsys.readouterr().out
+
+    assert "Search mode: hybrid" in output
+    assert "Matching chunks: 1" in output
+    assert "Heapsort" in output
+    assert "https://en.wikipedia.org/wiki/Heapsort" in output
+    assert "Total retrieval time: 15.00 ms" in output
