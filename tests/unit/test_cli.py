@@ -630,3 +630,124 @@ def test_evaluate_preserves_benchmark_failure(
     monkeypatch.setattr(cli, "run_evaluate", fake_run_evaluate)
 
     assert cli.main(["evaluate", "--repeats", "1"]) == 2
+
+
+def test_stats_command_dispatch(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Verify that statistics options reach their handler."""
+    calls: list[tuple[int, bool]] = []
+
+    def fake_run_stats(
+        *,
+        min_category_articles: int,
+        show_categories: bool,
+    ) -> None:
+        """Record the statistics command arguments."""
+        calls.append((min_category_articles, show_categories))
+
+    monkeypatch.setattr(cli, "run_stats", fake_run_stats)
+
+    result = cli.main(
+        [
+            "stats",
+            "--min-category-articles",
+            "5",
+            "--show-categories",
+        ]
+    )
+
+    assert result == 0
+    assert calls == [(5, True)]
+
+
+def test_stats_command_defaults(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Verify default statistics options."""
+    calls: list[tuple[int, bool]] = []
+
+    def fake_run_stats(
+        *,
+        min_category_articles: int,
+        show_categories: bool,
+    ) -> None:
+        """Record default statistics arguments."""
+        calls.append((min_category_articles, show_categories))
+
+    monkeypatch.setattr(cli, "run_stats", fake_run_stats)
+
+    assert cli.main(["stats"]) == 0
+    assert calls == [(1, False)]
+
+
+def test_stats_rejects_invalid_minimum(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """Verify invalid category thresholds fail before database access."""
+    assert cli.main(["stats", "--min-category-articles", "0"]) == 1
+    assert "positive integer" in capsys.readouterr().err
+
+
+def test_run_stats_displays_database_counts(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """Verify statistics use repository methods without modifying data."""
+    database_config = SimpleNamespace(database="wikirag")
+
+    class FakeRepository:
+        """Provide deterministic corpus statistics for testing."""
+
+        def count_articles(self) -> int:
+            """Return the article count."""
+            return 200
+
+        def count_chunks(self) -> int:
+            """Return the embedded chunk count."""
+            return 8743
+
+        def list_topics(self) -> list[str]:
+            """Return sample Wikipedia topics."""
+            return ["algorithms", "databases"]
+
+        def list_categories(
+            self,
+            *,
+            min_articles: int = 1,
+        ) -> list[str]:
+            """Return sample categories for the requested threshold."""
+            assert min_articles == 2
+            return ["Computer science", "Sorting algorithms"]
+
+    fake_repository = FakeRepository()
+
+    def fake_load_settings() -> SimpleNamespace:
+        """Return isolated application settings."""
+        return SimpleNamespace(db=database_config)
+
+    def fake_repository_factory(
+        config: object,
+    ) -> AbstractContextManager[FakeRepository]:
+        """Provide a context-managed fake repository."""
+        assert config is database_config
+        return nullcontext(fake_repository)
+
+    monkeypatch.setattr(cli, "load_settings", fake_load_settings)
+    monkeypatch.setattr(cli, "WikiRepository", fake_repository_factory)
+
+    cli.run_stats(
+        min_category_articles=2,
+        show_categories=True,
+    )
+
+    output = capsys.readouterr().out
+
+    assert "Database: wikirag" in output
+    assert "Articles: 200" in output
+    assert "Chunks: 8743" in output
+    assert "Topics: 2" in output
+    assert "algorithms" in output
+    assert "databases" in output
+    assert "Categories (minimum 2 articles): 2" in output
+    assert "Sorting algorithms" in output

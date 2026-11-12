@@ -185,6 +185,22 @@ def build_parser() -> argparse.ArgumentParser:
         help="Measured repetitions per query (default: 5).",
     )
 
+    stats_parser = commands.add_parser(
+        "stats",
+        help="Display Wikipedia corpus statistics from MariaDB.",
+    )
+    stats_parser.add_argument(
+        "--min-category-articles",
+        type=int,
+        default=1,
+        help="Minimum articles required for a category (default: 1).",
+    )
+    stats_parser.add_argument(
+        "--show-categories",
+        action="store_true",
+        help="Display category names as well as their count.",
+    )
+
     return parser
 
 
@@ -467,7 +483,7 @@ def run_evaluate(repeats: int = 5) -> int:
     if not benchmark_script.is_file():
         raise ValidationError(f"Evaluation script not found: {benchmark_script}")
 
-    # Reuse Marwan's tested runner and preserve its exit status.
+    # Reuse Marwan's benchmark runner and preserve its exit status.
     completed = subprocess.run(
         [
             sys.executable,
@@ -480,6 +496,55 @@ def run_evaluate(repeats: int = 5) -> int:
     )
 
     return completed.returncode
+
+
+def run_stats(
+    *,
+    min_category_articles: int = 1,
+    show_categories: bool = False,
+) -> None:
+    """Display article, chunk, topic, and category statistics.
+
+    Args:
+        min_category_articles: Minimum number of distinct articles
+            associated with a category.
+        show_categories: Whether to print category names.
+
+    Returns:
+        None: Prints current MariaDB corpus statistics.
+
+    Raises:
+        ValidationError: If the minimum article count is invalid.
+        WikiRagError: If configuration or database access fails.
+    """
+    if type(min_category_articles) is not int or min_category_articles < 1:
+        raise ValidationError("--min-category-articles must be a positive integer")
+
+    settings = load_settings()
+
+    with WikiRepository(settings.db) as repo:
+        article_count = repo.count_articles()
+        chunk_count = repo.count_chunks()
+        topics = repo.list_topics()
+        categories = repo.list_categories(min_articles=min_category_articles)
+
+    print("WikiRAG Database Statistics")
+    print(f"Database: {settings.db.database}")
+    print(f"Articles: {article_count}")
+    print(f"Chunks: {chunk_count}")
+    print(f"Topics: {len(topics)}")
+
+    for topic in topics:
+        print(f"  - {topic}")
+
+    print(f"Categories (minimum {min_category_articles} articles): {len(categories)}")
+
+    if show_categories:
+        for category in categories:
+            print(f"  - {category}")
+
+    if article_count == 0 or chunk_count == 0:
+        print("Warning: The Wikipedia corpus is empty or incomplete.")
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -530,6 +595,12 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         elif args.command == "evaluate":
             return run_evaluate(args.repeats)
+
+        elif args.command == "stats":
+            run_stats(
+                min_category_articles=args.min_category_articles,
+                show_categories=args.show_categories,
+            )
 
     except WikiRagError as error:
         print(f"Error: {error}", file=sys.stderr)
