@@ -574,3 +574,59 @@ def test_run_ask_displays_cited_answer(
     assert "https://en.wikipedia.org/wiki/Heapsort" in output
     assert "Chunk ID: 42" in output
     assert "Total RAG time: 6.00 ms" in output
+
+
+def test_evaluate_command_dispatch(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Verify that the CLI forwards repetitions to evaluation."""
+    calls: list[int] = []
+
+    def fake_run_evaluate(repeats: int) -> int:
+        """Record the requested benchmark repetitions."""
+        calls.append(repeats)
+        return 0
+
+    monkeypatch.setattr(cli, "run_evaluate", fake_run_evaluate)
+
+    assert cli.main(["evaluate", "--repeats", "2"]) == 0
+    assert calls == [2]
+
+
+def test_evaluate_default_repetitions(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Verify that evaluation defaults to five repetitions."""
+    calls: list[int] = []
+
+    def fake_run_evaluate(repeats: int) -> int:
+        """Record the default repetition count."""
+        calls.append(repeats)
+        return 0
+
+    monkeypatch.setattr(cli, "run_evaluate", fake_run_evaluate)
+
+    assert cli.main(["evaluate"]) == 0
+    assert calls == [5]
+
+
+def test_evaluate_rejects_invalid_repetitions(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """Verify that invalid repetitions do not start a benchmark."""
+    assert cli.main(["evaluate", "--repeats", "0"]) == 1
+    assert "positive integer" in capsys.readouterr().err
+
+
+def test_evaluate_preserves_benchmark_failure(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Verify that a failed benchmark produces a nonzero CLI status."""
+
+    def fake_run_evaluate(repeats: int) -> int:
+        """Simulate a failed evaluation command."""
+        return 2
+
+    monkeypatch.setattr(cli, "run_evaluate", fake_run_evaluate)
+
+    assert cli.main(["evaluate", "--repeats", "1"]) == 2

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import subprocess
 import sys
 from collections.abc import Sequence
 from contextlib import closing
@@ -173,6 +174,17 @@ def build_parser() -> argparse.ArgumentParser:
         help="Maximum RAG context length in characters.",
     )
 
+    evaluate_parser = commands.add_parser(
+        "evaluate",
+        help="Run the reproducible Wikipedia retrieval benchmark.",
+    )
+    evaluate_parser.add_argument(
+        "--repeats",
+        type=int,
+        default=5,
+        help="Measured repetitions per query (default: 5).",
+    )
+
     return parser
 
 
@@ -183,12 +195,11 @@ def build_search_filters(args: argparse.Namespace) -> SearchFilters | None:
         args: Parsed search or RAG command arguments.
 
     Returns:
-        SearchFilters | None: Valid SQL filters in hybrid mode,
+        SearchFilters | None: SQL filters for hybrid mode,
             otherwise None.
 
     Raises:
-        ValidationError: If the query, limits, date, or filters
-            are invalid or inconsistent with the retrieval mode.
+        ValidationError: If retrieval arguments are invalid.
     """
     if not args.query.strip():
         raise ValidationError("Search query must not be blank")
@@ -222,7 +233,7 @@ def build_search_filters(args: argparse.Namespace) -> SearchFilters | None:
             raise ValidationError("Hybrid search requires at least one SQL filter")
         return filters
 
-    # Prevent silent filter ignoring in semantic mode.
+    # Reject filters in semantic mode instead of silently ignoring them.
     if not filters.is_empty():
         raise ValidationError("SQL filters require --mode hybrid")
 
@@ -270,14 +281,13 @@ def run_ingest(snapshot_path: Path, limit: int | None = None) -> int:
 
     Args:
         snapshot_path: Path to the Wikipedia JSONL snapshot.
-        limit: Optional maximum number of articles to process.
+        limit: Optional maximum number of articles.
 
     Returns:
-        int: Zero if all processed articles succeed, otherwise one.
+        int: Zero if every article succeeds, otherwise one.
 
     Raises:
-        WikiRagError: If embedding, configuration, or database
-            operations fail.
+        WikiRagError: If ingestion setup or database access fails.
     """
     settings = load_settings()
     embedder = get_embedder()
@@ -320,13 +330,13 @@ def run_search(
         query: Natural-language search text.
         top_k: Maximum number of ranked chunks.
         mode: Semantic or hybrid retrieval mode.
-        filters: Optional database-native SQL constraints.
+        filters: Optional MariaDB SQL constraints.
 
     Returns:
-        None: Prints ranked matches and retrieval timings.
+        None: Prints matching chunks and retrieval timings.
 
     Raises:
-        WikiRagError: If embedding, retrieval, or database access fails.
+        WikiRagError: If retrieval or database access fails.
     """
     settings = load_settings()
 
@@ -380,14 +390,14 @@ def run_ask(
         question: Natural-language question.
         top_k: Maximum number of retrieved chunks.
         mode: Semantic or hybrid retrieval mode.
-        filters: Optional MariaDB relational search constraints.
-        max_context_chars: Maximum formatted context length.
+        filters: Optional MariaDB search constraints.
+        max_context_chars: Maximum context length.
 
     Returns:
-        None: Prints the grounded answer, sources, and timings.
+        None: Prints the answer, citations, and timings.
 
     Raises:
-        WikiRagError: If configuration, retrieval, or generation fails.
+        WikiRagError: If retrieval or answer generation fails.
     """
     settings = load_settings()
 
@@ -416,7 +426,7 @@ def run_ask(
     print()
     print("Sources:")
 
-    # Use context sources because their indices match answer citations.
+    # Context sources are numbered to match citations in the answer.
     if not result.context.sources:
         print("No supporting sources were retrieved.")
 
@@ -435,6 +445,43 @@ def run_ask(
     print(f"Total RAG time: {result.latency_ms:.2f} ms")
 
 
+def run_evaluate(repeats: int = 5) -> int:
+    """Run the existing reproducible retrieval benchmark.
+
+    Args:
+        repeats: Number of measured repetitions per evaluation query.
+
+    Returns:
+        int: The benchmark process's exit status.
+
+    Raises:
+        ValidationError: If repetitions are invalid or the benchmark
+            script is unavailable.
+    """
+    if type(repeats) is not int or repeats < 1:
+        raise ValidationError("--repeats must be a positive integer")
+
+    project_root = Path(__file__).resolve().parents[2]
+    benchmark_script = project_root / "scripts" / "run_retrieval_benchmark.py"
+
+    if not benchmark_script.is_file():
+        raise ValidationError(f"Evaluation script not found: {benchmark_script}")
+
+    # Reuse Marwan's tested runner and preserve its exit status.
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(benchmark_script),
+            "--repeats",
+            str(repeats),
+        ],
+        cwd=project_root,
+        check=False,
+    )
+
+    return completed.returncode
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """Execute the requested WikiRAG command.
 
@@ -443,7 +490,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             when omitted.
 
     Returns:
-        int: Zero for success and one for an application error.
+        int: Zero on success or a nonzero error status.
     """
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -460,7 +507,6 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         elif args.command == "search":
             filters = build_search_filters(args)
-
             run_search(
                 args.query,
                 top_k=args.top_k,
@@ -481,6 +527,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                 filters=filters,
                 max_context_chars=args.max_context_chars,
             )
+
+        elif args.command == "evaluate":
+            return run_evaluate(args.repeats)
 
     except WikiRagError as error:
         print(f"Error: {error}", file=sys.stderr)
