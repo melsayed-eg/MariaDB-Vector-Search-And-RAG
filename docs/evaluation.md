@@ -46,7 +46,7 @@ All 40 questions were evaluated without relational filters.
 
 | Mode | Queries | MRR | Recall@1 | Recall@3 | Recall@5 | Recall@10 | Precision@1 | Precision@3 | Precision@5 | Precision@10 | P50 latency (ms) | P95 latency (ms) |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| semantic | 40 | 0.8644 | 0.7125 | 0.8750 | 0.9500 | 1.0000 | 0.8000 | 0.3500 | 0.2300 | 0.1200 | 6.39 | 7.13 |
+| semantic | 40 | 0.8644 | 0.7125 | 0.8750 | 0.9500 | 1.0000 | 0.8000 | 0.3500 | 0.2300 | 0.1200 | 6.36 | 7.25 |
 
 Detailed results: `reports/evaluation_semantic.md` and
 `reports/evaluation_semantic.json`.
@@ -58,8 +58,8 @@ Semantic retrieval ignored filters; hybrid retrieval applied them.
 
 | Mode | Queries | MRR | Recall@1 | Recall@3 | Recall@5 | Recall@10 | Precision@1 | Precision@3 | Precision@5 | Precision@10 | P50 latency (ms) | P95 latency (ms) |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| semantic | 15 | 0.7551 | 0.6333 | 0.8000 | 0.8667 | 1.0000 | 0.6667 | 0.2889 | 0.1867 | 0.1067 | 6.28 | 7.07 |
-| hybrid | 15 | 0.7583 | 0.6333 | 0.8000 | 0.8667 | 1.0000 | 0.6667 | 0.2889 | 0.1867 | 0.1067 | 571.30 | 609.52 |
+| semantic | 15 | 0.7551 | 0.6333 | 0.8000 | 0.8667 | 1.0000 | 0.6667 | 0.2889 | 0.1867 | 0.1067 | 6.28 | 7.04 |
+| hybrid | 15 | 0.7583 | 0.6333 | 0.8000 | 0.8667 | 1.0000 | 0.6667 | 0.2889 | 0.1867 | 0.1067 | 569.81 | 604.81 |
 
 Detailed results: `reports/evaluation_comparison.md` and
 `reports/evaluation_comparison.json`.
@@ -90,6 +90,11 @@ the regenerated reports. The working-tree status records modified
 paths but does not fully identify their contents. Reproducing an
 uncommitted benchmark therefore requires the corresponding source,
 dataset, and report files, not the Git SHA alone.
+
+For the latest benchmark, evaluation started from a clean working tree
+at committed revision `9a47ff9`. Only generated report files were
+modified during execution. The metadata records these modifications;
+the evaluation source code and dataset were already committed.
 
 ## Constraint satisfaction
 
