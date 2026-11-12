@@ -18,7 +18,86 @@ from wikirag.errors import ValidationError, WikiRagError
 from wikirag.ingestion.pipeline import ingest_snapshot
 from wikirag.ingestion.wikipedia import build_snapshot
 from wikirag.models import RetrievalMode, SearchFilters
+from wikirag.rag.generator import ExtractiveGenerator
+from wikirag.rag.pipeline import answer_question
 from wikirag.retrieval.retriever import Retriever
+
+
+def add_retrieval_arguments(parser: argparse.ArgumentParser) -> None:
+    """Add shared search and RAG retrieval options.
+
+    Args:
+        parser: Subcommand parser to configure.
+
+    Returns:
+        None: Arguments are registered on the parser.
+    """
+    parser.add_argument(
+        "query",
+        help="Natural-language question or search query.",
+    )
+    parser.add_argument(
+        "--mode",
+        choices=("semantic", "hybrid"),
+        default="semantic",
+        help="Retrieval mode (default: semantic).",
+    )
+    parser.add_argument(
+        "--top-k",
+        type=int,
+        default=5,
+        help="Maximum matching chunks, from 1 to 100.",
+    )
+    parser.add_argument(
+        "--topic",
+        action="append",
+        default=[],
+        help="Required article topic; may be repeated.",
+    )
+    parser.add_argument(
+        "--category",
+        action="append",
+        default=[],
+        help="Required Wikipedia category; may be repeated.",
+    )
+    parser.add_argument(
+        "--article-id",
+        type=int,
+        action="append",
+        default=[],
+        help="Include an article ID; may be repeated.",
+    )
+    parser.add_argument(
+        "--exclude-article-id",
+        type=int,
+        action="append",
+        default=[],
+        help="Exclude an article ID; may be repeated.",
+    )
+    parser.add_argument(
+        "--min-length-chars",
+        type=int,
+        default=None,
+        help="Minimum article length in characters.",
+    )
+    parser.add_argument(
+        "--edited-since",
+        type=str,
+        default=None,
+        help="Earliest revision date in naive UTC ISO format.",
+    )
+    parser.add_argument(
+        "--linked-from-article-id",
+        type=int,
+        default=None,
+        help="Search articles linked from this article ID.",
+    )
+    parser.add_argument(
+        "--max-distance",
+        type=float,
+        default=None,
+        help="Maximum cosine distance, between 0 and 2.",
+    )
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -80,87 +159,32 @@ def build_parser() -> argparse.ArgumentParser:
         "search",
         help="Search Wikipedia chunks using semantic or hybrid retrieval.",
     )
-    search_parser.add_argument(
-        "query",
-        help="Natural-language search question.",
-    )
-    search_parser.add_argument(
-        "--mode",
-        choices=("semantic", "hybrid"),
-        default="semantic",
-        help="Retrieval mode (default: semantic).",
-    )
-    search_parser.add_argument(
-        "--top-k",
-        type=int,
-        default=5,
-        help="Maximum matching chunks, from 1 to 100.",
-    )
+    add_retrieval_arguments(search_parser)
 
-    # Repeated topic/category flags use OR within each filter.
-    search_parser.add_argument(
-        "--topic",
-        action="append",
-        default=[],
-        help="Required article topic; may be repeated.",
+    ask_parser = commands.add_parser(
+        "ask",
+        help="Answer questions using retrieved Wikipedia sources.",
     )
-    search_parser.add_argument(
-        "--category",
-        action="append",
-        default=[],
-        help="Required Wikipedia category; may be repeated.",
-    )
-    search_parser.add_argument(
-        "--article-id",
+    add_retrieval_arguments(ask_parser)
+    ask_parser.add_argument(
+        "--max-context-chars",
         type=int,
-        action="append",
-        default=[],
-        help="Include an article ID; may be repeated.",
-    )
-    search_parser.add_argument(
-        "--exclude-article-id",
-        type=int,
-        action="append",
-        default=[],
-        help="Exclude an article ID; may be repeated.",
-    )
-    search_parser.add_argument(
-        "--min-length-chars",
-        type=int,
-        default=None,
-        help="Require article length strictly greater than this value.",
-    )
-    search_parser.add_argument(
-        "--edited-since",
-        type=str,
-        default=None,
-        help="Earliest revision date in naive UTC ISO format.",
-    )
-    search_parser.add_argument(
-        "--linked-from-article-id",
-        type=int,
-        default=None,
-        help="Only search articles linked from this article ID.",
-    )
-    search_parser.add_argument(
-        "--max-distance",
-        type=float,
-        default=None,
-        help="Maximum cosine distance, between 0 and 2.",
+        default=6000,
+        help="Maximum RAG context length in characters.",
     )
 
     return parser
 
 
 def build_search_filters(args: argparse.Namespace) -> SearchFilters | None:
-    """Validate search options and build the shared filter object.
+    """Validate retrieval options and build the shared filter object.
 
     Args:
-        args: Parsed command-line search arguments.
+        args: Parsed search or RAG command arguments.
 
     Returns:
         SearchFilters | None: Valid SQL filters in hybrid mode,
-        otherwise None.
+            otherwise None.
 
     Raises:
         ValidationError: If the query, limits, date, or filters
@@ -198,7 +222,7 @@ def build_search_filters(args: argparse.Namespace) -> SearchFilters | None:
             raise ValidationError("Hybrid search requires at least one SQL filter")
         return filters
 
-    # Avoid silently ignoring filters in semantic mode.
+    # Prevent silent filter ignoring in semantic mode.
     if not filters.is_empty():
         raise ValidationError("SQL filters require --mode hybrid")
 
@@ -223,22 +247,19 @@ def run_init_db() -> None:
 
 
 def run_build_snapshot(seed_path: Path, output_path: Path) -> None:
-    """Build a reproducible Wikipedia snapshot from seed titles.
+    """Build a Wikipedia snapshot from seed titles.
 
     Args:
-        seed_path: CSV file containing Wikipedia seed titles.
+        seed_path: CSV containing Wikipedia seed titles.
         output_path: Destination for the JSONL snapshot.
 
     Returns:
-        None: The snapshot has been generated successfully.
+        None: The snapshot has been generated.
 
     Raises:
         WikiRagError: If snapshot validation or fetching fails.
     """
-    article_count = build_snapshot(
-        seed_path,
-        output_path,
-    )
+    article_count = build_snapshot(seed_path, output_path)
 
     print(f"Snapshot created successfully: {article_count} articles.")
     print(f"Snapshot saved to: {output_path}")
@@ -293,16 +314,16 @@ def run_search(
     mode: RetrievalMode = "semantic",
     filters: SearchFilters | None = None,
 ) -> None:
-    """Retrieve and display matching Wikipedia text chunks.
+    """Retrieve and display matching Wikipedia chunks.
 
     Args:
-        query: Natural-language question or search text.
+        query: Natural-language search text.
         top_k: Maximum number of ranked chunks.
         mode: Semantic or hybrid retrieval mode.
         filters: Optional database-native SQL constraints.
 
     Returns:
-        None: Prints ranked matches and retrieval timing.
+        None: Prints ranked matches and retrieval timings.
 
     Raises:
         WikiRagError: If embedding, retrieval, or database access fails.
@@ -311,7 +332,6 @@ def run_search(
 
     with WikiRepository(settings.db) as repo:
         retriever = Retriever(repo, get_embedder())
-
         result = retriever.retrieve(
             query,
             top_k=top_k,
@@ -334,7 +354,6 @@ def run_search(
         print(f"Similarity score: {hit.score:.4f}")
         print(f"Source: {hit.article_url}")
 
-        # Display a readable preview rather than an entire long chunk.
         preview = " ".join(hit.text.split())
         if len(preview) > 250:
             preview = preview[:247] + "..."
@@ -345,6 +364,75 @@ def run_search(
     print(f"Embedding time: {result.embed_ms:.2f} ms")
     print(f"Search time: {result.search_ms:.2f} ms")
     print(f"Total retrieval time: {result.latency_ms:.2f} ms")
+
+
+def run_ask(
+    question: str,
+    *,
+    top_k: int = 5,
+    mode: RetrievalMode = "semantic",
+    filters: SearchFilters | None = None,
+    max_context_chars: int = 6000,
+) -> None:
+    """Answer a question using MariaDB retrieval and extractive RAG.
+
+    Args:
+        question: Natural-language question.
+        top_k: Maximum number of retrieved chunks.
+        mode: Semantic or hybrid retrieval mode.
+        filters: Optional MariaDB relational search constraints.
+        max_context_chars: Maximum formatted context length.
+
+    Returns:
+        None: Prints the grounded answer, sources, and timings.
+
+    Raises:
+        WikiRagError: If configuration, retrieval, or generation fails.
+    """
+    settings = load_settings()
+
+    with WikiRepository(settings.db) as repo:
+        retriever = Retriever(repo, get_embedder())
+        generator = ExtractiveGenerator()
+
+        result = answer_question(
+            question,
+            retriever,
+            generator,
+            top_k=top_k,
+            mode=mode,
+            filters=filters,
+            max_context_chars=max_context_chars,
+        )
+
+    print(f"Question: {result.question}")
+    print(f"Retrieval mode: {result.retrieval.mode}")
+    print(f"Generator: {result.generator_name}")
+
+    print()
+    print("Answer:")
+    print(result.answer)
+
+    print()
+    print("Sources:")
+
+    # Use context sources because their indices match answer citations.
+    if not result.context.sources:
+        print("No supporting sources were retrieved.")
+
+    for number, source in enumerate(result.context.sources, start=1):
+        print(f"[{number}] {source.article_title}")
+        print(f"    {source.article_url}")
+        print(f"    Chunk ID: {source.chunk_id}")
+
+    if result.context.truncated:
+        print()
+        print("Note: Some retrieved context was excluded by the size limit.")
+
+    print()
+    print(f"Retrieved chunks: {len(result.retrieval.hits)}")
+    print(f"Retrieval time: {result.retrieval.latency_ms:.2f} ms")
+    print(f"Total RAG time: {result.latency_ms:.2f} ms")
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -365,16 +453,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             run_init_db()
 
         elif args.command == "build-snapshot":
-            run_build_snapshot(
-                args.seed,
-                args.output,
-            )
+            run_build_snapshot(args.seed, args.output)
 
         elif args.command == "ingest":
-            return run_ingest(
-                args.snapshot,
-                args.limit,
-            )
+            return run_ingest(args.snapshot, args.limit)
 
         elif args.command == "search":
             filters = build_search_filters(args)
@@ -384,6 +466,20 @@ def main(argv: Sequence[str] | None = None) -> int:
                 top_k=args.top_k,
                 mode=args.mode,
                 filters=filters,
+            )
+
+        elif args.command == "ask":
+            filters = build_search_filters(args)
+
+            if args.max_context_chars < 1:
+                raise ValidationError("--max-context-chars must be a positive integer")
+
+            run_ask(
+                args.query,
+                top_k=args.top_k,
+                mode=args.mode,
+                filters=filters,
+                max_context_chars=args.max_context_chars,
             )
 
     except WikiRagError as error:
