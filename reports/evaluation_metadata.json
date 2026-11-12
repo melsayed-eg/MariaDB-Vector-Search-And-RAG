@@ -1,7 +1,7 @@
 {
-  "benchmark_utc": "2026-11-12T14:29:57.986905+00:00",
-  "git_commit": "9a47ff9ee53f8ef3f96cfc7a561ed56f9618cb67",
-  "git_worktree_status": "M reports/evaluation_comparison.json\n M reports/evaluation_comparison.md\n M reports/evaluation_semantic.json\n M reports/evaluation_semantic.md",
+  "benchmark_utc": "2026-11-12T18:25:00.645713+00:00",
+  "git_commit": "aea42a42ea8bc65f3064211afb7551a7039132ad",
+  "git_worktree_status": "M reports/evaluation_comparison.json\n M reports/evaluation_comparison.md\n M reports/evaluation_metadata.json\n M reports/evaluation_semantic.json\n M reports/evaluation_semantic.md",
   "python_version": "3.14.9",
   "operating_system": "macOS-27.2.1-arm64-arm-64bit-Mach-O",
   "hardware": {
@@ -13,7 +13,7 @@
   "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
   "embedding_dimension": 384,
   "snapshot_sha256": "d64afac28a918ad16639a1e534f4d3bf472ec48327927c4ed52ae8a180211b2c",
-  "dataset_sha256": "3baa9e75d7de8c0a74ac8414e0acb49ba6ff3b62e515e91cdaaf053f951ea101",
+  "dataset_sha256": "26e39637e01a739697721a8187539bb93b256af7b26eda5a3f172884b13e4a8c",
   "corpus_articles": 200,
   "corpus_chunks": 8743,
   "ks": [

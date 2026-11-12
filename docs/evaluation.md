@@ -14,11 +14,12 @@ The evaluation dataset is stored in `data/eval/queries.jsonl`.
 All referenced article IDs are validated against the committed
 `data/snapshot/wikipedia_snapshot.jsonl`.
 
-Relevance judgments are provisional pending independent review.
-For `hyb_05`, the proposed relevant articles are SQL (`29004`) and
+Zineb has approved all 40 evaluation questions and their final
+relevance labels. Following her review, `sem_24` includes both
+Public-key cryptography (`24222`) and RSA cryptosystem (`25385`).
+For `hyb_05`, the approved relevant articles are SQL (`29004`) and
 Relational database (`25873`): both explicitly identify SQL as the
-language used for relational database queries. This proposed judgment
-still requires Zineb's independent confirmation.
+language used for relational database queries.
 
 ## Methodology
 
@@ -46,7 +47,7 @@ All 40 questions were evaluated without relational filters.
 
 | Mode | Queries | MRR | Recall@1 | Recall@3 | Recall@5 | Recall@10 | Precision@1 | Precision@3 | Precision@5 | Precision@10 | P50 latency (ms) | P95 latency (ms) |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| semantic | 40 | 0.8644 | 0.7125 | 0.8750 | 0.9500 | 1.0000 | 0.8000 | 0.3500 | 0.2300 | 0.1200 | 6.36 | 7.25 |
+| semantic | 40 | 0.8644 | 0.7000 | 0.8750 | 0.9500 | 1.0000 | 0.8000 | 0.3583 | 0.2350 | 0.1225 | 6.50 | 10.24 |
 
 Detailed results: `reports/evaluation_semantic.md` and
 `reports/evaluation_semantic.json`.
@@ -58,8 +59,8 @@ Semantic retrieval ignored filters; hybrid retrieval applied them.
 
 | Mode | Queries | MRR | Recall@1 | Recall@3 | Recall@5 | Recall@10 | Precision@1 | Precision@3 | Precision@5 | Precision@10 | P50 latency (ms) | P95 latency (ms) |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| semantic | 15 | 0.7551 | 0.6333 | 0.8000 | 0.8667 | 1.0000 | 0.6667 | 0.2889 | 0.1867 | 0.1067 | 6.28 | 7.04 |
-| hybrid | 15 | 0.7583 | 0.6333 | 0.8000 | 0.8667 | 1.0000 | 0.6667 | 0.2889 | 0.1867 | 0.1067 | 569.81 | 604.81 |
+| semantic | 15 | 0.7551 | 0.6333 | 0.8000 | 0.8667 | 1.0000 | 0.6667 | 0.2889 | 0.1867 | 0.1067 | 6.16 | 6.79 |
+| hybrid | 15 | 0.7583 | 0.6333 | 0.8000 | 0.8667 | 1.0000 | 0.6667 | 0.2889 | 0.1867 | 0.1067 | 563.56 | 581.33 |
 
 Detailed results: `reports/evaluation_comparison.md` and
 `reports/evaluation_comparison.json`.
@@ -92,7 +93,8 @@ uncommitted benchmark therefore requires the corresponding source,
 dataset, and report files, not the Git SHA alone.
 
 For the latest benchmark, evaluation started from a clean working tree
-at committed revision `9a47ff9`. Only generated report files were
+at committed revision `aea42a4`, containing Zineb-approved relevance
+labels. Only generated report files were
 modified during execution. The metadata records these modifications;
 the evaluation source code and dataset were already committed.
 
@@ -156,7 +158,8 @@ generally outperforms semantic retrieval.
 
 ## Limitations
 
-1. Relevance judgments require independent review before final approval.
+1. Relevance labels were approved by Zineb, but the evaluation remains
+   limited to the selected questions and corpus.
 2. The evaluation corpus contains only 200 Wikipedia articles.
 3. Article-level ranking is derived from the first 30 retrieved chunks.
 4. Hybrid and semantic retrieval use different SQL execution strategies,
@@ -174,5 +177,5 @@ The committed evaluation dataset and snapshot are checked by automated tests.
 The full test suite passed with 586 tests. Ruff linting, formatting
 (95 files), and Git whitespace checks also passed.
 
-The evaluation reports are preliminary until relevance judgments have
-been independently reviewed.
+The evaluation questions and relevance labels have received Zineb's
+final approval. The reports reflect the approved dataset.
