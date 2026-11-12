@@ -17,7 +17,7 @@ The project aims to combine:
 
 Unlike an architecture that requires a separate vector database, WikiRAG aims to store article metadata and embeddings together in MariaDB.
 
-**Current status:** The project foundation is implemented. The database repository, Wikipedia ingestion, retrieval, RAG, and evaluation components are under development.
+**Current status:** Core database, ingestion, retrieval, RAG, and evaluation components are implemented. Final evaluation review and verification remain in progress.
 
 ---
 
@@ -148,7 +148,7 @@ Host: 127.0.0.1
 Port: 13307
 ```
 
-Database schema initialization, test-database setup, and Wikipedia data loading will be documented as their implementations are completed.
+See the project documentation and Makefile for database initialization, test setup, and Wikipedia ingestion workflows.
 
 ---
 
@@ -160,7 +160,7 @@ Database schema initialization, test-database setup, and Wikipedia data loading 
 uv run --extra dev --extra embeddings python -m pytest -m unit -q
 ```
 
-The current foundation has **104 passing unit tests**.
+The project includes unit, integration, and evaluation tests. Run the full suite to verify the current test count.
 
 These tests cover the implemented shared foundation components, including:
 
@@ -182,7 +182,7 @@ uv run --extra dev ruff check .
 uv run --extra dev ruff format --check .
 ```
 
-Integration and end-to-end tests will be added alongside the corresponding database and application implementations.
+Integration and end-to-end tests are included where implemented; some require a running MariaDB instance.
 
 ---
 
@@ -295,26 +295,36 @@ All contributors participate in reviewing shared interfaces, integration decisio
 
 ---
 
-## 13. Evaluation Plan
+## 13. Retrieval Evaluation
 
-The completed project will be evaluated using:
+WikiRAG includes a reproducible evaluation workflow using MariaDB 11.8,
+the Wikipedia corpus, and the MiniLM embedding model.
 
-- A ground-truth set of Wikipedia search questions.
-- Retrieval recall measurements.
-- Query latency measurements.
-- Comparison of semantic and SQL-constrained retrieval.
-- Reproducible experiments.
+The evaluation dataset contains 40 questions: 25 semantic questions and
+15 constrained questions. The benchmark evaluates all 40 questions in
+semantic mode and compares semantic and hybrid retrieval on the same
+15 constrained questions.
 
-The final documentation will explain:
+Run the benchmark against the populated local database:
 
-- Chunk size and overlap.
-- Embedding model selection.
-- HNSW index parameters.
-- Database schema design.
-- SQL query examples.
-- Evaluation methodology and results.
+    make eval
 
-These features are not yet implemented in the current foundation.
+The benchmark requires 200 articles and 8,743 embedded chunks.
+It measures Recall@K, Precision@K, MRR, and retrieval latency, verifies
+hybrid SQL filter compliance, and regenerates the evaluation reports.
+
+Results and methodology:
+
+- [Evaluation Methodology](docs/evaluation.md)
+- [Semantic Evaluation](reports/evaluation_semantic.md)
+- [Semantic/Hybrid Comparison](reports/evaluation_comparison.md)
+- [Reproducibility Metadata](reports/evaluation_metadata.json)
+
+Hybrid retrieval uses exact cosine ranking with relational SQL filters,
+whereas semantic retrieval uses the HNSW index. Their latency differences
+therefore cannot be attributed solely to filtering.
+
+Relevance judgments remain provisional pending independent review.
 
 ---
 
@@ -322,26 +332,21 @@ These features are not yet implemented in the current foundation.
 
 ### Implemented
 
-- Project structure and Python packaging.
-- Shared models and interfaces.
-- Configuration handling.
-- Custom exceptions.
-- Fake embedding model.
-- In-memory repository.
-- Foundation unit tests.
-- Docker Compose configuration.
-- Dependency management and CPU-only embedding installation.
+- Python packaging, configuration, and shared interfaces.
+- MariaDB schema, repository, native VECTOR storage, and HNSW indexing.
+- Wikipedia ingestion, chunking, and embeddings.
+- Semantic and SQL-constrained hybrid retrieval.
+- RAG pipeline components.
+- Retrieval evaluation and automated filter-compliance checks.
+- Reproducible benchmark reports and environment metadata.
+- Unit and database integration testing infrastructure.
 
-### Under Development
+### Remaining Verification
 
-- MariaDB schema and real database repository.
-- Native VECTOR and HNSW indexing.
-- Wikipedia collection and ingestion.
-- Semantic and hybrid SQL retrieval.
-- RAG pipeline.
-- Recall and latency evaluation.
-- End-to-end integration tests.
-- Complete reproducibility and final results.
+- Final independent review of evaluation relevance judgments.
+- Final verification after any subsequent code or dataset changes.
+- Regeneration and approval of final evaluation reports.
+- Additional experiments and production-scale validation.
 
 ---
 

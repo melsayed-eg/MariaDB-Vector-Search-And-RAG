@@ -1,0 +1,40 @@
+{
+  "benchmark_utc": "2026-11-12T18:25:00.645713+00:00",
+  "git_commit": "aea42a42ea8bc65f3064211afb7551a7039132ad",
+  "git_worktree_status": "M reports/evaluation_comparison.json\n M reports/evaluation_comparison.md\n M reports/evaluation_metadata.json\n M reports/evaluation_semantic.json\n M reports/evaluation_semantic.md",
+  "python_version": "3.14.9",
+  "operating_system": "macOS-27.2.1-arm64-arm-64bit-Mach-O",
+  "hardware": {
+    "machine": "arm64",
+    "cpu": "Apple M4",
+    "ram_bytes": 17179869184
+  },
+  "mariadb_version": "11.8.9-MariaDB-ubu2404",
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "embedding_dimension": 384,
+  "snapshot_sha256": "d64afac28a918ad16639a1e534f4d3bf472ec48327927c4ed52ae8a180211b2c",
+  "dataset_sha256": "26e39637e01a739697721a8187539bb93b256af7b26eda5a3f172884b13e4a8c",
+  "corpus_articles": 200,
+  "corpus_chunks": 8743,
+  "ks": [
+    1,
+    3,
+    5,
+    10
+  ],
+  "chunk_pool": 30,
+  "warmup_runs_per_query": 1,
+  "measured_runs_per_query": 5,
+  "hnsw_session_variables": {
+    "mhnsw_default_distance": "euclidean",
+    "mhnsw_default_m": "6",
+    "mhnsw_ef_search": "20",
+    "mhnsw_max_cache_size": "16777216"
+  },
+  "chunks_table_definition": "CREATE TABLE `chunks` (\n  `chunk_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,\n  `article_id` bigint(20) unsigned NOT NULL,\n  `chunk_index` int(10) unsigned NOT NULL,\n  `section_title` varchar(255) DEFAULT NULL,\n  `text` text NOT NULL,\n  `char_count` int(10) unsigned NOT NULL,\n  `embedding` vector(384) NOT NULL,\n  PRIMARY KEY (`chunk_id`),\n  UNIQUE KEY `uq_chunks_article_idx` (`article_id`,`chunk_index`),\n  VECTOR KEY `embedding` (`embedding`) `M`='16' `DISTANCE`='cosine',\n  CONSTRAINT `fk_chunks_article` FOREIGN KEY (`article_id`) REFERENCES `articles` (`article_id`) ON DELETE CASCADE\n) ENGINE=InnoDB AUTO_INCREMENT=8744 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci",
+  "search_strategies": {
+    "semantic": "HNSW-eligible cosine vector search",
+    "hybrid": "Exact cosine ranking with relational SQL filters"
+  },
+  "timing_methodology": "Retriever latency measured with perf_counter; one warm-up request per query and mode; P50/P95 computed across per-query means of measured repetitions."
+}
