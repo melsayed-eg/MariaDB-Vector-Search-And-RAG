@@ -7,6 +7,7 @@ import subprocess
 import sys
 from collections.abc import Sequence
 from contextlib import closing
+from dataclasses import replace
 from datetime import datetime
 from pathlib import Path
 
@@ -18,6 +19,7 @@ from wikirag.embeddings import get_embedder
 from wikirag.errors import ValidationError, WikiRagError
 from wikirag.experiments.metric_mismatch import run_metric_mismatch
 from wikirag.experiments.reporting import write_experiment_report
+from wikirag.experiments.transaction_visibility import run_transaction_visibility
 from wikirag.ingestion.pipeline import ingest_snapshot
 from wikirag.ingestion.wikipedia import build_snapshot
 from wikirag.models import RetrievalMode, SearchFilters
@@ -195,7 +197,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--min-category-articles",
         type=int,
         default=1,
-        help="Minimum articles required for a category (default: 1).",
+        help="Minimum articles required for a category.",
     )
     stats_parser.add_argument(
         "--show-categories",
@@ -207,7 +209,6 @@ def build_parser() -> argparse.ArgumentParser:
         "experiment",
         help="Run MariaDB native-vector depth experiments.",
     )
-
     experiment_commands = experiment_parser.add_subparsers(
         dest="experiment_name",
         required=True,
@@ -220,7 +221,7 @@ def build_parser() -> argparse.ArgumentParser:
     metric_parser.add_argument(
         "--query",
         default="How does quicksort work?",
-        help="Question used to generate the experiment query vector.",
+        help="Question used to create the experiment query vector.",
     )
     metric_parser.add_argument(
         "--repeats",
@@ -229,6 +230,17 @@ def build_parser() -> argparse.ArgumentParser:
         help="Measured executions per SQL variant (minimum: 5).",
     )
     metric_parser.add_argument(
+        "--output",
+        type=Path,
+        required=True,
+        help="Destination JSON report path.",
+    )
+
+    visibility_parser = experiment_commands.add_parser(
+        "transaction-visibility",
+        help="Test vector transaction visibility in an isolated test database.",
+    )
+    visibility_parser.add_argument(
         "--output",
         type=Path,
         required=True,
@@ -283,11 +295,33 @@ def build_search_filters(args: argparse.Namespace) -> SearchFilters | None:
             raise ValidationError("Hybrid search requires at least one SQL filter")
         return filters
 
-    # Reject filters in semantic mode instead of silently ignoring them.
+    # Prevent silently ignoring SQL filters during semantic search.
     if not filters.is_empty():
         raise ValidationError("SQL filters require --mode hybrid")
 
     return None
+
+
+def validate_report_path(output_path: Path) -> None:
+    """Validate a new JSON experiment report destination.
+
+    Args:
+        output_path: Path where the report would be written.
+
+    Returns:
+        None: The destination is valid and does not exist.
+
+    Raises:
+        ValidationError: If the path is invalid or already exists.
+    """
+    if not isinstance(output_path, Path) or output_path.suffix.lower() != ".json":
+        raise ValidationError("--output must be a JSON file")
+
+    if output_path.exists():
+        raise ValidationError(
+            f"Report already exists: {output_path}. "
+            "Choose a new output path to preserve previous measurements."
+        )
 
 
 def run_init_db() -> None:
@@ -392,7 +426,6 @@ def run_search(
 
     with WikiRepository(settings.db) as repo:
         retriever = Retriever(repo, get_embedder())
-
         result = retriever.retrieve(
             query,
             top_k=top_k,
@@ -416,7 +449,6 @@ def run_search(
         print(f"Source: {hit.article_url}")
 
         preview = " ".join(hit.text.split())
-
         if len(preview) > 250:
             preview = preview[:247] + "..."
 
@@ -449,7 +481,7 @@ def run_ask(
         None: Prints the answer, citations, and timings.
 
     Raises:
-        WikiRagError: If retrieval or answer generation fails.
+        WikiRagError: If retrieval or generation fails.
     """
     settings = load_settings()
 
@@ -478,7 +510,7 @@ def run_ask(
     print()
     print("Sources:")
 
-    # Context sources are numbered to match citations in the answer.
+    # Context sources match the citation numbers in the answer.
     if not result.context.sources:
         print("No supporting sources were retrieved.")
 
@@ -501,29 +533,28 @@ def run_evaluate(repeats: int = 5) -> int:
     """Run the existing reproducible retrieval benchmark.
 
     Args:
-        repeats: Number of measured repetitions per evaluation query.
+        repeats: Measured repetitions per evaluation query.
 
     Returns:
         int: The benchmark process's exit status.
 
     Raises:
-        ValidationError: If repetitions are invalid or the benchmark
-            script is unavailable.
+        ValidationError: If repetitions are invalid or the runner
+            script does not exist.
     """
     if type(repeats) is not int or repeats < 1:
         raise ValidationError("--repeats must be a positive integer")
 
     project_root = Path(__file__).resolve().parents[2]
-    benchmark_script = project_root / "scripts" / "run_retrieval_benchmark.py"
+    script = project_root / "scripts" / "run_retrieval_benchmark.py"
 
-    if not benchmark_script.is_file():
-        raise ValidationError(f"Evaluation script not found: {benchmark_script}")
+    if not script.is_file():
+        raise ValidationError(f"Evaluation script not found: {script}")
 
-    # Reuse the existing evaluation runner and preserve its exit status.
     completed = subprocess.run(
         [
             sys.executable,
-            str(benchmark_script),
+            str(script),
             "--repeats",
             str(repeats),
         ],
@@ -542,15 +573,14 @@ def run_stats(
     """Display article, chunk, topic, and category statistics.
 
     Args:
-        min_category_articles: Minimum number of distinct articles
-            associated with a category.
+        min_category_articles: Minimum number of articles per category.
         show_categories: Whether to print category names.
 
     Returns:
         None: Prints current MariaDB corpus statistics.
 
     Raises:
-        ValidationError: If the minimum article count is invalid.
+        ValidationError: If the category threshold is invalid.
         WikiRagError: If configuration or database access fails.
     """
     if type(min_category_articles) is not int or min_category_articles < 1:
@@ -559,15 +589,15 @@ def run_stats(
     settings = load_settings()
 
     with WikiRepository(settings.db) as repo:
-        article_count = repo.count_articles()
-        chunk_count = repo.count_chunks()
+        articles = repo.count_articles()
+        chunks = repo.count_chunks()
         topics = repo.list_topics()
         categories = repo.list_categories(min_articles=min_category_articles)
 
     print("WikiRAG Database Statistics")
     print(f"Database: {settings.db.database}")
-    print(f"Articles: {article_count}")
-    print(f"Chunks: {chunk_count}")
+    print(f"Articles: {articles}")
+    print(f"Chunks: {chunks}")
     print(f"Topics: {len(topics)}")
 
     for topic in topics:
@@ -579,7 +609,7 @@ def run_stats(
         for category in categories:
             print(f"  - {category}")
 
-    if article_count == 0 or chunk_count == 0:
+    if articles == 0 or chunks == 0:
         print("Warning: The Wikipedia corpus is empty or incomplete.")
 
 
@@ -592,17 +622,16 @@ def run_metric_experiment(
     """Run and save the MariaDB distance-metric comparison.
 
     Args:
-        sample_query: Question used to construct the query embedding.
+        sample_query: Question used to generate the query embedding.
         repeats: Measured executions per SQL variant, at least five.
-        output_path: Destination for the JSON experiment report.
+        output_path: Destination for the JSON report.
 
     Returns:
-        None: Prints experiment results and the saved report location.
+        None: Prints experimental measurements and report location.
 
     Raises:
-        ValidationError: If the query, repetitions, or output path
-            are invalid, or the output file already exists.
-        WikiRagError: If embedding or database operations fail.
+        ValidationError: If arguments or the destination are invalid.
+        WikiRagError: If embedding or database access fails.
         OSError: If the report cannot be written.
     """
     if not isinstance(sample_query, str) or not sample_query.strip():
@@ -611,14 +640,7 @@ def run_metric_experiment(
     if type(repeats) is not int or repeats < 5:
         raise ValidationError("--repeats must be at least 5")
 
-    if output_path.suffix.lower() != ".json":
-        raise ValidationError("--output must be a JSON file")
-
-    if output_path.exists():
-        raise ValidationError(
-            f"Report already exists: {output_path}. "
-            "Choose a new output path to preserve previous measurements."
-        )
+    validate_report_path(output_path)
 
     print("Loading embedding model...", flush=True)
     embedder = get_embedder()
@@ -654,11 +676,89 @@ def run_metric_experiment(
     print(f"Experiment report saved to: {saved_path}")
 
 
+def run_transaction_experiment(*, output_path: Path) -> None:
+    """Run transaction-visibility checks on the isolated test database.
+
+    Args:
+        output_path: Destination for the JSON experiment report.
+
+    Returns:
+        None: Prints visibility observations and report location.
+
+    Raises:
+        ValidationError: If the output is invalid, the selected
+            database is unsafe, or the test database is not empty.
+        WikiRagError: If database initialization or the experiment fails.
+        OSError: If the report cannot be written.
+    """
+    validate_report_path(output_path)
+
+    settings = load_settings()
+    test_database = settings.db_name_test
+
+    # Never allow this experiment to target the application database.
+    if not test_database.endswith("_test") or test_database == settings.db.database:
+        raise ValidationError("Transaction visibility requires a separate *_test database")
+
+    test_config = replace(
+        settings.db,
+        database=test_database,
+    )
+
+    # Create or verify the test schema without deleting existing tables.
+    with closing(get_connection(test_config)) as connection:
+        init_schema(connection, recreate=False)
+
+    with WikiRepository(test_config) as repo:
+        if repo.count_articles() != 0 or repo.count_chunks() != 0:
+            raise ValidationError(
+                "Transaction visibility requires an empty test database. "
+                "Existing test records will not be deleted automatically."
+            )
+
+    print(f"Using isolated test database: {test_database}", flush=True)
+    print("Running transaction visibility experiment...", flush=True)
+
+    report = run_transaction_visibility(config=test_config)
+
+    saved_path = write_experiment_report(
+        report,
+        output_path=output_path,
+    )
+
+    print()
+    print("Transaction Visibility Experiment")
+
+    for isolation, states in report["isolation_levels"].items():
+        print()
+        print(f"Isolation level: {isolation}")
+
+        for phase in (
+            "uncommitted",
+            "after_rollback",
+            "after_commit",
+            "after_commit_fresh_reader",
+            "after_cleanup",
+        ):
+            observation = states[phase]
+
+            print(
+                f"  {phase}: "
+                f"articles={observation['articles']}, "
+                f"chunks={observation['chunks']}, "
+                f"indexed_hits={observation['q1_hits']}, "
+                f"exact_hits={observation['exact_hits']}"
+            )
+
+    print()
+    print(f"Experiment report saved to: {saved_path}")
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """Execute the requested WikiRAG command.
 
     Args:
-        argv: Optional command-line arguments. Uses sys.argv
+        argv: Optional command-line arguments; uses sys.argv
             when omitted.
 
     Returns:
@@ -672,16 +772,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             run_init_db()
 
         elif args.command == "build-snapshot":
-            run_build_snapshot(
-                args.seed,
-                args.output,
-            )
+            run_build_snapshot(args.seed, args.output)
 
         elif args.command == "ingest":
-            return run_ingest(
-                args.snapshot,
-                args.limit,
-            )
+            return run_ingest(args.snapshot, args.limit)
 
         elif args.command == "search":
             filters = build_search_filters(args)
@@ -722,6 +816,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                 repeats=args.repeats,
                 output_path=args.output,
             )
+
+        elif args.command == "experiment" and args.experiment_name == "transaction-visibility":
+            run_transaction_experiment(output_path=args.output)
 
     except WikiRagError as error:
         print(f"Error: {error}", file=sys.stderr)

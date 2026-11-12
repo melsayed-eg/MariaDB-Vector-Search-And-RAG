@@ -843,3 +843,73 @@ def test_metric_experiment_rejects_non_json_output(
             repeats=5,
             output_path=tmp_path / "report.txt",
         )
+
+
+def test_transaction_experiment_command_dispatch(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Verify that the CLI forwards the transaction report path."""
+    calls: list[Path] = []
+
+    def fake_run_transaction_experiment(*, output_path: Path) -> None:
+        """Record the requested experiment report path."""
+        calls.append(output_path)
+
+    monkeypatch.setattr(
+        cli,
+        "run_transaction_experiment",
+        fake_run_transaction_experiment,
+    )
+
+    result = cli.main(
+        [
+            "experiment",
+            "transaction-visibility",
+            "--output",
+            "results/experiments/transaction_test.json",
+        ]
+    )
+
+    assert result == 0
+    assert calls == [Path("results/experiments/transaction_test.json")]
+
+
+def test_transaction_experiment_rejects_non_json_output(
+    tmp_path: Path,
+) -> None:
+    """Verify transaction experiments require a JSON report path."""
+    with pytest.raises(cli.ValidationError, match="JSON"):
+        cli.run_transaction_experiment(output_path=tmp_path / "report.txt")
+
+
+def test_transaction_experiment_preserves_existing_report(
+    tmp_path: Path,
+) -> None:
+    """Verify existing experiment results cannot be overwritten."""
+    output_path = tmp_path / "existing.json"
+    output_path.write_text('{"saved": true}', encoding="utf-8")
+
+    with pytest.raises(cli.ValidationError, match="already exists"):
+        cli.run_transaction_experiment(output_path=output_path)
+
+    assert output_path.read_text(encoding="utf-8") == ('{"saved": true}')
+
+
+def test_transaction_experiment_rejects_application_database(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    """Verify transaction experiments cannot target the main database."""
+    settings = SimpleNamespace(
+        db=SimpleNamespace(database="wikirag"),
+        db_name_test="wikirag",
+    )
+
+    def fake_load_settings() -> SimpleNamespace:
+        """Return an intentionally unsafe database configuration."""
+        return settings
+
+    monkeypatch.setattr(cli, "load_settings", fake_load_settings)
+
+    with pytest.raises(cli.ValidationError, match="separate"):
+        cli.run_transaction_experiment(output_path=tmp_path / "transaction.json")
