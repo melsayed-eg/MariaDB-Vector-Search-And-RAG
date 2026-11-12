@@ -7,11 +7,12 @@ PYTHON := uv run --extra dev --extra embeddings python
 SNAPSHOT := data/snapshot/wikipedia_snapshot.jsonl
 
 .PHONY: help check-env check-snapshot up down ps version \
-        setup setup-test-db test test-unit test-db lint eval
+        setup setup-test-db demo test test-unit test-db lint eval
 
 help:
 	@echo "WikiRAG development commands:"
 	@echo "  make setup          Install, start MariaDB, initialize and ingest"
+	@echo "  make demo           Run a read-only Wikipedia retrieval and RAG demo"
 	@echo "  make up             Start MariaDB"
 	@echo "  make down           Stop MariaDB without deleting volumes"
 	@echo "  make ps             Show database containers"
@@ -61,6 +62,10 @@ setup: check-env check-snapshot
 	$(PYTHON) -m wikirag.cli ingest --snapshot "$(SNAPSHOT)"
 	$(MAKE) setup-test-db
 	$(PYTHON) -m wikirag.cli stats
+
+# Demonstrate the complete retrieval workflow without changing data.
+demo: check-env
+	$(PYTHON) scripts/run_demo.py
 
 # Create or verify the separate test database without resetting it.
 setup-test-db:

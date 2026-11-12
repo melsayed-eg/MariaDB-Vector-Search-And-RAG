@@ -167,3 +167,35 @@ an orphan when starting the main database. Do not use
 
 Inspect the ingestion results and configuration. Do not reset
 the database solely because the counts differ.
+
+
+## Demonstration for Evaluators
+
+After completing `make setup`, run:
+
+```bash
+make demo
+```
+
+The demonstration uses the committed Wikipedia corpus and existing
+WikiRAG CLI commands.
+
+It verifies that MariaDB contains 200 Wikipedia articles and 8,743
+embedded chunks, and checks that the Heapsort article is available
+for the hybrid retrieval example.
+
+The demonstration includes:
+
+1. Wikipedia corpus statistics.
+2. Semantic vector search using MariaDB native retrieval.
+3. Hybrid search with an article-ID SQL filter.
+4. Retrieval-augmented question answering with source citations.
+
+The demo does not modify database records, re-ingest articles,
+restart Docker containers, or regenerate benchmark reports.
+
+The default RAG generator is extractive and requires no external
+generative LLM service.
+
+For retrieval-quality measurements, use `make eval` separately.
+The demo itself does not measure answer correctness or recall.
