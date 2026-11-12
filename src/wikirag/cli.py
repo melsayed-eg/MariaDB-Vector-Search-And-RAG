@@ -16,6 +16,8 @@ from wikirag.db.repository import WikiRepository
 from wikirag.db.schema import init_schema
 from wikirag.embeddings import get_embedder
 from wikirag.errors import ValidationError, WikiRagError
+from wikirag.experiments.metric_mismatch import run_metric_mismatch
+from wikirag.experiments.reporting import write_experiment_report
 from wikirag.ingestion.pipeline import ingest_snapshot
 from wikirag.ingestion.wikipedia import build_snapshot
 from wikirag.models import RetrievalMode, SearchFilters
@@ -201,6 +203,38 @@ def build_parser() -> argparse.ArgumentParser:
         help="Display category names as well as their count.",
     )
 
+    experiment_parser = commands.add_parser(
+        "experiment",
+        help="Run MariaDB native-vector depth experiments.",
+    )
+
+    experiment_commands = experiment_parser.add_subparsers(
+        dest="experiment_name",
+        required=True,
+    )
+
+    metric_parser = experiment_commands.add_parser(
+        "metric-mismatch",
+        help="Compare distance expressions and HNSW index usage.",
+    )
+    metric_parser.add_argument(
+        "--query",
+        default="How does quicksort work?",
+        help="Question used to generate the experiment query vector.",
+    )
+    metric_parser.add_argument(
+        "--repeats",
+        type=int,
+        default=5,
+        help="Measured executions per SQL variant (minimum: 5).",
+    )
+    metric_parser.add_argument(
+        "--output",
+        type=Path,
+        required=True,
+        help="Destination JSON report path.",
+    )
+
     return parser
 
 
@@ -358,6 +392,7 @@ def run_search(
 
     with WikiRepository(settings.db) as repo:
         retriever = Retriever(repo, get_embedder())
+
         result = retriever.retrieve(
             query,
             top_k=top_k,
@@ -381,6 +416,7 @@ def run_search(
         print(f"Source: {hit.article_url}")
 
         preview = " ".join(hit.text.split())
+
         if len(preview) > 250:
             preview = preview[:247] + "..."
 
@@ -483,7 +519,7 @@ def run_evaluate(repeats: int = 5) -> int:
     if not benchmark_script.is_file():
         raise ValidationError(f"Evaluation script not found: {benchmark_script}")
 
-    # Reuse Marwan's benchmark runner and preserve its exit status.
+    # Reuse the existing evaluation runner and preserve its exit status.
     completed = subprocess.run(
         [
             sys.executable,
@@ -547,6 +583,77 @@ def run_stats(
         print("Warning: The Wikipedia corpus is empty or incomplete.")
 
 
+def run_metric_experiment(
+    sample_query: str,
+    *,
+    repeats: int,
+    output_path: Path,
+) -> None:
+    """Run and save the MariaDB distance-metric comparison.
+
+    Args:
+        sample_query: Question used to construct the query embedding.
+        repeats: Measured executions per SQL variant, at least five.
+        output_path: Destination for the JSON experiment report.
+
+    Returns:
+        None: Prints experiment results and the saved report location.
+
+    Raises:
+        ValidationError: If the query, repetitions, or output path
+            are invalid, or the output file already exists.
+        WikiRagError: If embedding or database operations fail.
+        OSError: If the report cannot be written.
+    """
+    if not isinstance(sample_query, str) or not sample_query.strip():
+        raise ValidationError("Experiment query must not be blank")
+
+    if type(repeats) is not int or repeats < 5:
+        raise ValidationError("--repeats must be at least 5")
+
+    if output_path.suffix.lower() != ".json":
+        raise ValidationError("--output must be a JSON file")
+
+    if output_path.exists():
+        raise ValidationError(
+            f"Report already exists: {output_path}. "
+            "Choose a new output path to preserve previous measurements."
+        )
+
+    print("Loading embedding model...", flush=True)
+    embedder = get_embedder()
+
+    print("Running MariaDB metric-mismatch experiment...", flush=True)
+
+    report = run_metric_mismatch(
+        embedder,
+        sample_query=sample_query,
+        repeats=repeats,
+        config=load_settings().db,
+    )
+
+    saved_path = write_experiment_report(
+        report,
+        output_path=output_path,
+    )
+
+    print()
+    print("Metric Mismatch Experiment")
+    print(f"MariaDB version: {report['mariadb_version']}")
+    print(f"Stored chunks: {report['chunk_count']}")
+    print(f"Measured repetitions: {report['repeats']}")
+
+    for name, metrics in report["variants"].items():
+        print()
+        print(f"Variant: {name}")
+        print(f"HNSW index used: {metrics['uses_vector_index']}")
+        print(f"Mean latency: {metrics['mean_ms']:.3f} ms")
+        print(f"P95 latency: {metrics['p95_ms']:.3f} ms")
+
+    print()
+    print(f"Experiment report saved to: {saved_path}")
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """Execute the requested WikiRAG command.
 
@@ -565,13 +672,20 @@ def main(argv: Sequence[str] | None = None) -> int:
             run_init_db()
 
         elif args.command == "build-snapshot":
-            run_build_snapshot(args.seed, args.output)
+            run_build_snapshot(
+                args.seed,
+                args.output,
+            )
 
         elif args.command == "ingest":
-            return run_ingest(args.snapshot, args.limit)
+            return run_ingest(
+                args.snapshot,
+                args.limit,
+            )
 
         elif args.command == "search":
             filters = build_search_filters(args)
+
             run_search(
                 args.query,
                 top_k=args.top_k,
@@ -600,6 +714,13 @@ def main(argv: Sequence[str] | None = None) -> int:
             run_stats(
                 min_category_articles=args.min_category_articles,
                 show_categories=args.show_categories,
+            )
+
+        elif args.command == "experiment" and args.experiment_name == "metric-mismatch":
+            run_metric_experiment(
+                args.query,
+                repeats=args.repeats,
+                output_path=args.output,
             )
 
     except WikiRagError as error:

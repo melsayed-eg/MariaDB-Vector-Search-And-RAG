@@ -751,3 +751,95 @@ def test_run_stats_displays_database_counts(
     assert "databases" in output
     assert "Categories (minimum 2 articles): 2" in output
     assert "Sorting algorithms" in output
+
+
+def test_metric_experiment_command_dispatch(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Verify that the CLI forwards metric experiment options."""
+    calls: list[tuple[str, int, Path]] = []
+
+    def fake_run_metric_experiment(
+        sample_query: str,
+        *,
+        repeats: int,
+        output_path: Path,
+    ) -> None:
+        """Record experiment arguments without accessing MariaDB."""
+        calls.append((sample_query, repeats, output_path))
+
+    monkeypatch.setattr(
+        cli,
+        "run_metric_experiment",
+        fake_run_metric_experiment,
+    )
+
+    result = cli.main(
+        [
+            "experiment",
+            "metric-mismatch",
+            "--query",
+            "How does quicksort work?",
+            "--repeats",
+            "5",
+            "--output",
+            "results/experiments/test_metric.json",
+        ]
+    )
+
+    assert result == 0
+    assert calls == [
+        (
+            "How does quicksort work?",
+            5,
+            Path("results/experiments/test_metric.json"),
+        )
+    ]
+
+
+def test_metric_experiment_rejects_invalid_repeats(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """Verify invalid repetition counts fail before loading the model."""
+    result = cli.main(
+        [
+            "experiment",
+            "metric-mismatch",
+            "--repeats",
+            "4",
+            "--output",
+            "results/experiments/test_metric.json",
+        ]
+    )
+
+    assert result == 1
+    assert "--repeats must be at least 5" in capsys.readouterr().err
+
+
+def test_metric_experiment_rejects_existing_report(
+    tmp_path: Path,
+) -> None:
+    """Verify existing experiment results cannot be overwritten."""
+    output_path = tmp_path / "existing.json"
+    output_path.write_text('{"existing": true}', encoding="utf-8")
+
+    with pytest.raises(cli.ValidationError, match="already exists"):
+        cli.run_metric_experiment(
+            "How does quicksort work?",
+            repeats=5,
+            output_path=output_path,
+        )
+
+    assert output_path.read_text(encoding="utf-8") == ('{"existing": true}')
+
+
+def test_metric_experiment_rejects_non_json_output(
+    tmp_path: Path,
+) -> None:
+    """Verify experiment reports require a JSON destination."""
+    with pytest.raises(cli.ValidationError, match="JSON"):
+        cli.run_metric_experiment(
+            "How does quicksort work?",
+            repeats=5,
+            output_path=tmp_path / "report.txt",
+        )
