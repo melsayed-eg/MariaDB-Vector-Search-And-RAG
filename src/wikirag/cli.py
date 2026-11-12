@@ -238,13 +238,35 @@ def build_parser() -> argparse.ArgumentParser:
 
     visibility_parser = experiment_commands.add_parser(
         "transaction-visibility",
-        help="Test vector transaction visibility in an isolated test database.",
+        help="Test vector transactions in an isolated database.",
     )
     visibility_parser.add_argument(
         "--output",
         type=Path,
         required=True,
         help="Destination JSON report path.",
+    )
+
+    cache_parser = experiment_commands.add_parser(
+        "cache-size",
+        help="Compare HNSW cache sizes using the isolated cache-db.",
+    )
+    cache_parser.add_argument(
+        "--cycles",
+        type=int,
+        default=5,
+        help="Restart cycles per cache setting (default: 5).",
+    )
+    cache_parser.add_argument(
+        "--repeats",
+        type=int,
+        default=5,
+        help="Warm measurements per query (minimum: 5).",
+    )
+    cache_parser.add_argument(
+        "--overwrite-report",
+        action="store_true",
+        help="Explicitly allow overwriting an existing experiment report.",
     )
 
     return parser
@@ -510,7 +532,7 @@ def run_ask(
     print()
     print("Sources:")
 
-    # Context sources match the citation numbers in the answer.
+    # Context sources match citation numbers used in the answer.
     if not result.context.sources:
         print("No supporting sources were retrieved.")
 
@@ -686,9 +708,8 @@ def run_transaction_experiment(*, output_path: Path) -> None:
         None: Prints visibility observations and report location.
 
     Raises:
-        ValidationError: If the output is invalid, the selected
-            database is unsafe, or the test database is not empty.
-        WikiRagError: If database initialization or the experiment fails.
+        ValidationError: If the output or selected database is unsafe.
+        WikiRagError: If database initialization or experiment fails.
         OSError: If the report cannot be written.
     """
     validate_report_path(output_path)
@@ -696,7 +717,7 @@ def run_transaction_experiment(*, output_path: Path) -> None:
     settings = load_settings()
     test_database = settings.db_name_test
 
-    # Never allow this experiment to target the application database.
+    # Never run experimental writes against the application database.
     if not test_database.endswith("_test") or test_database == settings.db.database:
         raise ValidationError("Transaction visibility requires a separate *_test database")
 
@@ -705,7 +726,6 @@ def run_transaction_experiment(*, output_path: Path) -> None:
         database=test_database,
     )
 
-    # Create or verify the test schema without deleting existing tables.
     with closing(get_connection(test_config)) as connection:
         init_schema(connection, recreate=False)
 
@@ -752,6 +772,80 @@ def run_transaction_experiment(*, output_path: Path) -> None:
 
     print()
     print(f"Experiment report saved to: {saved_path}")
+
+
+def run_cache_experiment(
+    *,
+    cycles: int = 5,
+    repeats: int = 5,
+    overwrite_report: bool = False,
+) -> int:
+    """Run the existing HNSW cache benchmark in its isolated database.
+
+    Args:
+        cycles: Number of container restart cycles per cache setting.
+        repeats: Measured warm requests per query, at least five.
+        overwrite_report: Whether an existing benchmark report may be
+            overwritten by the underlying runner.
+
+    Returns:
+        int: The benchmark process's exit status.
+
+    Raises:
+        ValidationError: If arguments or database settings are unsafe,
+            the benchmark script is missing, or a report is protected.
+    """
+    if type(cycles) is not int or cycles < 1:
+        raise ValidationError("--cycles must be a positive integer")
+
+    if type(repeats) is not int or repeats < 5:
+        raise ValidationError("--repeats must be at least 5")
+
+    settings = load_settings()
+
+    # The benchmark's fixed database name must not be the application DB.
+    if settings.db.database == "wikirag_cache_test":
+        raise ValidationError("The application database cannot be wikirag_cache_test")
+
+    project_root = Path(__file__).resolve().parents[2]
+    script = project_root / "scripts" / "run_cache_experiment.py"
+
+    if not script.is_file():
+        raise ValidationError(f"Cache experiment script not found: {script}")
+
+    # Match the report naming convention of the existing benchmark.
+    report_name = "cache_size_synthetic_smoke.json" if cycles < 5 else "cache_size_synthetic.json"
+    report_path = project_root / "results" / "experiments" / report_name
+
+    if report_path.exists() and not overwrite_report:
+        raise ValidationError(
+            f"Report already exists: {report_path}. "
+            "Existing results are protected. Use --overwrite-report "
+            "only if you explicitly intend to replace them."
+        )
+
+    print("Running isolated HNSW cache-size experiment...", flush=True)
+    print("Database: wikirag_cache_test (127.0.0.1:13308)", flush=True)
+    print("Cache settings: 1 MiB, 16 MiB, 64 MiB", flush=True)
+    print(f"Restart cycles per setting: {cycles}", flush=True)
+    print(f"Warm repetitions per query: {repeats}", flush=True)
+
+    # Reuse the existing runner, which restarts only the cache-db service.
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "scripts.run_cache_experiment",
+            "--cycles",
+            str(cycles),
+            "--repeats",
+            str(repeats),
+        ],
+        cwd=project_root,
+        check=False,
+    )
+
+    return completed.returncode
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -819,6 +913,13 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         elif args.command == "experiment" and args.experiment_name == "transaction-visibility":
             run_transaction_experiment(output_path=args.output)
+
+        elif args.command == "experiment" and args.experiment_name == "cache-size":
+            return run_cache_experiment(
+                cycles=args.cycles,
+                repeats=args.repeats,
+                overwrite_report=args.overwrite_report,
+            )
 
     except WikiRagError as error:
         print(f"Error: {error}", file=sys.stderr)

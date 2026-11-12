@@ -913,3 +913,150 @@ def test_transaction_experiment_rejects_application_database(
 
     with pytest.raises(cli.ValidationError, match="separate"):
         cli.run_transaction_experiment(output_path=tmp_path / "transaction.json")
+
+
+def test_cache_experiment_command_dispatch(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Verify that the CLI forwards cache benchmark settings."""
+    calls: list[tuple[int, int, bool]] = []
+
+    def fake_run_cache_experiment(
+        *,
+        cycles: int,
+        repeats: int,
+        overwrite_report: bool,
+    ) -> int:
+        """Record benchmark settings without starting Docker."""
+        calls.append((cycles, repeats, overwrite_report))
+        return 0
+
+    monkeypatch.setattr(
+        cli,
+        "run_cache_experiment",
+        fake_run_cache_experiment,
+    )
+
+    result = cli.main(
+        [
+            "experiment",
+            "cache-size",
+            "--cycles",
+            "2",
+            "--repeats",
+            "6",
+            "--overwrite-report",
+        ]
+    )
+
+    assert result == 0
+    assert calls == [(2, 6, True)]
+
+
+def test_cache_experiment_default_settings(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Verify that cache experiments use the documented defaults."""
+    calls: list[tuple[int, int, bool]] = []
+
+    def fake_run_cache_experiment(
+        *,
+        cycles: int,
+        repeats: int,
+        overwrite_report: bool,
+    ) -> int:
+        """Record the parsed default settings."""
+        calls.append((cycles, repeats, overwrite_report))
+        return 0
+
+    monkeypatch.setattr(
+        cli,
+        "run_cache_experiment",
+        fake_run_cache_experiment,
+    )
+
+    assert cli.main(["experiment", "cache-size"]) == 0
+    assert calls == [(5, 5, False)]
+
+
+def test_cache_experiment_rejects_invalid_cycles(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """Verify invalid cycle counts fail before accessing Docker."""
+    result = cli.main(["experiment", "cache-size", "--cycles", "0"])
+
+    assert result == 1
+    assert "--cycles must be a positive integer" in (capsys.readouterr().err)
+
+
+def test_cache_experiment_rejects_invalid_repeats(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """Verify fewer than five measurements are rejected."""
+    result = cli.main(["experiment", "cache-size", "--repeats", "4"])
+
+    assert result == 1
+    assert "--repeats must be at least 5" in (capsys.readouterr().err)
+
+
+def test_cache_experiment_protects_existing_report(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Verify cache benchmarks cannot silently overwrite reports."""
+    original_exists = Path.exists
+
+    def fake_exists(path: Path) -> bool:
+        """Simulate an existing smoke-test report."""
+        if path.name == "cache_size_synthetic_smoke.json":
+            return True
+        return original_exists(path)
+
+    def fake_load_settings() -> SimpleNamespace:
+        """Return a safe application database name."""
+        return SimpleNamespace(db=SimpleNamespace(database="wikirag"))
+
+    monkeypatch.setattr(Path, "exists", fake_exists)
+    monkeypatch.setattr(cli, "load_settings", fake_load_settings)
+
+    with pytest.raises(cli.ValidationError, match="already exists"):
+        cli.run_cache_experiment(
+            cycles=1,
+            repeats=5,
+            overwrite_report=False,
+        )
+
+
+def test_cache_experiment_preserves_runner_failure(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Verify a failed subprocess produces a nonzero CLI result."""
+    commands: list[list[str]] = []
+
+    def fake_load_settings() -> SimpleNamespace:
+        """Return safe database settings for the experiment."""
+        return SimpleNamespace(db=SimpleNamespace(database="wikirag"))
+
+    def fake_subprocess_run(
+        command: list[str],
+        *,
+        cwd: Path,
+        check: bool,
+    ) -> SimpleNamespace:
+        """Simulate a failing benchmark without starting Docker."""
+        assert cwd.is_dir()
+        assert check is False
+        commands.append(command)
+        return SimpleNamespace(returncode=3)
+
+    monkeypatch.setattr(cli, "load_settings", fake_load_settings)
+    monkeypatch.setattr(cli.subprocess, "run", fake_subprocess_run)
+
+    result = cli.run_cache_experiment(
+        cycles=1,
+        repeats=5,
+        overwrite_report=True,
+    )
+
+    assert result == 3
+    assert len(commands) == 1
+    assert "scripts.run_cache_experiment" in commands[0]
