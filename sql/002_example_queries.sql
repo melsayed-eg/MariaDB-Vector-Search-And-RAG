@@ -1,44 +1,129 @@
 
--- MariaDB WikiRAG: native vector and relational SQL demonstrations.
--- Based on the Area 4 blueprint, Section 6.5 (Q1-Q6).
+-- MariaDB WikiRAG: native vector search and relational SQL demonstrations.
+-- Area 4 blueprint examples Q1-Q6, adapted to the CS Wikipedia corpus.
 --
 -- Prerequisites:
--- 1. The MariaDB 11.8 schema in sql/001_schema.sql is initialized.
--- 2. At least one article with an embedded chunk has been ingested.
--- 3. Q2, Q3, and Q5 may return no rows until matching Wikipedia
---    metadata and resolved links exist.
+-- 1. MariaDB 11.8 and sql/001_schema.sql are initialized.
+-- 2. The 200-article Wikipedia snapshot is ingested with vectors.
+-- 3. In-corpus Wikipedia links have been resolved.
 --
--- Demonstrations use SQL session variables for readability.
--- Application code must use bound parameters for user inputs.
---
--- Q1-Q5 are read-only. Q6 is commented out because it requires
--- two separate database sessions and an explicit rollback.
+-- Q1-Q5 are read-only SQL demonstrations.
+-- Parameters are derived from actual articles, categories, and links.
+-- Application code must use bound SQL parameters for user inputs.
 
--- Use one stored vector as a reproducible example query vector.
-SET @q = (
-    SELECT VEC_ToText(c.embedding)
-    FROM chunks AS c
-    ORDER BY c.chunk_id
-    LIMIT 1
-);
-
--- Change these values to match the ingested Wikipedia corpus.
-SET @topic = 'physics';
-SET @category = 'Quantum mechanics';
-SET @min_length_chars = 5000;
-SET @edited_since = '2025-01-01 00:00:00';
-
--- Choose a source article having at least one resolved link.
+-- Find a source article with a topic and stored chunks, linking to
+-- a destination that has chunks and at least one category.
 SET @hub_article_id = (
     SELECT l.source_article_id
     FROM links AS l
-    WHERE l.target_article_id IS NOT NULL
-    ORDER BY l.source_article_id
+    JOIN articles AS src
+        ON src.article_id = l.source_article_id
+    JOIN articles AS dst
+        ON dst.article_id = l.target_article_id
+    WHERE src.topic IS NOT NULL
+      AND dst.length_chars > 0
+      AND EXISTS (
+          SELECT 1
+          FROM chunks AS c
+          WHERE c.article_id = src.article_id
+      )
+      AND EXISTS (
+          SELECT 1
+          FROM chunks AS c
+          WHERE c.article_id = dst.article_id
+      )
+      AND EXISTS (
+          SELECT 1
+          FROM article_categories AS ac
+          WHERE ac.article_id = dst.article_id
+      )
+    ORDER BY l.source_article_id, l.target_article_id
     LIMIT 1
 );
 
--- Q1: Pure semantic top-5 using the native VECTOR index.
--- Rank chunks before joining relational article metadata.
+-- Select a linked destination satisfying the same requirements.
+SET @target_article_id = (
+    SELECT l.target_article_id
+    FROM links AS l
+    JOIN articles AS dst
+        ON dst.article_id = l.target_article_id
+    WHERE l.source_article_id = @hub_article_id
+      AND dst.length_chars > 0
+      AND EXISTS (
+          SELECT 1
+          FROM chunks AS c
+          WHERE c.article_id = dst.article_id
+      )
+      AND EXISTS (
+          SELECT 1
+          FROM article_categories AS ac
+          WHERE ac.article_id = dst.article_id
+      )
+    ORDER BY l.target_article_id
+    LIMIT 1
+);
+
+-- Choose a valid Computer Science topic from the source article.
+SET @topic = (
+    SELECT a.topic
+    FROM articles AS a
+    WHERE a.article_id = @hub_article_id
+);
+
+-- Choose a real Wikipedia category from the destination article.
+SET @category = (
+    SELECT cat.name
+    FROM article_categories AS ac
+    JOIN categories AS cat
+        ON cat.category_id = ac.category_id
+    WHERE ac.article_id = @target_article_id
+    ORDER BY cat.name
+    LIMIT 1
+);
+
+-- Select thresholds that match the chosen destination.
+-- These demonstrate combined predicates, not filter selectivity.
+SET @min_length_chars = (
+    SELECT a.length_chars - 1
+    FROM articles AS a
+    WHERE a.article_id = @target_article_id
+);
+
+SET @edited_since = (
+    SELECT a.revised_at
+    FROM articles AS a
+    WHERE a.article_id = @target_article_id
+);
+
+-- Use real stored vectors as reproducible example query vectors.
+SET @q = (
+    SELECT VEC_ToText(c.embedding)
+    FROM chunks AS c
+    WHERE c.article_id = @hub_article_id
+    ORDER BY c.chunk_index
+    LIMIT 1
+);
+
+SET @q_target = (
+    SELECT VEC_ToText(c.embedding)
+    FROM chunks AS c
+    WHERE c.article_id = @target_article_id
+    ORDER BY c.chunk_index
+    LIMIT 1
+);
+
+-- Show the parameters selected from the actual Wikipedia corpus.
+-- Both IDs and the category should be non-NULL after full ingestion.
+SELECT
+    @hub_article_id AS source_article_id,
+    @target_article_id AS linked_target_article_id,
+    @topic AS source_topic,
+    @category AS target_category,
+    @min_length_chars AS minimum_length_chars,
+    @edited_since AS edited_since;
+
+-- Q1: Pure semantic top-5 using MariaDB's native vector index.
+-- Rank vectors before joining relational metadata.
 SELECT
     ranked.chunk_id,
     ranked.article_id,
@@ -63,12 +148,12 @@ FROM (
 JOIN articles AS a
     ON a.article_id = ranked.article_id
 ORDER BY
-    ranked.distance ASC,
-    ranked.article_id ASC,
-    ranked.chunk_id ASC;
+    ranked.distance,
+    ranked.article_id,
+    ranked.chunk_id;
 
--- Q2: Semantic ranking constrained by a relational topic.
--- An exact scan ensures the topic filter applies before LIMIT.
+-- Q2: Semantic search constrained by a relational topic.
+-- Exact ranking applies the topic filter before LIMIT.
 SELECT
     c.chunk_id,
     a.title,
@@ -82,50 +167,59 @@ JOIN articles AS a
     ON a.article_id = c.article_id
 WHERE LOWER(a.topic) = LOWER(@topic)
 ORDER BY
-    distance ASC,
-    a.article_id ASC,
-    c.chunk_index ASC,
-    c.chunk_id ASC
+    distance,
+    a.article_id,
+    c.chunk_index,
+    c.chunk_id
 LIMIT 5;
 
--- Q3: Semantic ranking constrained by a many-to-many category.
--- Article-category relationships remain inside MariaDB.
+-- Q3: Semantic search constrained by a Wikipedia category.
+-- The many-to-many relationship is queried inside MariaDB.
 SELECT
     c.chunk_id,
     a.title,
+    cat.name AS matched_category,
     VEC_DISTANCE_COSINE(
         c.embedding,
-        VEC_FromText(@q)
+        VEC_FromText(@q_target)
     ) AS distance
 FROM chunks AS c IGNORE INDEX (embedding)
 JOIN articles AS a
     ON a.article_id = c.article_id
-WHERE EXISTS (
-    SELECT 1
-    FROM article_categories AS ac
-    JOIN categories AS cat
-        ON cat.category_id = ac.category_id
-    WHERE ac.article_id = a.article_id
-      AND LOWER(cat.name) = LOWER(@category)
-)
+JOIN article_categories AS ac
+    ON ac.article_id = a.article_id
+JOIN categories AS cat
+    ON cat.category_id = ac.category_id
+WHERE LOWER(cat.name) = LOWER(@category)
 ORDER BY
-    distance ASC,
-    a.article_id ASC,
-    c.chunk_index ASC,
-    c.chunk_id ASC
+    distance,
+    a.article_id,
+    c.chunk_index,
+    c.chunk_id
 LIMIT 5;
 
--- Q4: Expand semantic results through the Wikipedia link graph.
--- First retrieve nearby chunks, then join resolved article links.
-WITH top_chunks AS (
+-- Q4: Expand semantically ranked passages through Wikipedia links.
+-- Restrict the candidate passages to sources with resolved links.
+-- Exact ranking ensures link eligibility before the top-5 limit.
+WITH top_linked_chunks AS (
     SELECT
         c.chunk_id,
         c.article_id
-    FROM chunks AS c
-    ORDER BY VEC_DISTANCE_COSINE(
-        c.embedding,
-        VEC_FromText(@q)
-    ) ASC
+    FROM chunks AS c IGNORE INDEX (embedding)
+    WHERE EXISTS (
+        SELECT 1
+        FROM links AS l
+        WHERE l.source_article_id = c.article_id
+          AND l.target_article_id IS NOT NULL
+    )
+    ORDER BY
+        VEC_DISTANCE_COSINE(
+            c.embedding,
+            VEC_FromText(@q)
+        ),
+        c.article_id,
+        c.chunk_index,
+        c.chunk_id
     LIMIT 5
 )
 SELECT DISTINCT
@@ -133,7 +227,7 @@ SELECT DISTINCT
     src.title AS found_in,
     dst.article_id AS linked_article_id,
     dst.title AS linked_article
-FROM top_chunks AS t
+FROM top_linked_chunks AS t
 JOIN articles AS src
     ON src.article_id = t.article_id
 JOIN links AS l
@@ -141,11 +235,13 @@ JOIN links AS l
 JOIN articles AS dst
     ON dst.article_id = l.target_article_id
 ORDER BY
-    src.article_id ASC,
-    dst.article_id ASC;
+    source_article_id,
+    linked_article_id
+LIMIT 15;
 
--- Q5: Combine vector similarity with multiple relational filters.
--- Eligible articles are filtered before exact top-K ranking.
+-- Q5: Hybrid SQL retrieval combining several relational constraints.
+-- Category, article length, revision date, and a resolved incoming
+-- link are applied before exact cosine ranking and top-K selection.
 SELECT
     c.chunk_id,
     a.article_id,
@@ -154,13 +250,13 @@ SELECT
     a.revised_at,
     VEC_DISTANCE_COSINE(
         c.embedding,
-        VEC_FromText(@q)
+        VEC_FromText(@q_target)
     ) AS distance
 FROM chunks AS c IGNORE INDEX (embedding)
 JOIN articles AS a
     ON a.article_id = c.article_id
 WHERE a.length_chars > @min_length_chars
-  AND a.revised_at >= @edited_since
+  AND a.revised_at >= CAST(@edited_since AS DATETIME)
   AND EXISTS (
       SELECT 1
       FROM article_categories AS ac
@@ -176,38 +272,47 @@ WHERE a.length_chars > @min_length_chars
         AND l.target_article_id = a.article_id
   )
 ORDER BY
-    distance ASC,
-    a.article_id ASC,
-    c.chunk_index ASC,
-    c.chunk_id ASC
+    distance,
+    a.article_id,
+    c.chunk_index,
+    c.chunk_id
 LIMIT 5;
 
--- Q6: Demonstrate transactional consistency across two sessions.
--- This example is deliberately not executed by this SQL file.
---
--- Prerequisite: At least one stored article with an embedding.
--- Use separate MariaDB client sessions A and B.
+-- Q6: Two-session transaction-visibility demonstration.
+-- This example is deliberately commented out and is NOT executed.
+-- Perform this only against the isolated test database.
 --
 -- SESSION A:
--- Select an existing article and stored vector.
 --
 -- SET @demo_article_id = (
---     SELECT article_id FROM chunks ORDER BY chunk_id LIMIT 1
+--     SELECT article_id
+--     FROM chunks
+--     ORDER BY chunk_id
+--     LIMIT 1
 -- );
+--
 -- SET @demo_vector = (
 --     SELECT VEC_ToText(embedding)
---     FROM chunks ORDER BY chunk_id LIMIT 1
+--     FROM chunks
+--     ORDER BY chunk_id
+--     LIMIT 1
 -- );
+--
 -- SET @demo_chunk_index = (
 --     SELECT COALESCE(MAX(chunk_index), -1) + 1
---     FROM chunks WHERE article_id = @demo_article_id
+--     FROM chunks
+--     WHERE article_id = @demo_article_id
 -- );
 --
 -- START TRANSACTION;
 --
 -- INSERT INTO chunks (
---     article_id, chunk_index, section_title,
---     text, char_count, embedding
+--     article_id,
+--     chunk_index,
+--     section_title,
+--     text,
+--     char_count,
+--     embedding
 -- )
 -- VALUES (
 --     @demo_article_id,
@@ -221,7 +326,6 @@ LIMIT 5;
 -- Keep transaction A open without committing.
 --
 -- SESSION B:
--- Run the following SELECT in a separate session:
 --
 -- SELECT COUNT(*) AS visible_chunks
 -- FROM chunks
@@ -230,13 +334,13 @@ LIMIT 5;
 -- Expected: 0, because session A has not committed.
 --
 -- SESSION A:
+--
 -- ROLLBACK;
 --
 -- SESSION B:
+--
 -- Run the same SELECT again.
+-- Expected: 0, because the insert was rolled back.
 --
--- Expected: 0, because the inserted chunk was rolled back.
---
--- This demonstrates visibility of transactional vector storage.
--- Repeat with an explicit COMMIT in an isolated test environment
--- to demonstrate visibility after a successful transaction.
+-- To test visibility after COMMIT under different isolation levels,
+-- use the project's isolated transaction-visibility experiment.

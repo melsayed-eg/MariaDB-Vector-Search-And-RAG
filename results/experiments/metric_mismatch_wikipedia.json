@@ -1,0 +1,103 @@
+{
+  "chunk_count": 8743,
+  "experiment": "metric_mismatch",
+  "latency_ratios_vs_cosine": {
+    "euclidean": 514.9248248893954,
+    "wrapped_cosine": 593.5562697876719
+  },
+  "mariadb_version": "11.8.9-MariaDB-ubu2404",
+  "notes": "Exploratory measurements; do not interpret small-corpus latencies as representative Wikipedia performance.",
+  "repeats": 5,
+  "sample_query": "How does quicksort work?",
+  "top_k": 10,
+  "variants": {
+    "cosine": {
+      "durations_ms": [
+        2.022543005296029,
+        2.022385990130715,
+        4.46145300520584,
+        2.981739991810173,
+        2.744363999227062
+      ],
+      "explain": [
+        {
+          "Extra": "",
+          "id": 1,
+          "key": "embedding",
+          "key_len": "1538",
+          "possible_keys": null,
+          "ref": null,
+          "rows": "10",
+          "select_type": "SIMPLE",
+          "table": "c",
+          "type": "index"
+        }
+      ],
+      "mean_ms": 2.8464971983339638,
+      "p50_ms": 2.744363999227062,
+      "p95_ms": 4.1655104025267065,
+      "rows_returned": 10,
+      "stdev_ms": 0.9993577759500427,
+      "uses_vector_index": true
+    },
+    "euclidean": {
+      "durations_ms": [
+        1543.3886579994578,
+        1488.4567779954523,
+        1420.7570909929927,
+        1416.3471900101285,
+        1459.7106400033226
+      ],
+      "explain": [
+        {
+          "Extra": "Using filesort",
+          "id": 1,
+          "key": null,
+          "key_len": null,
+          "possible_keys": null,
+          "ref": null,
+          "rows": "7440",
+          "select_type": "SIMPLE",
+          "table": "c",
+          "type": "ALL"
+        }
+      ],
+      "mean_ms": 1465.7320714002708,
+      "p50_ms": 1459.7106400033226,
+      "p95_ms": 1532.4022819986567,
+      "rows_returned": 10,
+      "stdev_ms": 52.547194836393814,
+      "uses_vector_index": false
+    },
+    "wrapped_cosine": {
+      "durations_ms": [
+        1687.068105005892,
+        1692.6230279932497,
+        1716.3937690056628,
+        1715.1386590121547,
+        1636.5577340038726
+      ],
+      "explain": [
+        {
+          "Extra": "Using filesort",
+          "id": 1,
+          "key": null,
+          "key_len": null,
+          "possible_keys": null,
+          "ref": null,
+          "rows": "7440",
+          "select_type": "SIMPLE",
+          "table": "c",
+          "type": "ALL"
+        }
+      ],
+      "mean_ms": 1689.5562590041663,
+      "p50_ms": 1692.6230279932497,
+      "p95_ms": 1716.1427470069611,
+      "rows_returned": 10,
+      "stdev_ms": 32.40042734211786,
+      "uses_vector_index": false
+    }
+  },
+  "warmup_runs": 1
+}

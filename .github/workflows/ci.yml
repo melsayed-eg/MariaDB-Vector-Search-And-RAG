@@ -94,8 +94,9 @@ jobs:
           docker compose exec -T db sh -c \
             'MYSQL_PWD="$MARIADB_ROOT_PASSWORD" mariadb -u root -e "SELECT VERSION() AS mariadb_version;"'
 
-      - name: Run MariaDB integration tests
-        run: uv run --no-sync python -m pytest -m integration -q
+      # Run both database integration and CLI end-to-end tests.
+      - name: Run MariaDB integration and end-to-end tests
+        run: uv run --no-sync python -m pytest -m "integration or e2e" -q
 
       - name: Stop MariaDB
         if: always()

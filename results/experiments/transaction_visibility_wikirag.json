@@ -1,0 +1,95 @@
+{
+  "database": "wikirag_test",
+  "experiment": "transaction_visibility",
+  "isolation_levels": {
+    "READ COMMITTED": {
+      "after_cleanup": {
+        "articles": 0,
+        "chunks": 0,
+        "exact_hits": 0,
+        "q1_hits": 0
+      },
+      "after_commit": {
+        "articles": 1,
+        "chunks": 1,
+        "exact_hits": 1,
+        "q1_hits": 1
+      },
+      "after_commit_fresh_reader": {
+        "articles": 1,
+        "chunks": 1,
+        "exact_hits": 1,
+        "q1_hits": 1
+      },
+      "after_rollback": {
+        "articles": 0,
+        "chunks": 0,
+        "exact_hits": 0,
+        "q1_hits": 0
+      },
+      "before": {
+        "articles": 0,
+        "chunks": 0,
+        "exact_hits": 0,
+        "q1_hits": 0
+      },
+      "before_commit": {
+        "articles": 0,
+        "chunks": 0,
+        "exact_hits": 0,
+        "q1_hits": 0
+      },
+      "uncommitted": {
+        "articles": 0,
+        "chunks": 0,
+        "exact_hits": 0,
+        "q1_hits": 0
+      }
+    },
+    "REPEATABLE READ": {
+      "after_cleanup": {
+        "articles": 0,
+        "chunks": 0,
+        "exact_hits": 0,
+        "q1_hits": 0
+      },
+      "after_commit": {
+        "articles": 1,
+        "chunks": 1,
+        "exact_hits": 1,
+        "q1_hits": 1
+      },
+      "after_commit_fresh_reader": {
+        "articles": 1,
+        "chunks": 1,
+        "exact_hits": 1,
+        "q1_hits": 1
+      },
+      "after_rollback": {
+        "articles": 0,
+        "chunks": 0,
+        "exact_hits": 0,
+        "q1_hits": 0
+      },
+      "before": {
+        "articles": 0,
+        "chunks": 0,
+        "exact_hits": 0,
+        "q1_hits": 0
+      },
+      "before_commit": {
+        "articles": 0,
+        "chunks": 0,
+        "exact_hits": 0,
+        "q1_hits": 0
+      },
+      "uncommitted": {
+        "articles": 0,
+        "chunks": 0,
+        "exact_hits": 0,
+        "q1_hits": 0
+      }
+    }
+  },
+  "notes": "Each reader observation ends its transaction to obtain a fresh snapshot. Synthetic rows are removed after each experiment. Both indexed and exact vector-search visibility are recorded."
+}
