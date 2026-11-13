@@ -557,3 +557,46 @@ Development uses feature branches and reviewed pull requests into `main`. See [C
 - [Contribution workflow](CONTRIBUTING.md)
 - [Official MariaDB Area 4 assignment](https://mariadb.org/bachelor_hackathon_2026-09/)
 - [System architecture and data flow](docs/architecture.md)
+
+
+## 16. License and Wikipedia attribution
+
+### Project source code
+
+WikiRAG's original source code is released under the
+[MIT License](LICENSE).
+
+The MIT license applies to the project's own software. It does not
+replace or override the licenses of third-party content, including
+Wikipedia articles and external dependencies.
+
+### Wikipedia content
+
+The Wikipedia article text used by this project is contributed by
+Wikipedia editors and is available under the
+[Creative Commons Attribution-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/).
+Wikipedia also makes text available under the GNU Free Documentation
+License where applicable.
+
+The reproducible corpus is stored in
+[data/snapshot/wikipedia_snapshot.jsonl](data/snapshot/wikipedia_snapshot.jsonl).
+Each article record preserves its original title, canonical Wikipedia
+URL, revision ID, and revision timestamp.
+
+These details allow readers to identify the original article and
+revision. Contributor attribution and revision history can be accessed
+through the article's Wikipedia page and its "View history" link.
+
+The project processes the source text by cleaning it, dividing it
+into overlapping chunks, and generating embedding vectors for
+retrieval. The resulting snapshot and derived content should not
+be interpreted as independently licensed under the project's MIT
+software license.
+
+Anyone redistributing or adapting Wikipedia content must comply
+with the applicable content-license conditions, including attribution,
+license notices, and indication of changes.
+
+For additional details about the corpus, acquisition process,
+and attribution, see [Ingestion and Corpus Methodology](docs/ingestion.md)
+and [Wikipedia's Content Licensing Information](https://en.wikipedia.org/wiki/Wikipedia:Copyrights).
