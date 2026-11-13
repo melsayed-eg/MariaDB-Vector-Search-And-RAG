@@ -7,7 +7,7 @@ from collections.abc import Sequence
 from functools import lru_cache
 from typing import Protocol
 
-from wikirag.config import EMBEDDING_DIM, EMBEDDING_MODEL_NAME
+from wikirag.config import EMBEDDING_DIM, EMBEDDING_MODEL_NAME, load_settings
 from wikirag.errors import EmbeddingDimensionError, ValidationError, WikiRagError
 
 # tolerance for "the vector has length 1"
@@ -151,9 +151,20 @@ class SentenceTransformerEmbedder:
 
 @lru_cache(maxsize=1)
 def get_embedder() -> Embedder:
-    """Return a cached process-wide embedder.
+    """Return a cached embedder using the configured embedding model.
+
+    The model is selected from validated application settings when
+    the embedder is first created and cached for the process.
 
     Returns:
-        The shared SentenceTransformerEmbedder instance.
+        Embedder: The shared SentenceTransformerEmbedder instance.
+
+    Raises:
+        ValidationError: If application configuration is invalid.
+        WikiRagError: If the configured model cannot be loaded.
     """
-    return SentenceTransformerEmbedder()
+    settings = load_settings()
+
+    return SentenceTransformerEmbedder(
+        model_name=settings.embedding_model,
+    )
