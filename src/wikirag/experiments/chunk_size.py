@@ -133,16 +133,18 @@ def run_setting(
         )
         ingest_seconds = time.perf_counter() - started
         chunk_count = repo.count_chunks()
+        retriever = Retriever(repo, embedder)
+        # semantic alone uses every query; with hybrid, both use the filtered subset
+        full_report = run_evaluation(
+            queries, retriever, modes=("semantic",), ks=DEFAULT_KS, repeats=repeats
+        )
         report = run_evaluation(
-            queries,
-            Retriever(repo, embedder),
-            modes=("semantic", "hybrid"),
-            ks=DEFAULT_KS,
-            repeats=repeats,
+            queries, retriever, modes=("semantic", "hybrid"), ks=DEFAULT_KS, repeats=repeats
         )
 
     label = f"{max_chars}_{overlap_chars}"
     write_report(report, out_dir / f"{label}.json", out_dir / f"{label}.md")
+    write_report(full_report, out_dir / f"{label}_all.json", out_dir / f"{label}_all.md")
     modes = {
         name: {
             "n_queries": metrics.n_queries,
@@ -153,6 +155,15 @@ def run_setting(
             "latency_ms_p95": metrics.latency_ms_p95,
         }
         for name, metrics in report.modes.items()
+    }
+    full = full_report.modes["semantic"]
+    modes["semantic_all_queries"] = {
+        "n_queries": full.n_queries,
+        "recall_at_k": full.recall_at_k,
+        "precision_at_k": full.precision_at_k,
+        "mrr": full.mrr,
+        "latency_ms_p50": full.latency_ms_p50,
+        "latency_ms_p95": full.latency_ms_p95,
     }
     return {
         "max_chars": max_chars,
