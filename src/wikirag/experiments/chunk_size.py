@@ -4,19 +4,23 @@ from __future__ import annotations
 
 import argparse
 import json
+import platform
 import subprocess
+import sys
 import time
 from collections.abc import Sequence
 from contextlib import closing
 from dataclasses import replace
+from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 from wikirag.config import DbConfig, load_settings
 from wikirag.db.connection import get_connection
 from wikirag.db.repository import WikiRepository
 from wikirag.db.schema import init_schema
-from wikirag.embeddings import SentenceTransformerEmbedder
-from wikirag.errors import ValidationError
+from wikirag.embeddings import Embedder, SentenceTransformerEmbedder
+from wikirag.errors import ValidationError, WikiRagError
 from wikirag.evaluation.dataset import load_queries
 from wikirag.evaluation.metadata import file_sha256
 from wikirag.evaluation.run_eval import run_evaluation, write_report
@@ -56,19 +60,29 @@ def parse_settings(values: Sequence[str]) -> list[tuple[int, int]]:
     return settings
 
 
+def _git_output(*args: str) -> str:
+    """Run a git command and return its output, or "unknown" if it fails.
+
+    Args:
+        *args: Arguments passed to git.
+
+    Returns:
+        The stripped standard output, or "unknown".
+    """
+    try:
+        result = subprocess.run(["git", *args], capture_output=True, text=True, check=True)
+    except (OSError, subprocess.CalledProcessError):
+        return "unknown"
+    return result.stdout.strip()
+
+
 def current_git_commit() -> str:
     """Return the current git commit hash, or "unknown" if it cannot be read.
 
     Returns:
         The commit hash.
     """
-    try:
-        result = subprocess.run(
-            ["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True
-        )
-    except (OSError, subprocess.CalledProcessError):
-        return "unknown"
-    return result.stdout.strip()
+    return _git_output("rev-parse", "HEAD")
 
 
 def experiment_database_config() -> DbConfig:
@@ -87,10 +101,63 @@ def experiment_database_config() -> DbConfig:
     return replace(settings.db, database=name)
 
 
+def collect_run_metadata(config: DbConfig) -> dict[str, Any]:
+    """Collect the conditions of this run so it can be reproduced.
+
+    Args:
+        config: Connection settings of the experiment database.
+
+    Returns:
+        Date, Python, operating system, hardware, MariaDB version, HNSW settings
+        and git working-tree status. Values that cannot be read are "unknown".
+    """
+    mariadb_version = "unknown"
+    hnsw: dict[str, str] = {}
+    try:
+        with closing(get_connection(config)) as conn, conn.cursor() as cursor:
+            cursor.execute("SELECT VERSION() AS version")
+            row = cursor.fetchone()
+            if row:
+                mariadb_version = str(row["version"])
+            cursor.execute("SHOW VARIABLES LIKE 'mhnsw%'")
+            hnsw = {str(r["Variable_name"]): str(r["Value"]) for r in cursor.fetchall()}
+    except Exception:  # metadata must never stop the experiment
+        pass
+    return {
+        "run_utc": datetime.now(UTC).isoformat(),
+        "python_version": sys.version.split()[0],
+        "operating_system": platform.platform(),
+        "cpu": platform.processor() or platform.machine(),
+        "machine": platform.machine(),
+        "mariadb_version": mariadb_version,
+        "hnsw_session_variables": hnsw,
+        "git_worktree_status": _git_output("status", "--porcelain"),
+    }
+
+
+def _mode_summary(metrics: Any) -> dict[str, object]:
+    """Convert one mode's metrics into a JSON-friendly dictionary.
+
+    Args:
+        metrics: A ModeMetrics-like object.
+
+    Returns:
+        The metrics as a dictionary.
+    """
+    return {
+        "n_queries": metrics.n_queries,
+        "recall_at_k": metrics.recall_at_k,
+        "precision_at_k": metrics.precision_at_k,
+        "mrr": metrics.mrr,
+        "latency_ms_p50": metrics.latency_ms_p50,
+        "latency_ms_p95": metrics.latency_ms_p95,
+    }
+
+
 def run_setting(
     *,
     config: DbConfig,
-    embedder: SentenceTransformerEmbedder,
+    embedder: Embedder,
     snapshot_path: Path,
     queries_path: Path,
     max_chars: int,
@@ -116,6 +183,10 @@ def run_setting(
 
     Returns:
         A summary dictionary for the comparison.
+
+    Raises:
+        WikiRagError: If any article failed to ingest or no chunks were stored,
+            so no measurements are published from an incomplete corpus.
     """
     queries = load_queries(queries_path, snapshot_path=snapshot_path)
     with closing(get_connection(config)) as conn:
@@ -132,39 +203,35 @@ def run_setting(
             limit=limit,
         )
         ingest_seconds = time.perf_counter() - started
+        if ingest.failed:
+            title, reason = ingest.failed[0]
+            raise WikiRagError(
+                f"Ingestion failed for {len(ingest.failed)} article(s) at "
+                f"{max_chars}/{overlap_chars}; first: {title!r}: {reason}"
+            )
         chunk_count = repo.count_chunks()
+        if chunk_count == 0:
+            raise WikiRagError(f"No chunks were stored at {max_chars}/{overlap_chars}")
+
         retriever = Retriever(repo, embedder)
         # semantic alone uses every query; with hybrid, both use the filtered subset
         full_report = run_evaluation(
             queries, retriever, modes=("semantic",), ks=DEFAULT_KS, repeats=repeats
         )
         report = run_evaluation(
-            queries, retriever, modes=("semantic", "hybrid"), ks=DEFAULT_KS, repeats=repeats
+            queries,
+            retriever,
+            modes=("semantic", "hybrid"),
+            ks=DEFAULT_KS,
+            repeats=repeats,
+            require_compliance=True,
         )
 
     label = f"{max_chars}_{overlap_chars}"
     write_report(report, out_dir / f"{label}.json", out_dir / f"{label}.md")
     write_report(full_report, out_dir / f"{label}_all.json", out_dir / f"{label}_all.md")
-    modes = {
-        name: {
-            "n_queries": metrics.n_queries,
-            "recall_at_k": metrics.recall_at_k,
-            "precision_at_k": metrics.precision_at_k,
-            "mrr": metrics.mrr,
-            "latency_ms_p50": metrics.latency_ms_p50,
-            "latency_ms_p95": metrics.latency_ms_p95,
-        }
-        for name, metrics in report.modes.items()
-    }
-    full = full_report.modes["semantic"]
-    modes["semantic_all_queries"] = {
-        "n_queries": full.n_queries,
-        "recall_at_k": full.recall_at_k,
-        "precision_at_k": full.precision_at_k,
-        "mrr": full.mrr,
-        "latency_ms_p50": full.latency_ms_p50,
-        "latency_ms_p95": full.latency_ms_p95,
-    }
+    modes = {name: _mode_summary(metrics) for name, metrics in report.modes.items()}
+    modes["semantic_all_queries"] = _mode_summary(full_report.modes["semantic"])
     return {
         "max_chars": max_chars,
         "overlap_chars": overlap_chars,
@@ -174,6 +241,70 @@ def run_setting(
         "ingest_seconds": round(ingest_seconds, 1),
         "modes": modes,
     }
+
+
+def run_chunk_size_comparison(
+    settings: Sequence[tuple[int, int]],
+    *,
+    snapshot_path: Path,
+    queries_path: Path,
+    out_dir: Path,
+    limit: int | None = None,
+    repeats: int = 5,
+    embedder: Embedder | None = None,
+    config: DbConfig | None = None,
+) -> dict[str, object]:
+    """Run every chunk setting and write ``summary.json``.
+
+    Args:
+        settings: ``(max_chars, overlap_chars)`` pairs to compare.
+        snapshot_path: Wikipedia snapshot file.
+        queries_path: Evaluation query file.
+        out_dir: Directory for the reports and the summary.
+        limit: Ingest only this many articles; None means all.
+        repeats: Latency repetitions per query.
+        embedder: Embedder to use; the real model is loaded if omitted.
+        config: Test database settings; taken from the configuration if omitted.
+
+    Returns:
+        The summary that was written to ``summary.json``.
+
+    Raises:
+        ValidationError: If the settings are empty or the database is unsafe.
+        WikiRagError: If ingestion fails for any setting.
+    """
+    if not settings:
+        raise ValidationError("At least one chunk setting is required")
+    db_config = config if config is not None else experiment_database_config()
+    chosen = embedder if embedder is not None else SentenceTransformerEmbedder()
+
+    rows = [
+        run_setting(
+            config=db_config,
+            embedder=chosen,
+            snapshot_path=snapshot_path,
+            queries_path=queries_path,
+            max_chars=max_chars,
+            overlap_chars=overlap_chars,
+            out_dir=out_dir,
+            limit=limit,
+            repeats=repeats,
+        )
+        for max_chars, overlap_chars in settings
+    ]
+    summary: dict[str, object] = {
+        "snapshot_sha256": file_sha256(snapshot_path),
+        "queries_sha256": file_sha256(queries_path),
+        "embedding_model": chosen.model_name,
+        "git_commit": current_git_commit(),
+        "article_limit": limit,
+        "repeats": repeats,
+        "environment": collect_run_metadata(db_config),
+        "results": rows,
+    }
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    return summary
 
 
 def main() -> None:
@@ -189,38 +320,15 @@ def main() -> None:
     parser.add_argument("--repeats", type=int, default=5)
     args = parser.parse_args()
 
-    settings = parse_settings(args.settings)
-    config = experiment_database_config()
-    embedder = SentenceTransformerEmbedder()
-
-    rows = [
-        run_setting(
-            config=config,
-            embedder=embedder,
-            snapshot_path=args.snapshot,
-            queries_path=args.queries,
-            max_chars=max_chars,
-            overlap_chars=overlap_chars,
-            out_dir=args.out_dir,
-            limit=args.limit,
-            repeats=args.repeats,
-        )
-        for max_chars, overlap_chars in settings
-    ]
-
-    summary = {
-        "snapshot_sha256": file_sha256(args.snapshot),
-        "queries_sha256": file_sha256(args.queries),
-        "embedding_model": embedder.model_name,
-        "git_commit": current_git_commit(),
-        "article_limit": args.limit,
-        "repeats": args.repeats,
-        "results": rows,
-    }
-    args.out_dir.mkdir(parents=True, exist_ok=True)
-    summary_path = args.out_dir / "summary.json"
-    summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-    print(f"Wrote {summary_path}")
+    run_chunk_size_comparison(
+        parse_settings(args.settings),
+        snapshot_path=args.snapshot,
+        queries_path=args.queries,
+        out_dir=args.out_dir,
+        limit=args.limit,
+        repeats=args.repeats,
+    )
+    print(f"Wrote {args.out_dir / 'summary.json'}")
 
 
 if __name__ == "__main__":

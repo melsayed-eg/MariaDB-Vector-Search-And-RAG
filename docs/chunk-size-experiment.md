@@ -37,8 +37,21 @@ When both modes run together, `run_evaluation` compares them on the 15 queries w
 - Article-level ranking is built from the first 30 retrieved chunks (`chunk_pool`). With smaller chunks those 30 chunks cover less text.
 - A single run on one machine; latency is comparable only between these three settings, not with other machines' benchmarks.
 - `all-MiniLM-L6-v2` truncates input at about 256 word pieces, so the end of a 1,500-character chunk may not influence its vector.
-- The 1000/150 MRR (0.864) differs slightly from the team baseline (0.8477 in `reports/`); the reason has not been confirmed.
+- The team baseline of 0.8477 was measured on the initial dataset (commit aa93732). On the final dataset (the PR #10 baseline) it is 0.8644, which matches the 1000/150 semantic MRR (0.864) of this experiment.
 - The chosen default (1000/150) is unchanged by this experiment; changing it would also change article fingerprints and require re-ingestion.
 
 ## Superseded first run
 An earlier run evaluated only the 15 constrained queries in semantic mode because of how `run_evaluation` handles two modes. The script was fixed to also evaluate semantic mode on all 40 queries.
+
+
+## Reproducing the experiment from a fresh clone
+1. Install dependencies, including the embedding model library: `uv sync --extra dev --extra embeddings --locked`
+2. Copy the example environment file to `.env` and set the MariaDB credentials. The experiment needs a **separate database whose name ends in `_test`** (`DB_NAME_TEST`); it refuses any other name and rebuilds that database for every setting.
+3. Start MariaDB 11.8 and create the test database: `docker compose up -d --wait db`, then `bash scripts/create-test-db.sh`.
+4. Run: `uv run --no-sync python -m wikirag.experiments.chunk_size` (about 25 to 60 minutes on CPU; the first run downloads the model). A dry run: add `--limit 5 --repeats 1 --out-dir /tmp/chunk_dry` (its numbers are meaningless).
+5. Results are written to `results/experiments/chunk_size/`. `summary.json` records checksums, git commit, Python, operating system, CPU, MariaDB version, HNSW settings and the git working-tree status.
+
+Results measured before this metadata existed do not contain it, and it is not reconstructed for them.
+
+## API
+The entry point is `run_chunk_size_comparison(settings, snapshot_path=..., queries_path=..., out_dir=...)` in `src/wikirag/experiments/chunk_size.py`. It calls `run_setting()` once per `(max_chars, overlap_chars)` pair and writes `summary.json`; `main()` is the command-line wrapper. The run stops with an error if any article fails to ingest, and the semantic/hybrid comparison runs with `require_compliance=True`.
