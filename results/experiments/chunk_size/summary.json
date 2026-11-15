@@ -2,9 +2,24 @@
   "snapshot_sha256": "d64afac28a918ad16639a1e534f4d3bf472ec48327927c4ed52ae8a180211b2c",
   "queries_sha256": "26e39637e01a739697721a8187539bb93b256af7b26eda5a3f172884b13e4a8c",
   "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
-  "git_commit": "54db68dee79371d16f329162ddfe43ed894b2ee0",
+  "git_commit": "c3dbedf8ddb03236fc09d23bb22a17c42921d2ec",
   "article_limit": null,
   "repeats": 5,
+  "environment": {
+    "run_utc": "2026-11-15T10:48:39.170520+00:00",
+    "python_version": "3.14.7",
+    "operating_system": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "cpu": "x86_64",
+    "machine": "x86_64",
+    "mariadb_version": "11.8.9-MariaDB-ubu2404",
+    "hnsw_session_variables": {
+      "mhnsw_default_distance": "euclidean",
+      "mhnsw_default_m": "6",
+      "mhnsw_ef_search": "20",
+      "mhnsw_max_cache_size": "16777216"
+    },
+    "git_worktree_status": "M results/experiments/chunk_size/1000_150.json\n M results/experiments/chunk_size/1000_150.md\n M results/experiments/chunk_size/1000_150_all.json\n M results/experiments/chunk_size/1000_150_all.md\n M results/experiments/chunk_size/1500_200.json\n M results/experiments/chunk_size/1500_200.md\n M results/experiments/chunk_size/1500_200_all.json\n M results/experiments/chunk_size/1500_200_all.md\n M results/experiments/chunk_size/500_75.json\n M results/experiments/chunk_size/500_75.md\n M results/experiments/chunk_size/500_75_all.json\n M results/experiments/chunk_size/500_75_all.md"
+  },
   "results": [
     {
       "max_chars": 500,
@@ -12,7 +27,7 @@
       "articles_inserted": 200,
       "articles_failed": 0,
       "chunks": 17746,
-      "ingest_seconds": 550.7,
+      "ingest_seconds": 576.7,
       "modes": {
         "semantic": {
           "n_queries": 15,
@@ -29,8 +44,8 @@
             "10": 0.10666666666666667
           },
           "mrr": 0.73,
-          "latency_ms_p50": 17.999020800016297,
-          "latency_ms_p95": 19.942869039923607
+          "latency_ms_p50": 18.277084399960586,
+          "latency_ms_p95": 20.421500679840392
         },
         "hybrid": {
           "n_queries": 15,
@@ -47,8 +62,8 @@
             "10": 0.10666666666666667
           },
           "mrr": 0.7322222222222222,
-          "latency_ms_p50": 262.1797926000909,
-          "latency_ms_p95": 437.0644122800695
+          "latency_ms_p50": 272.7798690000782,
+          "latency_ms_p95": 427.8790918001687
         },
         "semantic_all_queries": {
           "n_queries": 40,
@@ -65,8 +80,8 @@
             "10": 0.12250000000000001
           },
           "mrr": 0.8570833333333333,
-          "latency_ms_p50": 18.12730169999668,
-          "latency_ms_p95": 21.126791000056073
+          "latency_ms_p50": 18.203226799960248,
+          "latency_ms_p95": 20.26570742011245
         }
       }
     },
@@ -76,7 +91,7 @@
       "articles_inserted": 200,
       "articles_failed": 0,
       "chunks": 8743,
-      "ingest_seconds": 458.8,
+      "ingest_seconds": 474.0,
       "modes": {
         "semantic": {
           "n_queries": 15,
@@ -93,8 +108,8 @@
             "10": 0.10666666666666667
           },
           "mrr": 0.7550793650793651,
-          "latency_ms_p50": 18.34700499994142,
-          "latency_ms_p95": 20.050536820117486
+          "latency_ms_p50": 26.374843000303372,
+          "latency_ms_p95": 37.2802249398228
         },
         "hybrid": {
           "n_queries": 15,
@@ -111,8 +126,8 @@
             "10": 0.10666666666666667
           },
           "mrr": 0.7583333333333333,
-          "latency_ms_p50": 141.5924384000391,
-          "latency_ms_p95": 221.47333840011015
+          "latency_ms_p50": 246.4671975998499,
+          "latency_ms_p95": 371.59175515986135
         },
         "semantic_all_queries": {
           "n_queries": 40,
@@ -129,8 +144,8 @@
             "10": 0.12250000000000001
           },
           "mrr": 0.8644047619047619,
-          "latency_ms_p50": 17.750203500008865,
-          "latency_ms_p95": 19.04048551002688
+          "latency_ms_p50": 20.666889699896274,
+          "latency_ms_p95": 37.5808016697556
         }
       }
     },
@@ -140,7 +155,7 @@
       "articles_inserted": 200,
       "articles_failed": 0,
       "chunks": 5675,
-      "ingest_seconds": 341.3,
+      "ingest_seconds": 344.0,
       "modes": {
         "semantic": {
           "n_queries": 15,
@@ -157,8 +172,8 @@
             "10": 0.1
           },
           "mrr": 0.8,
-          "latency_ms_p50": 17.45576240000446,
-          "latency_ms_p95": 19.679174940029043
+          "latency_ms_p50": 18.057595400387072,
+          "latency_ms_p95": 19.274967060264316
         },
         "hybrid": {
           "n_queries": 15,
@@ -175,8 +190,8 @@
             "10": 0.1
           },
           "mrr": 0.806060606060606,
-          "latency_ms_p50": 93.39750119988821,
-          "latency_ms_p95": 154.16159241999594
+          "latency_ms_p50": 96.08175140056119,
+          "latency_ms_p95": 160.023068200353
         },
         "semantic_all_queries": {
           "n_queries": 40,
@@ -193,8 +208,8 @@
             "10": 0.12000000000000001
           },
           "mrr": 0.8958333333333334,
-          "latency_ms_p50": 17.840736899961485,
-          "latency_ms_p95": 19.260271700018166
+          "latency_ms_p50": 17.804733300181397,
+          "latency_ms_p95": 19.673243599991107
         }
       }
     }
