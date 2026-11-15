@@ -2,7 +2,7 @@
 
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Any
+from typing import Any, Self
 
 import pytest
 
@@ -39,7 +39,7 @@ class _Repo:
         """Store the config."""
         self.config = config
 
-    def __enter__(self) -> "_Repo":
+    def __enter__(self) -> Self:
         """Enter the context."""
         return self
 

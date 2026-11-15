@@ -121,8 +121,8 @@ def collect_run_metadata(config: DbConfig) -> dict[str, Any]:
                 mariadb_version = str(row["version"])
             cursor.execute("SHOW VARIABLES LIKE 'mhnsw%'")
             hnsw = {str(r["Variable_name"]): str(r["Value"]) for r in cursor.fetchall()}
-    except Exception:  # metadata must never stop the experiment
-        pass
+    except (WikiRagError, OSError):  # metadata must never stop the experiment
+        mariadb_version, hnsw = "unknown", {}
     return {
         "run_utc": datetime.now(UTC).isoformat(),
         "python_version": sys.version.split()[0],
