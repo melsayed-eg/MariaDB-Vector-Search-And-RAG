@@ -14,22 +14,22 @@ Does the chunk size (and overlap) change retrieval quality, latency and ingestio
 
 | Setting | Chunks | Ingest (s) | MRR | Recall@1 | Recall@5 | Recall@10 | p50 (ms) | p95 (ms) |
 |---|---|---|---|---|---|---|---|---|
-| 500/75 | 17,746 | 551 | 0.857 | 0.675 | 0.950 | 1.000 | 18.1 | 21.1 |
-| 1000/150 | 8,743 | 459 | 0.864 | 0.700 | 0.950 | 1.000 | 17.8 | 19.0 |
-| 1500/200 | 5,675 | 341 | 0.896 | 0.738 | 0.975 | 0.975 | 17.8 | 19.3 |
+| 500/75 | 17,746 | 577 | 0.857 | 0.675 | 0.950 | 1.000 | 18.2 | 20.3 |
+| 1000/150 | 8,743 | 474 | 0.864 | 0.700 | 0.950 | 1.000 | 20.7 | 37.6 |
+| 1500/200 | 5,675 | 344 | 0.896 | 0.738 | 0.975 | 0.975 | 17.8 | 19.7 |
 
 ## Results: 15 constrained queries, semantic vs hybrid
 When both modes run together, `run_evaluation` compares them on the 15 queries with filters.
 
 | Setting | Semantic MRR | Hybrid MRR | Semantic p50 (ms) | Hybrid p50 (ms) | Hybrid p95 (ms) |
 |---|---|---|---|---|---|
-| 500/75 | 0.730 | 0.732 | 18.0 | 262.2 | 437.1 |
-| 1000/150 | 0.755 | 0.758 | 18.3 | 141.6 | 221.5 |
-| 1500/200 | 0.800 | 0.806 | 17.5 | 93.4 | 154.2 |
+| 500/75 | 0.730 | 0.732 | 18.3 | 272.8 | 427.9 |
+| 1000/150 | 0.755 | 0.758 | 26.4 | 246.5 | 371.6 |
+| 1500/200 | 0.800 | 0.806 | 18.1 | 96.1 | 160.0 |
 
 ## Findings
 1. **Retrieval quality differs little.** 1500/200 has the highest MRR (0.896) and Recall@1, but it is the only setting that misses one query at k=10. With 40 queries, one query moves recall by 2.5 points, so this is not a reliable ranking of the settings.
-2. **Hybrid latency grows with the number of chunks** (about 93 ms at 5,675 chunks to 262 ms at 17,746). Hybrid uses exact cosine ranking with SQL filters, so it scans every chunk. Semantic search uses the HNSW index and stays near 18 ms for all settings.
+2. **Hybrid latency is lowest at 1500/200 (about 96 ms) and highest at 500/75 (about 273 ms).** Hybrid uses exact cosine ranking with SQL filters, so it scans every chunk. In the second run 1000/150 was close to 500/75 (247 ms), while the first run measured 142 ms, so latency varies between runs and a single run cannot rank the middle setting reliably. Semantic search uses the HNSW index and stays near 18 ms.
 3. **Ingestion cost falls with larger chunks**, because fewer chunks are embedded (341 s versus 551 s).
 
 ## Limitations
@@ -39,6 +39,9 @@ When both modes run together, `run_evaluation` compares them on the 15 queries w
 - `all-MiniLM-L6-v2` truncates input at about 256 word pieces, so the end of a 1,500-character chunk may not influence its vector.
 - The team baseline of 0.8477 was measured on the initial dataset (commit aa93732). On the final dataset (the PR #10 baseline) it is 0.8644, which matches the 1000/150 semantic MRR (0.864) of this experiment.
 - The chosen default (1000/150) is unchanged by this experiment; changing it would also change article fingerprints and require re-ingestion.
+
+- The experiment was run twice; quality results were identical, latency differed.
+- CPU model not recorded (architecture x86_64, WSL2 on Windows). `git_worktree_status` in `summary.json` lists modified results files because the run regenerated them.
 
 ## Superseded first run
 An earlier run evaluated only the 15 constrained queries in semantic mode because of how `run_evaluation` handles two modes. The script was fixed to also evaluate semantic mode on all 40 queries.
