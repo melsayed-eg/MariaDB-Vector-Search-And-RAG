@@ -30,7 +30,7 @@ When both modes run together, `run_evaluation` compares them on the 15 queries w
 ## Findings
 1. **Retrieval quality differs little.** 1500/200 has the highest MRR (0.896) and Recall@1, but it is the only setting that misses one query at k=10. With 40 queries, one query moves recall by 2.5 points, so this is not a reliable ranking of the settings.
 2. **Hybrid latency is lowest at 1500/200 (about 96 ms) and highest at 500/75 (about 273 ms).** Hybrid uses exact cosine ranking with SQL filters, so it scans every chunk. In the second run 1000/150 was close to 500/75 (247 ms), while the first run measured 142 ms, so latency varies between runs and a single run cannot rank the middle setting reliably. Semantic search uses the HNSW index and stays near 18 ms.
-3. **Ingestion cost falls with larger chunks**, because fewer chunks are embedded (341 s versus 551 s).
+3. **Ingestion cost falls with larger chunks**, because fewer chunks are embedded (344 s versus 577 s).
 
 ## Limitations
 - Small, provisional-style query set (40 queries); most questions name their article's topic, which makes retrieval easy and compresses differences.
@@ -41,7 +41,7 @@ When both modes run together, `run_evaluation` compares them on the 15 queries w
 - The chosen default (1000/150) is unchanged by this experiment; changing it would also change article fingerprints and require re-ingestion.
 
 - The experiment was run twice; quality results were identical, latency differed.
-- CPU model not recorded (architecture x86_64, WSL2 on Windows). `git_worktree_status` in `summary.json` lists modified results files because the run regenerated them.
+- CPU: 12th Gen Intel(R) Core(TM) i5-12450H, WSL2 on Windows, architecture x86_64. The model was read from the same machine after the run; `summary.json` records only the architecture. `git_worktree_status` in `summary.json` lists modified results files because the run regenerated them.
 
 ## Superseded first run
 An earlier run evaluated only the 15 constrained queries in semantic mode because of how `run_evaluation` handles two modes. The script was fixed to also evaluate semantic mode on all 40 queries.

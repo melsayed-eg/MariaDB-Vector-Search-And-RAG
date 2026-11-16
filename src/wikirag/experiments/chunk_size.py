@@ -275,6 +275,21 @@ def run_chunk_size_comparison(
     """
     if not settings:
         raise ValidationError("At least one chunk setting is required")
+    if len(set(settings)) != len(settings):
+        raise ValidationError("Chunk settings must not contain duplicates")
+    for max_chars, overlap_chars in settings:
+        if (
+            type(max_chars) is not int
+            or type(overlap_chars) is not int
+            or max_chars < 1
+            or overlap_chars < 0
+            or overlap_chars >= max_chars
+        ):
+            raise ValidationError(f"Invalid chunk setting {(max_chars, overlap_chars)!r}")
+    if type(repeats) is not int or repeats < 1:
+        raise ValidationError("repeats must be a positive integer")
+    if limit is not None and (type(limit) is not int or limit < 1):
+        raise ValidationError("limit must be a positive integer or None")
     db_config = config if config is not None else experiment_database_config()
     chosen = embedder if embedder is not None else SentenceTransformerEmbedder()
 

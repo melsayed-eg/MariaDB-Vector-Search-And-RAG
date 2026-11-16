@@ -193,3 +193,24 @@ def test_comparison_rejects_empty_settings(tmp_path: Path) -> None:
         chunk_size.run_chunk_size_comparison(
             [], snapshot_path=tmp_path, queries_path=tmp_path, out_dir=tmp_path
         )
+
+
+@pytest.mark.parametrize(
+    ("settings", "repeats"),
+    [([(100, 100)], 1), ([(0, 0)], 1), ([(500, 75), (500, 75)], 1), ([(500, 75)], 0)],
+)
+def test_comparison_validates_before_touching_the_database(
+    patched: dict[str, Any], tmp_path: Path, settings: list[tuple[int, int]], repeats: int
+) -> None:
+    """Invalid settings fail before any database work starts."""
+    with pytest.raises(ValidationError):
+        chunk_size.run_chunk_size_comparison(
+            settings,
+            snapshot_path=tmp_path,
+            queries_path=tmp_path,
+            out_dir=tmp_path,
+            repeats=repeats,
+            embedder=SimpleNamespace(model_name="m"),  # type: ignore[arg-type]
+            config=object(),  # type: ignore[arg-type]
+        )
+    assert patched["eval"] == []
