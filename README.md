@@ -600,3 +600,5 @@ license notices, and indication of changes.
 For additional details about the corpus, acquisition process,
 and attribution, see [Ingestion and Corpus Methodology](docs/ingestion.md)
 and [Wikipedia's Content Licensing Information](https://en.wikipedia.org/wiki/Wikipedia:Copyrights).
+
+- Chunk-size experiment: [docs/chunk-size-experiment.md](docs/chunk-size-experiment.md)

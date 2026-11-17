@@ -1,0 +1,2263 @@
+{
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "corpus_articles": 200,
+  "corpus_chunks": 5675,
+  "ks": [
+    1,
+    3,
+    5,
+    10
+  ],
+  "modes": {
+    "semantic": {
+      "n_queries": 40,
+      "recall_at_k": {
+        "1": 0.7375,
+        "3": 0.8625,
+        "5": 0.975,
+        "10": 0.975
+      },
+      "precision_at_k": {
+        "1": 0.85,
+        "3": 0.3416666666666667,
+        "5": 0.24000000000000002,
+        "10": 0.12000000000000001
+      },
+      "mrr": 0.8958333333333334,
+      "latency_ms_p50": 17.804733300181397,
+      "latency_ms_p95": 19.673243599991107
+    }
+  },
+  "per_query": [
+    {
+      "query_id": "sem_01",
+      "query": "How does quicksort partition and sort an array?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        3268249
+      ],
+      "retrieved_article_ids": [
+        3268249,
+        13995,
+        25980
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 16.177698799947393,
+      "latency_samples_ms": [
+        16.136329000801197,
+        15.572685999359237,
+        16.027046000090195,
+        16.219066999838105,
+        16.93336599964823
+      ],
+      "latency_stddev_ms": 0.49071184516160743,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "sem_02",
+      "query": "What is the difference between breadth-first and depth-first search?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        97026,
+        97034
+      ],
+      "retrieved_article_ids": [
+        97026,
+        97034,
+        557931,
+        100558,
+        45809,
+        4674,
+        897064,
+        24799509,
+        4266
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 17.046035599560128,
+      "latency_samples_ms": [
+        17.08070300082909,
+        16.40844199937419,
+        16.316057999574696,
+        18.164834998970036,
+        17.260139999052626
+      ],
+      "latency_stddev_ms": 0.7480219773160605,
+      "recall_at_k": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4,
+        "10": 0.2
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "sem_03",
+      "query": "How does Dijkstra's algorithm find shortest paths?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        45809
+      ],
+      "retrieved_article_ids": [
+        45809,
+        221244,
+        100558,
+        125297,
+        25750,
+        557931
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 17.24637800034543,
+      "latency_samples_ms": [
+        17.330427001070348,
+        17.48209300058079,
+        17.766635999578284,
+        16.894133999812766,
+        16.758600000684964
+      ],
+      "latency_stddev_ms": 0.4169224731555633,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "sem_04",
+      "query": "What is dynamic programming and when is it useful?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        125297
+      ],
+      "retrieved_article_ids": [
+        125297,
+        27471338,
+        199701,
+        66294,
+        18016,
+        2052,
+        10933,
+        6021,
+        59868,
+        639009,
+        21523
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 17.0971051993547,
+      "latency_samples_ms": [
+        17.8131590000703,
+        17.51816899923142,
+        16.879293998499634,
+        16.47902399963641,
+        16.79587999933574
+      ],
+      "latency_stddev_ms": 0.5500523790684547,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "sem_05",
+      "query": "How does a hash table store and retrieve values?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        13833
+      ],
+      "retrieved_article_ids": [
+        13833,
+        439526,
+        18167,
+        23968131,
+        37704882,
+        4266,
+        18934432,
+        8377,
+        1711076,
+        849181
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 17.59329619926575,
+      "latency_samples_ms": [
+        16.45992900012061,
+        16.237415999057703,
+        17.71730299878982,
+        17.099594999308465,
+        20.45223799905216
+      ],
+      "latency_stddev_ms": 1.6996763736920426,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "sem_06",
+      "query": "What are the ACID properties of database transactions?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        60776
+      ],
+      "retrieved_article_ids": [
+        8377,
+        217356,
+        60776,
+        25873,
+        325521,
+        7990,
+        37704882,
+        41054
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 0.3333333333333333,
+      "latency_ms": 16.718883799694595,
+      "latency_samples_ms": [
+        16.506408999703126,
+        16.47426199997426,
+        16.056742999353446,
+        16.435186998933204,
+        18.121818000508938
+      ],
+      "latency_stddev_ms": 0.8050037347092054,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "sem_07",
+      "query": "What is database normalization and why is it used?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        8640
+      ],
+      "retrieved_article_ids": [
+        8640,
+        25873,
+        7990,
+        8377
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 17.528025199862896,
+      "latency_samples_ms": [
+        16.528083999219234,
+        16.75269100087462,
+        18.061356000544038,
+        17.112920999352355,
+        19.18507399932423
+      ],
+      "latency_stddev_ms": 1.095854630972833,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "sem_08",
+      "query": "How does SQL query optimization improve database performance?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        3480761
+      ],
+      "retrieved_article_ids": [
+        3480761,
+        175285,
+        1711076,
+        23968131,
+        24799509,
+        4266,
+        8377,
+        6870132,
+        25873,
+        18171,
+        4674,
+        7990
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 18.93010939929809,
+      "latency_samples_ms": [
+        20.683892998931697,
+        18.964831999255694,
+        18.628529000125127,
+        18.037670999547117,
+        18.335621998630813
+      ],
+      "latency_stddev_ms": 1.0389628094112853,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "sem_09",
+      "query": "What is the difference between relational and NoSQL databases?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        25873,
+        23968131
+      ],
+      "retrieved_article_ids": [
+        23968131,
+        8377,
+        24799509,
+        25873,
+        37704882,
+        21855450,
+        26411268
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 19.620432800002163,
+      "latency_samples_ms": [
+        20.472950000112178,
+        20.672589000241715,
+        19.776611999986926,
+        19.13942200008023,
+        18.040590999589767
+      ],
+      "latency_stddev_ms": 1.0706868931515001,
+      "recall_at_k": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.4,
+        "10": 0.2
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "sem_10",
+      "query": "How does a vector database support similarity search?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        74020014
+      ],
+      "retrieved_article_ids": [
+        74020014,
+        2052,
+        43561218,
+        6836612,
+        4266,
+        31274,
+        1711076,
+        65309,
+        23824,
+        24799509,
+        25873,
+        20926,
+        233488,
+        8377
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 17.647810599737568,
+      "latency_samples_ms": [
+        17.084875998989446,
+        17.974690001210547,
+        17.57826299945009,
+        17.67023999855155,
+        17.930984000486205
+      ],
+      "latency_stddev_ms": 0.35681669991580844,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "sem_11",
+      "query": "How does backpropagation train neural networks?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        21523,
+        1360091
+      ],
+      "retrieved_article_ids": [
+        1360091,
+        1164,
+        21523,
+        32472154,
+        1706303,
+        50073184,
+        40409788,
+        233497
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 17.99713679974957,
+      "latency_samples_ms": [
+        17.186337998282397,
+        18.136712000341504,
+        18.13827099977061,
+        17.05363499968371,
+        19.470728000669624
+      ],
+      "latency_stddev_ms": 0.9693375920767991,
+      "recall_at_k": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4,
+        "10": 0.2
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "sem_12",
+      "query": "What causes overfitting in machine learning?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        173332
+      ],
+      "retrieved_article_ids": [
+        173332,
+        21523,
+        40409788,
+        233488,
+        20926,
+        32472154,
+        1164
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 18.29051740023715,
+      "latency_samples_ms": [
+        18.29933500084735,
+        17.97221900051227,
+        18.708600999161717,
+        17.780314999981783,
+        18.69211700068263
+      ],
+      "latency_stddev_ms": 0.4176644123402081,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "sem_13",
+      "query": "How do transformers process natural language?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        21652,
+        61603971
+      ],
+      "retrieved_article_ids": [
+        61603971,
+        1164,
+        73248112,
+        21652,
+        5739,
+        6759
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 17.114033400139306,
+      "latency_samples_ms": [
+        17.294070001298678,
+        17.167448000691365,
+        18.256028999530827,
+        16.57789499950013,
+        16.274724999675527
+      ],
+      "latency_stddev_ms": 0.7634302885771157,
+      "recall_at_k": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.4,
+        "10": 0.2
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "sem_14",
+      "query": "What is reinforcement learning?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        66294
+      ],
+      "retrieved_article_ids": [
+        233488,
+        66294,
+        21523,
+        1164
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 0.5,
+      "latency_ms": 17.765448799400474,
+      "latency_samples_ms": [
+        18.052818999422016,
+        17.020145000060438,
+        18.367523998676916,
+        17.517250000310014,
+        17.869505998532986
+      ],
+      "latency_stddev_ms": 0.5179248196688709,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "sem_15",
+      "query": "How does k-means clustering work?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        1860407
+      ],
+      "retrieved_article_ids": [
+        1860407,
+        233488
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 17.296371399788768,
+      "latency_samples_ms": [
+        18.919468000603956,
+        16.724480999982916,
+        16.43189799870015,
+        16.91337400006887,
+        17.492635999587947
+      ],
+      "latency_stddev_ms": 0.9866638570815507,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "sem_16",
+      "query": "What is garbage collection in programming languages?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        6734
+      ],
+      "retrieved_article_ids": [
+        6734,
+        66924,
+        2356196,
+        18016,
+        6021,
+        1771747,
+        15881,
+        29414838
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 17.078581199530163,
+      "latency_samples_ms": [
+        17.270515998461633,
+        17.38660899900424,
+        16.861546000654926,
+        16.621965000013006,
+        17.25226999951701
+      ],
+      "latency_stddev_ms": 0.3230675327013233,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "sem_17",
+      "query": "How does a compiler differ from an interpreter?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        5739,
+        59868
+      ],
+      "retrieved_article_ids": [
+        5739,
+        59868,
+        6021,
+        10939
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 19.343386800028384,
+      "latency_samples_ms": [
+        23.50797200051602,
+        17.589582999789855,
+        19.95407700087526,
+        17.87266199971782,
+        17.792639999242965
+      ],
+      "latency_stddev_ms": 2.517954887485919,
+      "recall_at_k": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4,
+        "10": 0.2
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "sem_18",
+      "query": "What are the principles of object-oriented programming?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        27471338
+      ],
+      "retrieved_article_ids": [
+        27471338,
+        164952,
+        27010,
+        1507538,
+        25768,
+        15881,
+        10933
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 19.23762380029075,
+      "latency_samples_ms": [
+        18.440154000927578,
+        18.91792800051917,
+        23.100214999431046,
+        18.187208001108957,
+        17.542613999466994
+      ],
+      "latency_stddev_ms": 2.2155250976361853,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "sem_19",
+      "query": "What is the purpose of version control in software development?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        55955,
+        1771747
+      ],
+      "retrieved_article_ids": [
+        55955,
+        1771747,
+        222828,
+        217356,
+        639009
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 18.149084400283755,
+      "latency_samples_ms": [
+        17.202912000357173,
+        17.984480000450276,
+        19.54721900074219,
+        18.020130999502726,
+        17.99068000036641
+      ],
+      "latency_stddev_ms": 0.8542303719302828,
+      "recall_at_k": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4,
+        "10": 0.2
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "sem_20",
+      "query": "What is unit testing?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        222828
+      ],
+      "retrieved_article_ids": [
+        222828,
+        27010,
+        639009,
+        1260,
+        5218,
+        55955,
+        7398,
+        12590
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 17.962008799804607,
+      "latency_samples_ms": [
+        18.505527999877813,
+        19.1271109997615,
+        17.809687999033486,
+        16.93608599998697,
+        17.431631000363268
+      ],
+      "latency_stddev_ms": 0.867452604593769,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "sem_21",
+      "query": "How does virtual memory work in an operating system?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        32354,
+        311193
+      ],
+      "retrieved_article_ids": [
+        32354,
+        66924,
+        21346982,
+        311193,
+        22194,
+        849181
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 18.13419219943171,
+      "latency_samples_ms": [
+        20.454617999348557,
+        17.53536999967764,
+        18.25135399849387,
+        17.820790000769193,
+        16.608828998869285
+      ],
+      "latency_stddev_ms": 1.430178715996192,
+      "recall_at_k": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.4,
+        "10": 0.2
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "sem_22",
+      "query": "What is a deadlock in concurrent computing?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        105181
+      ],
+      "retrieved_article_ids": [
+        105181,
+        45303,
+        36827,
+        217356,
+        325521,
+        60776,
+        22194
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 20.676648799781105,
+      "latency_samples_ms": [
+        22.11958299994876,
+        21.6794009993464,
+        23.120797000956372,
+        18.926695998743526,
+        17.53676699991047
+      ],
+      "latency_stddev_ms": 2.3442815547664564,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "sem_23",
+      "query": "How does DNS translate domain names?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        8339
+      ],
+      "retrieved_article_ids": [
+        8339,
+        15318,
+        61118
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 17.875202800132683,
+      "latency_samples_ms": [
+        18.06054600092466,
+        17.160447998321615,
+        17.167220001283567,
+        17.603745000087656,
+        19.38405500004592
+      ],
+      "latency_stddev_ms": 0.9215191900669132,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "sem_24",
+      "query": "How does public-key cryptography work?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        24222,
+        25385
+      ],
+      "retrieved_article_ids": [
+        24222,
+        18934432,
+        59644,
+        25385,
+        187813
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 17.817888600256993,
+      "latency_samples_ms": [
+        19.020198000362143,
+        17.236187000889913,
+        16.51675100038119,
+        18.67993199994089,
+        17.636374999710824
+      ],
+      "latency_stddev_ms": 1.031134049023185,
+      "recall_at_k": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.4,
+        "10": 0.2
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "sem_25",
+      "query": "What is the halting problem in computation?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        21391870
+      ],
+      "retrieved_article_ids": [
+        21391870,
+        6854,
+        30403,
+        7543
+      ],
+      "filter_compliance": null,
+      "reciprocal_rank": 1.0,
+      "latency_ms": 18.032173999381484,
+      "latency_samples_ms": [
+        17.300794999755453,
+        17.807951999202487,
+        18.21027400001185,
+        18.18627399916295,
+        18.655574998774682
+      ],
+      "latency_stddev_ms": 0.5072686597503994,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "hyb_01",
+      "query": "What database structure speeds up record lookup without scanning every row?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        1711076
+      ],
+      "retrieved_article_ids": [
+        1711076,
+        4266,
+        23968131,
+        3480761,
+        4674,
+        13833,
+        24799509,
+        31274,
+        2118,
+        25873,
+        4320,
+        8377
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 17,
+        "violating_hits": 13,
+        "compliance_rate": 0.5666666666666667,
+        "empty_result": false,
+        "violations": [
+          {
+            "chunk_id": 176,
+            "article_id": 4266,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 514,
+            "article_id": 4674,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 407,
+            "article_id": 13833,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 652,
+            "article_id": 31274,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 451,
+            "article_id": 2118,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 178,
+            "article_id": 4266,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 513,
+            "article_id": 4674,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 515,
+            "article_id": 4674,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 177,
+            "article_id": 4266,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 516,
+            "article_id": 4674,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 431,
+            "article_id": 4320,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 417,
+            "article_id": 13833,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 519,
+            "article_id": 4674,
+            "failed_constraints": [
+              "topics"
+            ]
+          }
+        ]
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 18.993313200189732,
+      "latency_samples_ms": [
+        19.678398999531055,
+        18.266987000970403,
+        17.88024800043786,
+        19.127642999592354,
+        20.01328900041699
+      ],
+      "latency_stddev_ms": 0.9074967723202925,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "hyb_02",
+      "query": "Which database concept describes consistency and availability tradeoffs?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        26411268
+      ],
+      "retrieved_article_ids": [
+        26411268,
+        23968131,
+        8377,
+        217356,
+        60776,
+        41054,
+        37704882,
+        325521,
+        19545
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 18.319506999614532,
+      "latency_samples_ms": [
+        19.200450000425917,
+        16.896209999686107,
+        17.686826999124605,
+        19.124102000205312,
+        18.68994599863072
+      ],
+      "latency_stddev_ms": 0.9983382531326179,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "hyb_03",
+      "query": "Which database model represents entities and relationships?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        752991
+      ],
+      "retrieved_article_ids": [
+        752991,
+        25873,
+        8377,
+        24799509
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 16.367978399648564,
+      "latency_samples_ms": [
+        15.76613500037638,
+        16.42233599886822,
+        15.86887499979639,
+        16.050072999860276,
+        17.732472999341553
+      ],
+      "latency_stddev_ms": 0.802680475872919,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "hyb_04",
+      "query": "Which database system is an open-source fork of MySQL?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        24960699
+      ],
+      "retrieved_article_ids": [
+        24960699,
+        19545,
+        25873,
+        23824
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 18.058557999756886,
+      "latency_samples_ms": [
+        18.752298999970662,
+        17.11707899994508,
+        17.599626999071916,
+        18.23151099961251,
+        18.59227400018426
+      ],
+      "latency_stddev_ms": 0.6879393968812247,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "hyb_05",
+      "query": "Which database language is used for relational queries?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        25873,
+        29004
+      ],
+      "retrieved_article_ids": [
+        29004,
+        8377,
+        24799509,
+        25873,
+        175285,
+        19545,
+        244884,
+        23824,
+        23968131
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 17.14840019994881,
+      "latency_samples_ms": [
+        16.53267700021388,
+        17.69159200011927,
+        17.020201999912388,
+        17.516186999273486,
+        16.981343000225024
+      ],
+      "latency_stddev_ms": 0.46200173340959133,
+      "recall_at_k": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.4,
+        "10": 0.2
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "hyb_06",
+      "query": "Which algorithm uses a heuristic to find paths?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        100558
+      ],
+      "retrieved_article_ids": [
+        100558,
+        45809,
+        557931,
+        97026,
+        25750,
+        230401,
+        125297,
+        97034,
+        221244,
+        897064
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 28,
+        "violating_hits": 2,
+        "compliance_rate": 0.9333333333333333,
+        "empty_result": false,
+        "violations": [
+          {
+            "chunk_id": 2909,
+            "article_id": 25750,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 2912,
+            "article_id": 25750,
+            "failed_constraints": [
+              "topics"
+            ]
+          }
+        ]
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 17.189602000144077,
+      "latency_samples_ms": [
+        17.18248900033359,
+        17.419706000509905,
+        17.961519000891712,
+        16.80177799971716,
+        16.58251799926802
+      ],
+      "latency_stddev_ms": 0.5403269244681184,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "hyb_07",
+      "query": "Which sorting algorithm repeatedly merges sorted sublists?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        20039
+      ],
+      "retrieved_article_ids": [
+        20039,
+        201154,
+        3268249,
+        15205,
+        29352
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 17.7915780001058,
+      "latency_samples_ms": [
+        18.459966999216704,
+        18.885815999965416,
+        17.77174500057299,
+        17.13594499960891,
+        16.704417001164984
+      ],
+      "latency_stddev_ms": 0.9022565698428394,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "hyb_08",
+      "query": "Which self-balancing binary search tree uses rotations to maintain a height difference of at most one between subtrees?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        2118
+      ],
+      "retrieved_article_ids": [
+        4320,
+        2118,
+        4674,
+        4266,
+        26397,
+        13995
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 0.5,
+      "latency_ms": 20.891944400500506,
+      "latency_samples_ms": [
+        20.152508999672136,
+        20.852282001214917,
+        19.91302100032044,
+        19.48772600007942,
+        24.054184001215617
+      ],
+      "latency_stddev_ms": 1.8356345939311711,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "hyb_09",
+      "query": "Which machine learning technique reduces dimensionality?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        76340
+      ],
+      "retrieved_article_ids": [
+        233488,
+        20926,
+        6836612,
+        76340,
+        65309,
+        1363880,
+        1164,
+        233497,
+        32472154
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 0.25,
+      "latency_ms": 17.868552000436466,
+      "latency_samples_ms": [
+        17.371859999911976,
+        20.340081999165704,
+        17.747804000464384,
+        17.04411300124775,
+        16.838901001392514
+      ],
+      "latency_stddev_ms": 1.4238701135212724,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "hyb_10",
+      "query": "Which neural network architecture uses convolutional layers?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        40409788
+      ],
+      "retrieved_article_ids": [
+        40409788,
+        32472154,
+        21523,
+        1164,
+        233497
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 17.421794600159046,
+      "latency_samples_ms": [
+        17.613404999792692,
+        17.02757000020938,
+        16.54825500008883,
+        16.927013000895386,
+        18.992729999808944
+      ],
+      "latency_stddev_ms": 0.9575810506410363,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "hyb_11",
+      "query": "Which programming language is known for ownership and borrowing?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        29414838
+      ],
+      "retrieved_article_ids": [
+        5739,
+        6021,
+        8218,
+        6097297,
+        27404990,
+        18016,
+        72038,
+        25768,
+        27471338,
+        2356196,
+        59868,
+        10939,
+        6759,
+        10933
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 24,
+        "violating_hits": 6,
+        "compliance_rate": 0.8,
+        "empty_result": false,
+        "violations": [
+          {
+            "chunk_id": 5556,
+            "article_id": 8218,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 2073,
+            "article_id": 6097297,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 5557,
+            "article_id": 8218,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 4530,
+            "article_id": 10939,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 4583,
+            "article_id": 6759,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 4580,
+            "article_id": 6759,
+            "failed_constraints": [
+              "topics"
+            ]
+          }
+        ]
+      },
+      "reciprocal_rank": 0.0,
+      "latency_ms": 18.001556000308483,
+      "latency_samples_ms": [
+        17.75953899959859,
+        17.939925999598927,
+        17.888423000840703,
+        18.37592400079302,
+        18.043968000711175
+      ],
+      "latency_stddev_ms": 0.23298054572946508,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "hyb_12",
+      "query": "Which programming paradigm treats functions as first-class values?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        10933
+      ],
+      "retrieved_article_ids": [
+        10933,
+        18203,
+        199701,
+        2356196,
+        18016,
+        27471338,
+        23939,
+        24131,
+        27404990,
+        25768,
+        3254510,
+        29414838,
+        23862,
+        6021
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 27,
+        "violating_hits": 3,
+        "compliance_rate": 0.9,
+        "empty_result": false,
+        "violations": [
+          {
+            "chunk_id": 4703,
+            "article_id": 18203,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 4702,
+            "article_id": 18203,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 4705,
+            "article_id": 18203,
+            "failed_constraints": [
+              "topics"
+            ]
+          }
+        ]
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 17.618240599767887,
+      "latency_samples_ms": [
+        19.19339999949443,
+        16.781865000666585,
+        17.486986000221805,
+        17.086417999962578,
+        17.542533998494036
+      ],
+      "latency_stddev_ms": 0.9336013354694107,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "hyb_13",
+      "query": "Which network protocol provides reliable ordered delivery?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        30538
+      ],
+      "retrieved_article_ids": [
+        15476,
+        15323,
+        31929,
+        30538,
+        22747,
+        4122592,
+        25750,
+        63973,
+        13443,
+        15318
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 0.25,
+      "latency_ms": 16.693577600017306,
+      "latency_samples_ms": [
+        16.71613799953775,
+        17.192530000102124,
+        16.44919300088077,
+        16.145110999786993,
+        16.964915999778896
+      ],
+      "latency_stddev_ms": 0.41340852683073265,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "hyb_14",
+      "query": "Which security vulnerability involves injecting malicious SQL statements?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        526999
+      ],
+      "retrieved_article_ids": [
+        526999,
+        7398,
+        20901,
+        29004,
+        8377
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 26,
+        "violating_hits": 4,
+        "compliance_rate": 0.8666666666666667,
+        "empty_result": false,
+        "violations": [
+          {
+            "chunk_id": 1663,
+            "article_id": 29004,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 1619,
+            "article_id": 8377,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 1616,
+            "article_id": 8377,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 1662,
+            "article_id": 29004,
+            "failed_constraints": [
+              "topics"
+            ]
+          }
+        ]
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 17.380587000297965,
+      "latency_samples_ms": [
+        16.759110001657973,
+        17.360083000312443,
+        17.254327000046032,
+        17.86603999971703,
+        17.663374999756343
+      ],
+      "latency_stddev_ms": 0.4237420585687231,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    },
+    {
+      "query_id": "hyb_15",
+      "query": "Which symmetric block cipher was standardized by NIST in 2001 as the Advanced Encryption Standard?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        1260
+      ],
+      "retrieved_article_ids": [
+        1260,
+        18934432,
+        1638777,
+        187813,
+        8339,
+        25385,
+        22747,
+        29004,
+        24222
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 27,
+        "violating_hits": 3,
+        "compliance_rate": 0.9,
+        "empty_result": false,
+        "violations": [
+          {
+            "chunk_id": 2842,
+            "article_id": 8339,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 3004,
+            "article_id": 22747,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 1661,
+            "article_id": 29004,
+            "failed_constraints": [
+              "topics"
+            ]
+          }
+        ]
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 18.706625199774862,
+      "latency_samples_ms": [
+        19.272883000667207,
+        18.343948000620003,
+        19.009334999282146,
+        17.868699998871307,
+        19.03825999943365
+      ],
+      "latency_stddev_ms": 0.5822190638475295,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 17.920697224899413,
+        "latency_stddev_ms": 1.3939041437425554,
+        "latency_raw_p50_ms": 17.68920949962194,
+        "latency_raw_p95_ms": 20.455534599386738,
+        "latency_sample_count": 200
+      }
+    }
+  ]
+}

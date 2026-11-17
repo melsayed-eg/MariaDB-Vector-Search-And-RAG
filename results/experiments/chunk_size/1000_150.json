@@ -1,0 +1,1900 @@
+{
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "corpus_articles": 200,
+  "corpus_chunks": 8743,
+  "ks": [
+    1,
+    3,
+    5,
+    10
+  ],
+  "modes": {
+    "semantic": {
+      "n_queries": 15,
+      "recall_at_k": {
+        "1": 0.6333333333333333,
+        "3": 0.8,
+        "5": 0.8666666666666667,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.6666666666666666,
+        "3": 0.28888888888888886,
+        "5": 0.18666666666666668,
+        "10": 0.10666666666666667
+      },
+      "mrr": 0.7550793650793651,
+      "latency_ms_p50": 26.374843000303372,
+      "latency_ms_p95": 37.2802249398228
+    },
+    "hybrid": {
+      "n_queries": 15,
+      "recall_at_k": {
+        "1": 0.6333333333333333,
+        "3": 0.8,
+        "5": 0.8666666666666667,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.6666666666666666,
+        "3": 0.28888888888888886,
+        "5": 0.18666666666666668,
+        "10": 0.10666666666666667
+      },
+      "mrr": 0.7583333333333333,
+      "latency_ms_p50": 246.4671975998499,
+      "latency_ms_p95": 371.59175515986135
+    }
+  },
+  "per_query": [
+    {
+      "query_id": "hyb_01",
+      "query": "What database structure speeds up record lookup without scanning every row?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        1711076
+      ],
+      "retrieved_article_ids": [
+        1711076,
+        25873,
+        4674,
+        13833,
+        4266,
+        24799509,
+        23968131,
+        3480761,
+        31274,
+        8640,
+        8377,
+        1010280,
+        7990,
+        37704882
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 17,
+        "violating_hits": 13,
+        "compliance_rate": 0.5666666666666667,
+        "empty_result": false,
+        "violations": [
+          {
+            "chunk_id": 798,
+            "article_id": 4674,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 626,
+            "article_id": 13833,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 274,
+            "article_id": 4266,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 799,
+            "article_id": 4674,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 642,
+            "article_id": 13833,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 1014,
+            "article_id": 31274,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 646,
+            "article_id": 13833,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 797,
+            "article_id": 4674,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 627,
+            "article_id": 13833,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 3524,
+            "article_id": 1010280,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 1013,
+            "article_id": 31274,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 796,
+            "article_id": 4674,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 277,
+            "article_id": 4266,
+            "failed_constraints": [
+              "topics"
+            ]
+          }
+        ]
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 25.35042620038439,
+      "latency_samples_ms": [
+        23.777353000696166,
+        24.813047000861843,
+        26.883677001023898,
+        28.04313200067554,
+        23.234921998664504
+      ],
+      "latency_stddev_ms": 2.0518416281315814,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 28.762358120002318,
+        "latency_stddev_ms": 6.081544680292586,
+        "latency_raw_p50_ms": 26.883677001023898,
+        "latency_raw_p95_ms": 42.20507580012054,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_02",
+      "query": "Which database concept describes consistency and availability tradeoffs?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        26411268
+      ],
+      "retrieved_article_ids": [
+        26411268,
+        8377,
+        217356,
+        23968131,
+        60776,
+        37704882,
+        325521,
+        41054,
+        24799509,
+        25873
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 25.476088800132857,
+      "latency_samples_ms": [
+        28.243381000720547,
+        26.220216999718104,
+        23.955300999659812,
+        24.608106001323904,
+        24.353438999241916
+      ],
+      "latency_stddev_ms": 1.7704635797855157,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 28.762358120002318,
+        "latency_stddev_ms": 6.081544680292586,
+        "latency_raw_p50_ms": 26.883677001023898,
+        "latency_raw_p95_ms": 42.20507580012054,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_03",
+      "query": "Which database model represents entities and relationships?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        752991
+      ],
+      "retrieved_article_ids": [
+        752991,
+        8377,
+        25873
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 32.53000559998327,
+      "latency_samples_ms": [
+        29.978623000715743,
+        28.82696899905568,
+        24.383813000895316,
+        41.15433500010113,
+        38.30628799914848
+      ],
+      "latency_stddev_ms": 6.970060671431291,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 28.762358120002318,
+        "latency_stddev_ms": 6.081544680292586,
+        "latency_raw_p50_ms": 26.883677001023898,
+        "latency_raw_p95_ms": 42.20507580012054,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_04",
+      "query": "Which database system is an open-source fork of MySQL?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        24960699
+      ],
+      "retrieved_article_ids": [
+        19545,
+        24960699,
+        25873
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 0.5,
+      "latency_ms": 26.046852600120474,
+      "latency_samples_ms": [
+        26.343539999288623,
+        25.80949299954227,
+        23.741773000438116,
+        28.148273000624613,
+        26.191184000708745
+      ],
+      "latency_stddev_ms": 1.5727805160395343,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 28.762358120002318,
+        "latency_stddev_ms": 6.081544680292586,
+        "latency_raw_p50_ms": 26.883677001023898,
+        "latency_raw_p95_ms": 42.20507580012054,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_05",
+      "query": "Which database language is used for relational queries?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        25873,
+        29004
+      ],
+      "retrieved_article_ids": [
+        29004,
+        25873,
+        8377,
+        24799509,
+        19545,
+        175285,
+        244884
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 27.160840000215103,
+      "latency_samples_ms": [
+        29.459364999638638,
+        26.122520001081284,
+        30.55343899904983,
+        22.653482999885455,
+        27.015393001420307
+      ],
+      "latency_stddev_ms": 3.0906502357250694,
+      "recall_at_k": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4,
+        "10": 0.2
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 28.762358120002318,
+        "latency_stddev_ms": 6.081544680292586,
+        "latency_raw_p50_ms": 26.883677001023898,
+        "latency_raw_p95_ms": 42.20507580012054,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_06",
+      "query": "Which algorithm uses a heuristic to find paths?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        100558
+      ],
+      "retrieved_article_ids": [
+        100558,
+        25750,
+        45809,
+        97026,
+        125297,
+        230401,
+        97034
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 28,
+        "violating_hits": 2,
+        "compliance_rate": 0.9333333333333333,
+        "empty_result": false,
+        "violations": [
+          {
+            "chunk_id": 4479,
+            "article_id": 25750,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 4484,
+            "article_id": 25750,
+            "failed_constraints": [
+              "topics"
+            ]
+          }
+        ]
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 26.374843000303372,
+      "latency_samples_ms": [
+        25.55386499989254,
+        27.216428999963682,
+        26.197482000497985,
+        26.952254000207176,
+        25.954185000955476
+      ],
+      "latency_stddev_ms": 0.6935570292809498,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 28.762358120002318,
+        "latency_stddev_ms": 6.081544680292586,
+        "latency_raw_p50_ms": 26.883677001023898,
+        "latency_raw_p95_ms": 42.20507580012054,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_07",
+      "query": "Which sorting algorithm repeatedly merges sorted sublists?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        20039
+      ],
+      "retrieved_article_ids": [
+        20039,
+        3268249,
+        201154,
+        25977485,
+        15205,
+        13995
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 27.233152599728783,
+      "latency_samples_ms": [
+        28.847149998910027,
+        28.188233000037144,
+        24.757322998993914,
+        24.728124000830576,
+        29.644932999872253
+      ],
+      "latency_stddev_ms": 2.3312416952831216,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 28.762358120002318,
+        "latency_stddev_ms": 6.081544680292586,
+        "latency_raw_p50_ms": 26.883677001023898,
+        "latency_raw_p95_ms": 42.20507580012054,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_08",
+      "query": "Which self-balancing binary search tree uses rotations to maintain a height difference of at most one between subtrees?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        2118
+      ],
+      "retrieved_article_ids": [
+        4320,
+        4674,
+        2118,
+        4266,
+        26397,
+        18167
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 0.3333333333333333,
+      "latency_ms": 32.68444220011588,
+      "latency_samples_ms": [
+        32.48737400099344,
+        32.292220001181704,
+        29.971657999340096,
+        36.836315999607905,
+        31.834642999456264
+      ],
+      "latency_stddev_ms": 2.525474558215292,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 28.762358120002318,
+        "latency_stddev_ms": 6.081544680292586,
+        "latency_raw_p50_ms": 26.883677001023898,
+        "latency_raw_p95_ms": 42.20507580012054,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_09",
+      "query": "Which machine learning technique reduces dimensionality?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        76340
+      ],
+      "retrieved_article_ids": [
+        233488,
+        20926,
+        6836612,
+        76340,
+        173332,
+        65309,
+        233497,
+        1164,
+        1363880
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 0.25,
+      "latency_ms": 25.83628799984581,
+      "latency_samples_ms": [
+        27.994976000627503,
+        25.331344999358407,
+        23.75462899908598,
+        24.596354000095744,
+        27.504136000061408
+      ],
+      "latency_stddev_ms": 1.8416947894170643,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 28.762358120002318,
+        "latency_stddev_ms": 6.081544680292586,
+        "latency_raw_p50_ms": 26.883677001023898,
+        "latency_raw_p95_ms": 42.20507580012054,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_10",
+      "query": "Which neural network architecture uses convolutional layers?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        40409788
+      ],
+      "retrieved_article_ids": [
+        40409788,
+        32472154,
+        1164,
+        21523,
+        233497
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 25.24362759977521,
+      "latency_samples_ms": [
+        24.170472999685444,
+        26.336164000895224,
+        26.636632999725407,
+        24.67880399854039,
+        24.396064000029583
+      ],
+      "latency_stddev_ms": 1.153597675088909,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 28.762358120002318,
+        "latency_stddev_ms": 6.081544680292586,
+        "latency_raw_p50_ms": 26.883677001023898,
+        "latency_raw_p95_ms": 42.20507580012054,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_11",
+      "query": "Which programming language is known for ownership and borrowing?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        29414838
+      ],
+      "retrieved_article_ids": [
+        6021,
+        18016,
+        8218,
+        5739,
+        6734,
+        59868,
+        23939,
+        8095,
+        27404990,
+        29414838,
+        72038,
+        6759,
+        10939,
+        12590,
+        23862,
+        27471338,
+        10933,
+        2356196
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 24,
+        "violating_hits": 6,
+        "compliance_rate": 0.8,
+        "empty_result": false,
+        "violations": [
+          {
+            "chunk_id": 8547,
+            "article_id": 8218,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 8529,
+            "article_id": 8095,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 7069,
+            "article_id": 6759,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 6987,
+            "article_id": 10939,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 8447,
+            "article_id": 12590,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 8555,
+            "article_id": 8218,
+            "failed_constraints": [
+              "topics"
+            ]
+          }
+        ]
+      },
+      "reciprocal_rank": 0.1,
+      "latency_ms": 23.900613399746362,
+      "latency_samples_ms": [
+        22.75166999970679,
+        24.053936000200338,
+        23.107586999685736,
+        23.708371998509392,
+        25.881502000629553
+      ],
+      "latency_stddev_ms": 1.2179230305068636,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 28.762358120002318,
+        "latency_stddev_ms": 6.081544680292586,
+        "latency_raw_p50_ms": 26.883677001023898,
+        "latency_raw_p95_ms": 42.20507580012054,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_12",
+      "query": "Which programming paradigm treats functions as first-class values?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        10933
+      ],
+      "retrieved_article_ids": [
+        10933,
+        18203,
+        2356196,
+        23862,
+        199701,
+        27471338,
+        24131,
+        18016,
+        27404990,
+        29414838,
+        3254510
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 28,
+        "violating_hits": 2,
+        "compliance_rate": 0.9333333333333333,
+        "empty_result": false,
+        "violations": [
+          {
+            "chunk_id": 7260,
+            "article_id": 18203,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 7259,
+            "article_id": 18203,
+            "failed_constraints": [
+              "topics"
+            ]
+          }
+        ]
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 21.8367120000039,
+      "latency_samples_ms": [
+        21.768325999801164,
+        22.296250999715994,
+        20.952291999492445,
+        22.975597001277492,
+        21.191093999732402
+      ],
+      "latency_stddev_ms": 0.8233974014692603,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 28.762358120002318,
+        "latency_stddev_ms": 6.081544680292586,
+        "latency_raw_p50_ms": 26.883677001023898,
+        "latency_raw_p95_ms": 42.20507580012054,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_13",
+      "query": "Which network protocol provides reliable ordered delivery?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        30538
+      ],
+      "retrieved_article_ids": [
+        15323,
+        15476,
+        22747,
+        31929,
+        25750,
+        24485,
+        30538,
+        4122592
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 29,
+        "violating_hits": 1,
+        "compliance_rate": 0.9666666666666667,
+        "empty_result": false,
+        "violations": [
+          {
+            "chunk_id": 985,
+            "article_id": 24485,
+            "failed_constraints": [
+              "topics"
+            ]
+          }
+        ]
+      },
+      "reciprocal_rank": 0.14285714285714285,
+      "latency_ms": 37.60883559989452,
+      "latency_samples_ms": [
+        34.880567000072915,
+        48.772246000226005,
+        34.892214000137756,
+        33.281719999649795,
+        36.217430999386124
+      ],
+      "latency_stddev_ms": 6.326633196564028,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 28.762358120002318,
+        "latency_stddev_ms": 6.081544680292586,
+        "latency_raw_p50_ms": 26.883677001023898,
+        "latency_raw_p95_ms": 42.20507580012054,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_14",
+      "query": "Which security vulnerability involves injecting malicious SQL statements?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        526999
+      ],
+      "retrieved_article_ids": [
+        526999,
+        20901,
+        7398
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 37.139391799792065,
+      "latency_samples_ms": [
+        42.69871199903719,
+        40.78287600168551,
+        42.070842000612174,
+        29.966623998916475,
+        30.177904998708982
+      ],
+      "latency_stddev_ms": 6.48866541935401,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 28.762358120002318,
+        "latency_stddev_ms": 6.081544680292586,
+        "latency_raw_p50_ms": 26.883677001023898,
+        "latency_raw_p95_ms": 42.20507580012054,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_15",
+      "query": "Which symmetric block cipher was standardized by NIST in 2001 as the Advanced Encryption Standard?",
+      "mode": "semantic",
+      "relevant_article_ids": [
+        1260
+      ],
+      "retrieved_article_ids": [
+        1260,
+        18934432,
+        187813,
+        29004,
+        1638777,
+        72038,
+        22747,
+        8339
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 24,
+        "violating_hits": 6,
+        "compliance_rate": 0.8,
+        "empty_result": false,
+        "violations": [
+          {
+            "chunk_id": 2561,
+            "article_id": 29004,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 1258,
+            "article_id": 72038,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 2554,
+            "article_id": 29004,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 4629,
+            "article_id": 22747,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 4381,
+            "article_id": 8339,
+            "failed_constraints": [
+              "topics"
+            ]
+          },
+          {
+            "chunk_id": 4380,
+            "article_id": 8339,
+            "failed_constraints": [
+              "topics"
+            ]
+          }
+        ]
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 37.01325239999278,
+      "latency_samples_ms": [
+        42.51828799897339,
+        34.85143699981563,
+        44.598164000490215,
+        34.0373750004801,
+        29.060998000204563
+      ],
+      "latency_stddev_ms": 6.414903411075822,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 28.762358120002318,
+        "latency_stddev_ms": 6.081544680292586,
+        "latency_raw_p50_ms": 26.883677001023898,
+        "latency_raw_p95_ms": 42.20507580012054,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_01",
+      "query": "What database structure speeds up record lookup without scanning every row?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        1711076
+      ],
+      "retrieved_article_ids": [
+        1711076,
+        25873,
+        24799509,
+        23968131,
+        3480761,
+        8640,
+        8377,
+        7990,
+        37704882,
+        23824,
+        6870132
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 155.36895020013617,
+      "latency_samples_ms": [
+        165.52947200034396,
+        166.78599300030328,
+        149.60507199975837,
+        165.55208300087543,
+        129.37213099939981
+      ],
+      "latency_stddev_ms": 16.17357539055142,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 239.60150994661186,
+        "latency_stddev_ms": 81.05109547588027,
+        "latency_raw_p50_ms": 244.17576400082908,
+        "latency_raw_p95_ms": 379.50447390048794,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_02",
+      "query": "Which database concept describes consistency and availability tradeoffs?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        26411268
+      ],
+      "retrieved_article_ids": [
+        26411268,
+        8377,
+        217356,
+        23968131,
+        60776,
+        37704882,
+        325521,
+        41054,
+        24799509,
+        25873
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 140.77996060004807,
+      "latency_samples_ms": [
+        122.80236399965361,
+        131.7746109998552,
+        143.85690000017348,
+        148.22362400082056,
+        157.2423039997375
+      ],
+      "latency_stddev_ms": 13.603076233462323,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 239.60150994661186,
+        "latency_stddev_ms": 81.05109547588027,
+        "latency_raw_p50_ms": 244.17576400082908,
+        "latency_raw_p95_ms": 379.50447390048794,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_03",
+      "query": "Which database model represents entities and relationships?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        752991
+      ],
+      "retrieved_article_ids": [
+        752991,
+        8377,
+        25873
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 125.9152308000921,
+      "latency_samples_ms": [
+        129.3691390001186,
+        128.75570500000322,
+        126.84052400072687,
+        124.33318399962445,
+        120.27760199998738
+      ],
+      "latency_stddev_ms": 3.7128046544476314,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 239.60150994661186,
+        "latency_stddev_ms": 81.05109547588027,
+        "latency_raw_p50_ms": 244.17576400082908,
+        "latency_raw_p95_ms": 379.50447390048794,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_04",
+      "query": "Which database system is an open-source fork of MySQL?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        24960699
+      ],
+      "retrieved_article_ids": [
+        19545,
+        24960699,
+        25873
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 0.5,
+      "latency_ms": 153.63232599956973,
+      "latency_samples_ms": [
+        110.00571699878492,
+        121.00645799910126,
+        187.6963449994946,
+        180.55823400027293,
+        168.89487600019493
+      ],
+      "latency_stddev_ms": 35.65822352663727,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 239.60150994661186,
+        "latency_stddev_ms": 81.05109547588027,
+        "latency_raw_p50_ms": 244.17576400082908,
+        "latency_raw_p95_ms": 379.50447390048794,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_05",
+      "query": "Which database language is used for relational queries?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        25873,
+        29004
+      ],
+      "retrieved_article_ids": [
+        29004,
+        25873,
+        8377,
+        24799509,
+        19545,
+        175285,
+        244884
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 173.4116242005257,
+      "latency_samples_ms": [
+        179.2861810008617,
+        162.95431700018526,
+        168.22388500077068,
+        171.18085000038263,
+        185.4128880004282
+      ],
+      "latency_stddev_ms": 8.941266909870983,
+      "recall_at_k": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.6666666666666666,
+        "5": 0.4,
+        "10": 0.2
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 239.60150994661186,
+        "latency_stddev_ms": 81.05109547588027,
+        "latency_raw_p50_ms": 244.17576400082908,
+        "latency_raw_p95_ms": 379.50447390048794,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_06",
+      "query": "Which algorithm uses a heuristic to find paths?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        100558
+      ],
+      "retrieved_article_ids": [
+        100558,
+        45809,
+        97026,
+        125297,
+        230401,
+        97034
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 291.2060587997985,
+      "latency_samples_ms": [
+        265.4376829996181,
+        262.79894599974796,
+        310.4416750011296,
+        299.79220399945916,
+        317.55978599903756
+      ],
+      "latency_stddev_ms": 25.540277045974843,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 239.60150994661186,
+        "latency_stddev_ms": 81.05109547588027,
+        "latency_raw_p50_ms": 244.17576400082908,
+        "latency_raw_p95_ms": 379.50447390048794,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_07",
+      "query": "Which sorting algorithm repeatedly merges sorted sublists?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        20039
+      ],
+      "retrieved_article_ids": [
+        20039,
+        3268249,
+        201154,
+        25977485,
+        15205,
+        13995
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 250.01864800033218,
+      "latency_samples_ms": [
+        263.5712469982536,
+        244.17576400082908,
+        233.02601800060074,
+        253.82265500047652,
+        255.49755600150093
+      ],
+      "latency_stddev_ms": 11.737233591016045,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 239.60150994661186,
+        "latency_stddev_ms": 81.05109547588027,
+        "latency_raw_p50_ms": 244.17576400082908,
+        "latency_raw_p95_ms": 379.50447390048794,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_08",
+      "query": "Which self-balancing binary search tree uses rotations to maintain a height difference of at most one between subtrees?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        2118
+      ],
+      "retrieved_article_ids": [
+        4320,
+        4674,
+        2118,
+        4266,
+        26397,
+        18167
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 0.3333333333333333,
+      "latency_ms": 246.4671975998499,
+      "latency_samples_ms": [
+        249.38367899994773,
+        252.6389790000394,
+        240.90540900033375,
+        242.26190700028383,
+        247.14601399864478
+      ],
+      "latency_stddev_ms": 4.890692756773348,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 239.60150994661186,
+        "latency_stddev_ms": 81.05109547588027,
+        "latency_raw_p50_ms": 244.17576400082908,
+        "latency_raw_p95_ms": 379.50447390048794,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_09",
+      "query": "Which machine learning technique reduces dimensionality?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        76340
+      ],
+      "retrieved_article_ids": [
+        233488,
+        20926,
+        6836612,
+        76340,
+        173332,
+        65309,
+        233497,
+        1164,
+        1363880
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 0.25,
+      "latency_ms": 374.26372740010265,
+      "latency_samples_ms": [
+        361.76659999910044,
+        361.37665400019614,
+        380.03571999979613,
+        388.86286600063613,
+        379.2767970007844
+      ],
+      "latency_stddev_ms": 12.184380035123258,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 239.60150994661186,
+        "latency_stddev_ms": 81.05109547588027,
+        "latency_raw_p50_ms": 244.17576400082908,
+        "latency_raw_p95_ms": 379.50447390048794,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_10",
+      "query": "Which neural network architecture uses convolutional layers?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        40409788
+      ],
+      "retrieved_article_ids": [
+        40409788,
+        32472154,
+        1164,
+        21523,
+        233497
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 370.44662419975793,
+      "latency_samples_ms": [
+        377.9654469999514,
+        348.4421729990572,
+        361.4029849995859,
+        386.58558200040716,
+        377.836933999788
+      ],
+      "latency_stddev_ms": 15.310116073687793,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 239.60150994661186,
+        "latency_stddev_ms": 81.05109547588027,
+        "latency_raw_p50_ms": 244.17576400082908,
+        "latency_raw_p95_ms": 379.50447390048794,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_11",
+      "query": "Which programming language is known for ownership and borrowing?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        29414838
+      ],
+      "retrieved_article_ids": [
+        6021,
+        18016,
+        5739,
+        6734,
+        59868,
+        23939,
+        27404990,
+        29414838,
+        72038,
+        23862,
+        27471338,
+        10933,
+        2356196
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 0.125,
+      "latency_ms": 269.4356700001663,
+      "latency_samples_ms": [
+        276.64540800105897,
+        282.6142419999087,
+        258.58096399861097,
+        260.4270160009037,
+        268.9107200003491
+      ],
+      "latency_stddev_ms": 10.30668646746919,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 239.60150994661186,
+        "latency_stddev_ms": 81.05109547588027,
+        "latency_raw_p50_ms": 244.17576400082908,
+        "latency_raw_p95_ms": 379.50447390048794,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_12",
+      "query": "Which programming paradigm treats functions as first-class values?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        10933
+      ],
+      "retrieved_article_ids": [
+        10933,
+        2356196,
+        23862,
+        199701,
+        27471338,
+        24131,
+        18016,
+        27404990,
+        29414838,
+        3254510
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 268.03455619956367,
+      "latency_samples_ms": [
+        238.1210449984792,
+        261.66207699861843,
+        261.29949300047883,
+        300.8032439993258,
+        278.2869220009161
+      ],
+      "latency_stddev_ms": 23.236208944676047,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 239.60150994661186,
+        "latency_stddev_ms": 81.05109547588027,
+        "latency_raw_p50_ms": 244.17576400082908,
+        "latency_raw_p95_ms": 379.50447390048794,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_13",
+      "query": "Which network protocol provides reliable ordered delivery?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        30538
+      ],
+      "retrieved_article_ids": [
+        15323,
+        15476,
+        22747,
+        31929,
+        25750,
+        30538,
+        4122592
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 0.16666666666666666,
+      "latency_ms": 327.31106799983536,
+      "latency_samples_ms": [
+        297.5357629984501,
+        294.79433899905416,
+        301.46472600063134,
+        291.5657880002982,
+        451.194724000743
+      ],
+      "latency_stddev_ms": 69.34844106750366,
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 239.60150994661186,
+        "latency_stddev_ms": 81.05109547588027,
+        "latency_raw_p50_ms": 244.17576400082908,
+        "latency_raw_p95_ms": 379.50447390048794,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_14",
+      "query": "Which security vulnerability involves injecting malicious SQL statements?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        526999
+      ],
+      "retrieved_article_ids": [
+        526999,
+        20901,
+        7398
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 235.98902739940968,
+      "latency_samples_ms": [
+        274.8077119995287,
+        250.41166199844156,
+        233.25916800058621,
+        219.81490799953463,
+        201.6516869989573
+      ],
+      "latency_stddev_ms": 28.12032129677756,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 239.60150994661186,
+        "latency_stddev_ms": 81.05109547588027,
+        "latency_raw_p50_ms": 244.17576400082908,
+        "latency_raw_p95_ms": 379.50447390048794,
+        "latency_sample_count": 75
+      }
+    },
+    {
+      "query_id": "hyb_15",
+      "query": "Which symmetric block cipher was standardized by NIST in 2001 as the Advanced Encryption Standard?",
+      "mode": "hybrid",
+      "relevant_article_ids": [
+        1260
+      ],
+      "retrieved_article_ids": [
+        1260,
+        18934432,
+        187813,
+        1638777
+      ],
+      "filter_compliance": {
+        "returned_hits": 30,
+        "compliant_hits": 30,
+        "violating_hits": 0,
+        "compliance_rate": 1.0,
+        "empty_result": false,
+        "violations": []
+      },
+      "reciprocal_rank": 1.0,
+      "latency_ms": 211.74197979999008,
+      "latency_samples_ms": [
+        217.79202799916675,
+        208.4023650004383,
+        209.58430099926773,
+        211.09755700126698,
+        211.83364799981064
+      ],
+      "latency_stddev_ms": 3.634397193180916,
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "precision_at_k": {
+        "1": 1.0,
+        "3": 0.3333333333333333,
+        "5": 0.2,
+        "10": 0.1
+      },
+      "aggregate_latency": {
+        "latency_mean_ms": 239.60150994661186,
+        "latency_stddev_ms": 81.05109547588027,
+        "latency_raw_p50_ms": 244.17576400082908,
+        "latency_raw_p95_ms": 379.50447390048794,
+        "latency_sample_count": 75
+      }
+    }
+  ]
+}
