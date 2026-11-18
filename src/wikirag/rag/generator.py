@@ -53,11 +53,12 @@ class ExtractiveGenerator:
             raise ValidationError("Context must contain at least one source")
 
         question_terms = set(re.findall(r"\b[\w-]+\b", question.lower()))
-        candidates: list[tuple[int, int, str]] = []
+        candidates: list[tuple[int, int, int, str]] = []
 
         for source_number, source in enumerate(context.sources, start=1):
-            # Score sentences by question-term overlap, retaining source order.
+            # Score sentences by question-term overlap and subject-first relevance.
             sentences = re.split(r"(?<=[.!?])\s+", source.text.strip())
+
             for sentence in sentences:
                 sentence = sentence.strip()
                 if not sentence:
@@ -65,16 +66,24 @@ class ExtractiveGenerator:
 
                 sentence_terms = set(re.findall(r"\b[\w-]+\b", sentence.lower()))
                 overlap = len(question_terms & sentence_terms)
+
                 if overlap:
-                    candidates.append((overlap, source_number, sentence))
+                    first_word = re.search(r"\b[\w-]+\b", sentence.lower())
+                    subject_first = int(
+                        first_word is not None and first_word.group() in question_terms
+                    )
+
+                    candidates.append((overlap, subject_first, source_number, sentence))
 
         if not candidates:
             # Remain grounded even when lexical matching finds no overlap.
             source = context.sources[0]
             return f"{source.text.strip()} [1]"
 
-        # Prefer greater overlap; ties retain the original passage order.
-        candidates.sort(key=lambda item: -item[0])
+        # Prioritize overlap, then sentences that begin with a question term.
+        candidates.sort(key=lambda item: (-item[0], -item[1]))
         selected = candidates[:3]
 
-        return " ".join(f"{sentence} [{source_number}]" for _, source_number, sentence in selected)
+        return " ".join(
+            f"{sentence} [{source_number}]" for _, _, source_number, sentence in selected
+        )
