@@ -376,13 +376,18 @@ Each query and mode receives one excluded warm-up, followed by five measured ret
 
 ### Recorded five-repeat results
 
-The following results come from the documented benchmark in `docs/evaluation.md`.
+The following results were reproduced on November 18, 2026, using
+MariaDB 11.8.9 on Ubuntu WSL2 with Python 3.14.4.
+The evaluation used one excluded warm-up followed by five measured
+retrieval requests per question and search mode. Machine and
+benchmark provenance are recorded in
+[the evaluation metadata](reports/evaluation_metadata.json).
 
 | Evaluation | Queries | MRR | Recall@5 | Recall@10 | P50 latency |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Full semantic | 40 | 0.8644 | 0.9500 | 1.0000 | 6.50 ms |
-| Semantic, constrained subset | 15 | 0.7551 | 0.8667 | 1.0000 | 6.16 ms |
-| Hybrid, constrained subset | 15 | 0.7583 | 0.8667 | 1.0000 | 563.56 ms |
+| Full semantic | 40 | 0.8644 | 0.9500 | 1.0000 | 37.30 ms |
+| Semantic, constrained subset | 15 | 0.7551 | 0.8667 | 1.0000 | 24.76 ms |
+| Hybrid, constrained subset | 15 | 0.7583 | 0.8667 | 1.0000 | 1490.53 ms |
 
 For the constrained comparison, the recorded filter-compliance results were 420 of 450 semantic hits and 450 of 450 hybrid hits.
 
