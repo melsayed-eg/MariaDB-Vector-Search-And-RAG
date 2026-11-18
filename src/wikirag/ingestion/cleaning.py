@@ -13,6 +13,10 @@ _HTML_TAG_PATTERN = re.compile(
     r"</?(?:p|div|span|a|b|i|strong|em|ul|ol|li|h[1-6]|table|tr|th|td|br|hr|pre|code|blockquote|font|small|sub|sup|section)(?:\s+[^>\n]*)?>",
     flags=re.IGNORECASE,
 )
+_HTML_LINE_BREAK_PATTERN = re.compile(
+    r"<br\b[^>\n]*>",
+    flags=re.IGNORECASE,
+)
 _CITATION_PATTERN = re.compile(r"\[(?:edit|citation needed|\d+(?:,\s*\d+)*)\]", flags=re.IGNORECASE)
 _INVISIBLE_CHARS_PATTERN = re.compile(r"[\u200b\u00ad\u2060\ufeff]")
 _HORIZONTAL_SPACE_PATTERN = re.compile(r"[ \t\u00a0]+")
@@ -41,7 +45,8 @@ def clean_text(text: str) -> str:
     # 1. Normalize line endings
     text = text.replace("\r\n", "\n").replace("\r", "\n")
 
-    # 2. Strip HTML markup and citation markers (preserving math inequalities and code generics)
+    # Preserve word separation at HTML line breaks before removing markup.
+    text = _HTML_LINE_BREAK_PATTERN.sub(" ", text)
     text = _HTML_TAG_PATTERN.sub("", text)
     text = _CITATION_PATTERN.sub("", text)
 

@@ -73,3 +73,18 @@ def test_clean_text_removes_html_and_citation_markers() -> None:
     assert "[citation needed]" not in cleaned
     assert "[edit]" not in cleaned
     assert "Text with bold and a reference or citation and ." == cleaned
+
+
+def test_clean_text_preserves_spaces_at_html_line_breaks() -> None:
+    """Ensure HTML line breaks do not accidentally join adjacent words."""
+    cases = {
+        "make<br>predictions": "make predictions",
+        "similar<br/>to": "similar to",
+        "hello<BR class='break'>world": "hello world",
+        "first<br />second": "first second",
+    }
+
+    for raw, expected in cases.items():
+        cleaned = clean_text(raw)
+        assert cleaned == expected
+        assert clean_text(cleaned) == expected
