@@ -47,7 +47,7 @@ All 40 questions were evaluated without relational filters.
 
 | Mode | Queries | MRR | Recall@1 | Recall@3 | Recall@5 | Recall@10 | Precision@1 | Precision@3 | Precision@5 | Precision@10 | P50 latency (ms) | P95 latency (ms) |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| semantic | 40 | 0.8644 | 0.7000 | 0.8750 | 0.9500 | 1.0000 | 0.8000 | 0.3583 | 0.2350 | 0.1225 | 6.50 | 10.24 |
+| semantic | 40 | 0.8644 | 0.7000 | 0.8750 | 0.9500 | 1.0000 | 0.8000 | 0.3583 | 0.2350 | 0.1225 | 37.30 | 60.94 |
 
 Detailed results: `reports/evaluation_semantic.md` and
 `reports/evaluation_semantic.json`.
@@ -59,8 +59,8 @@ Semantic retrieval ignored filters; hybrid retrieval applied them.
 
 | Mode | Queries | MRR | Recall@1 | Recall@3 | Recall@5 | Recall@10 | Precision@1 | Precision@3 | Precision@5 | Precision@10 | P50 latency (ms) | P95 latency (ms) |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| semantic | 15 | 0.7551 | 0.6333 | 0.8000 | 0.8667 | 1.0000 | 0.6667 | 0.2889 | 0.1867 | 0.1067 | 6.16 | 6.79 |
-| hybrid | 15 | 0.7583 | 0.6333 | 0.8000 | 0.8667 | 1.0000 | 0.6667 | 0.2889 | 0.1867 | 0.1067 | 563.56 | 581.33 |
+| semantic | 15 | 0.7551 | 0.6333 | 0.8000 | 0.8667 | 1.0000 | 0.6667 | 0.2889 | 0.1867 | 0.1067 | 24.76 | 65.84 |
+| hybrid | 15 | 0.7583 | 0.6333 | 0.8000 | 0.8667 | 1.0000 | 0.6667 | 0.2889 | 0.1867 | 0.1067 | 1490.53 | 1624.68 |
 
 Detailed results: `reports/evaluation_comparison.md` and
 `reports/evaluation_comparison.json`.
@@ -92,11 +92,18 @@ paths but does not fully identify their contents. Reproducing an
 uncommitted benchmark therefore requires the corresponding source,
 dataset, and report files, not the Git SHA alone.
 
-For the latest benchmark, evaluation started from a clean working tree
-at committed revision `aea42a4`, containing Zineb-approved relevance
-labels. Only generated report files were
-modified during execution. The metadata records these modifications;
-the evaluation source code and dataset were already committed.
+The recorded benchmark was executed on November 18, 2026, using
+MariaDB 11.8.9, Python 3.14.4, and Ubuntu WSL2. It used source
+revision `5d29d9b`, with the approved evaluation dataset and the
+committed 200-article Wikipedia snapshot.
+
+The benchmark metadata records modifications to generated report
+files at execution time. It does not establish that the working tree
+was clean before the benchmark started. The reports were subsequently
+committed as part of the final integration work.
+
+These measurements are specific to the recorded environment.
+Latency comparisons across machines should be interpreted cautiously.
 
 ## Constraint satisfaction
 
@@ -174,8 +181,13 @@ generally outperforms semantic retrieval.
 
 The committed evaluation dataset and snapshot are checked by automated tests.
 
-The full test suite passed with 586 tests. Ruff linting, formatting
-(95 files), and Git whitespace checks also passed.
+The latest local validation on November 18, 2026, passed all
+662 automated tests. Ruff linting passed, Ruff formatting confirmed
+112 files were already formatted, and the real MariaDB demonstration
+completed successfully.
+
+GitHub Actions CI must also be verified on the final pull request
+before merging into `main`.
 
 The evaluation questions and relevance labels have received Zineb's
 final approval. The reports reflect the approved dataset.

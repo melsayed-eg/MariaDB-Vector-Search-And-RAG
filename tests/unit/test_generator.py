@@ -103,3 +103,37 @@ def test_rejects_empty_context() -> None:
 
     with pytest.raises(ValidationError):
         ExtractiveGenerator().generate("What is MariaDB?", empty)
+
+
+def test_generator_prioritizes_direct_explanation() -> None:
+    """Prefer a direct explanation over an earlier incidental topic mention."""
+    hit = SearchHit(
+        chunk_id=10,
+        article_id=20,
+        article_title="Quicksort",
+        article_url="https://en.wikipedia.org/wiki/Quicksort",
+        chunk_index=0,
+        section_title="Overview",
+        text=(
+            "In 1998, a variant of Quicksort exhibited quadratic behavior. "
+            "Quicksort is a divide-and-conquer sorting algorithm. "
+            "Quicksort partitions an array into smaller subarrays. "
+            "Quicksort recursively sorts the resulting subarrays."
+        ),
+        distance=0.1,
+        score=0.9,
+    )
+
+    context = ContextBundle(
+        text=f"[1] Quicksort\n{hit.text}",
+        sources=(hit,),
+        truncated=False,
+    )
+
+    answer = ExtractiveGenerator().generate(
+        "How does quicksort work?",
+        context,
+    )
+
+    assert answer.startswith("Quicksort is a divide-and-conquer sorting algorithm. [1]")
+    assert "1998" not in answer

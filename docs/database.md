@@ -302,9 +302,16 @@ The team subsequently ingested **200 real Wikipedia articles with 8,743 chunks**
 
 | Evaluated setting | Questions | MRR | Recall@5 | Recall@10 | P50 retrieval latency |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Full semantic evaluation | 40 | 0.8644 | 0.9500 | 1.0000 | 6.50 ms |
-| Semantic on constrained subset | 15 | 0.7551 | 0.8667 | 1.0000 | 6.16 ms |
-| Hybrid on the same subset | 15 | 0.7583 | 0.8667 | 1.0000 | 563.56 ms |
+| Full semantic evaluation | 40 | 0.8644 | 0.9500 | 1.0000 | 37.30 ms |
+| Semantic on constrained subset | 15 | 0.7551 | 0.8667 | 1.0000 | 24.76 ms |
+| Hybrid on the same subset | 15 | 0.7583 | 0.8667 | 1.0000 | 1490.53 ms |
+
+These measurements were reproduced on November 18, 2026, on Ubuntu
+WSL2 using MariaDB 11.8.9 and Python 3.14.4. The recorded P50 values
+summarize per-query mean retrieval latencies, with one warm-up
+excluded and five measured repetitions per query and mode.
+Results depend on the hardware, database configuration, and workload.
+See the reproducibility metadata for the exact environment.
 
 For the constrained subset, hybrid results satisfied the tested relational predicates; the team also measured compliance independently against stored article metadata. These latency numbers describe the **recorded benchmark environment and workload**; results will differ across machines. The hybrid baseline favors correctness under filters and can be much slower than indexed semantic search.
 

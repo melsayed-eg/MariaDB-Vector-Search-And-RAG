@@ -148,6 +148,37 @@ Results are regenerated to `results/experiments/cache_size_synthetic.json`. **Re
 
 ## Verification status and remaining work
 
-The last reported local checks following the implementation passed **191 unit tests and 105 MariaDB integration tests (296 total)**, plus Ruff lint/format and `git diff --check`. This is *local evidence*; it does not establish passing GitHub Actions or tests on merged `main`.
+### Completed verification
 
-**Still required for the official assignment and the architecture blueprint:** ingest a real reproducible Wikipedia corpus; run a frozen labeled question set and publish exact-versus-HNSW recall and latency; demonstrate Q1–Q6 against populated data, including relational predicates and joins; complete the remaining filter-selectivity and `ef_search` experiments where assigned; publish the findings and commands in the root README; obtain teammate review; merge and verify on `main`. The official Word assignment takes precedence over optional blueprint depth experiments.
+The project has ingested a reproducible corpus of 200 real Wikipedia
+articles and 8,743 embedded chunks into MariaDB 11.8.
+
+The committed evaluation dataset contains 40 labeled questions,
+including 15 constrained questions evaluated in both semantic and
+hybrid modes. The evaluation reports include retrieval-quality metrics,
+latency measurements, filter-compliance results, and reproducibility
+metadata.
+
+Experiments C, D, and E investigate vector-index selection,
+transactional visibility, and HNSW cache-size behavior, respectively.
+A separate completed chunk-size experiment compares three chunking
+configurations; see [Chunk-size Experiment](chunk-size-experiment.md).
+
+The latest local verification on November 18, 2026, passed 662
+automated tests. Ruff linting passed, formatting checks confirmed
+112 files already formatted, and `make demo` completed successfully
+against the real Wikipedia corpus.
+
+### Remaining verification and optional improvements
+
+- Verify the GitHub Actions checks on the final pull request.
+- Obtain teammate review and merge the final integration branch into
+  `main`, then verify the merged repository.
+- For additional MariaDB-depth evidence, evaluate HNSW approximate
+  recall against exact nearest neighbors across `mhnsw_ef_search`
+  settings and benchmark different SQL filter selectivities.
+- Record any additional experiments with their actual methodology,
+  measurements, and limitations before reporting conclusions.
+
+The official Word assignment takes precedence over optional
+architecture-blueprint experiments.

@@ -90,7 +90,7 @@ fingerprint, so a change in cleaning rules causes affected articles to be re-emb
 Rules are applied in this strict sequence:
 
 1. Normalize line endings (`\r\n` and `\r` become `\n`).
-2. Strip HTML tags (preserving generic type tokens such as `<T>` and math inequalities like `x < y and z > 0`) and reference markers (e.g., `[edit]`, `[1]`, `[citation needed]`).
+2. Convert HTML `<br>` tags to spaces before removing other recognized HTML tags and reference markers (e.g., `[edit]`, `[1]`, `[citation needed]`). Preserve programming-language tokens such as `<T>` and mathematical comparisons.
 3. Remove non-functional invisible characters (zero-width spaces, soft hyphens, byte-order marks; zero-width non-joiner `\u200c` is preserved).
 4. Unicode NFC normalization (performed after removing invisible characters so decomposed sequences compose correctly).
 5. Collapse consecutive horizontal whitespace runs (spaces, tabs, non-breaking spaces) to a single space.
@@ -161,8 +161,14 @@ uv run python scripts/validate_snapshot.py
   the repository for the stored one **before** embedding. Unchanged articles are skipped. Changed or new
   articles are chunked, embedded and passed to `repo.ingest_article`. A failure on one article is recorded in the
   `IngestReport` and the run continues. `repo.resolve_links()` is called once at the end.
-- **Token limit:** the model truncates input at about 256 word pieces. A 1,000-character chunk is close to
-  that limit, so the end of a long chunk may not influence its vector. The chunk-size experiment (branch 3)
-  will measure whether smaller chunks retrieve better.
+- **Token limit:** the model truncates input at about 256 word pieces, so the end of a long chunk may not influence its vector.
+  The completed [chunk-size experiment](chunk-size-experiment.md) compared
+  500/75, 1000/150, and 1500/200 character chunk/overlap settings.
+  The project retains 1000/150 as its default.
 - **Metadata limitation:** the fingerprint covers cleaned text, chunk settings and model name only. If categories, links or revision metadata change while the text stays identical, the article is skipped. Whether to change the fingerprint contract is a team decision.
-- **Status:** unit-tested with `FakeEmbedder` and `InMemoryRepository`. Verification against real MariaDB is in `tests/integration/test_ingestion_db.py`; it passes against the MariaDB test database with FakeEmbedder (5 real snapshot articles: first run inserts, second run skips). The real SentenceTransformer model has not yet been run end to end against MariaDB.
+- **Verification:** unit tests use `FakeEmbedder` and `InMemoryRepository`.
+  MariaDB integration tests verify ingestion and idempotency using an isolated
+  test database. The real SentenceTransformer model has also been used to
+  ingest the committed Wikipedia corpus into MariaDB: 200 articles and
+  8,743 chunks. The application has successfully demonstrated native
+  semantic retrieval, hybrid SQL filtering, and cited RAG using this corpus.
