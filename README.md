@@ -559,6 +559,7 @@ Development uses feature branches and reviewed pull requests into `main`. See [C
 - [Shared interfaces](docs/interfaces.md)
 - [Retrieval evaluation](docs/evaluation.md)
 - [Database depth experiments](docs/database_experiments.md)
+- [Chunk-size and overlap experiment](docs/chunk-size-experiment.md)
 - [Contribution workflow](CONTRIBUTING.md)
 - [Official MariaDB Area 4 assignment](https://mariadb.org/bachelor_hackathon_2026-09/)
 - [System architecture and data flow](docs/architecture.md)

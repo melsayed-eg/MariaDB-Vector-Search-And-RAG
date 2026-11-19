@@ -63,6 +63,20 @@ without splitting chunks and records when context is truncated.
 `ExtractiveGenerator` is a deterministic, non-LLM baseline that selects
 sentences from retrieved context and includes numbered source citations.
 
+The generator ranks candidate sentences by their overlap with question
+terms. When sentences have equal overlap, it prioritizes sentences
+beginning with a question term. Remaining ties preserve their original
+source order.
+
+This subject-first tie-breaking heuristic improves the relevance of
+some extractive answers without changing the shared generator interface
+or citation numbering. However, it does not guarantee that every
+selected sentence directly answers the question.
+
+A regression test in `tests/unit/test_generator.py` verifies that a
+direct explanation of quicksort is preferred over an earlier incidental
+historical mention.
+
 `answer_question()` connects retrieval, context construction, and generation.
 It validates citations against available sources and returns a `RAGAnswer`.
 When no usable sources are retrieved, it returns an insufficient-information
